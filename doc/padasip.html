@@ -1051,6 +1051,8 @@ table {
     <li class="set"><h3><a href="#header-functions">Functions</a></h3>
       
   <ul>
+    <li class="mono"><a href="#padasip.gngd_filter">gngd_filter</a></li>
+    <li class="mono"><a href="#padasip.gngd_novelty">gngd_novelty</a></li>
     <li class="mono"><a href="#padasip.input_from_history">input_from_history</a></li>
     <li class="mono"><a href="#padasip.lms_filter">lms_filter</a></li>
     <li class="mono"><a href="#padasip.lms_novelty">lms_novelty</a></li>
@@ -1106,7 +1108,7 @@ real-time measuring (sample-after-sample feeding).</p>
 <span class="sd">real-time measuring (sample-after-sample feeding).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterLMS</span><span class="p">,</span> <span class="n">FilterNLMS</span><span class="p">,</span> <span class="n">FilterRLS</span>
+<span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterLMS</span><span class="p">,</span> <span class="n">FilterNLMS</span><span class="p">,</span> <span class="n">FilterRLS</span><span class="p">,</span> <span class="n">FilterGNGD</span>
 <span class="kn">import</span> <span class="nn">padasip.consts</span> <span class="kn">as</span> <span class="nn">co</span>
 
 
@@ -1560,6 +1562,112 @@ real-time measuring (sample-after-sample feeding).</p>
     <span class="k">if</span> <span class="n">bias</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="c1">### GNGD</span>
+<span class="k">def</span> <span class="nf">gngd_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process data with GNGD filter.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : set of weights at the end of filtering (1 dimensional array). The size</span>
+<span class="sd">        corresponds with the filter size (length of input vector).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
+
+<span class="k">def</span> <span class="nf">gngd_novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate novelty in data with GNGD filter. </span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        filter will perform badly. If it is too high,</span>
+<span class="sd">        filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `w` : history of all filter weighs (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    * `nd` : coeficients describing novelty in data (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 </pre></div>
 
   </div>
@@ -1569,6 +1677,266 @@ real-time measuring (sample-after-sample feeding).</p>
   <section id="section-items">
 
     <h2 class="section-title" id="header-functions">Functions</h2>
+      
+  <div class="item">
+    <div class="name def" id="padasip.gngd_filter">
+    <p>def <span class="ident">gngd_filter</span>(</p><p>d, x, mu=1.0, eps=1.0, ro=0.1, w=&#39;random&#39;)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Process data with GNGD filter.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (1 dimensional array)</p>
+</li>
+<li>
+<p><code>x</code> : input matrix (2-dimensional array). Rows are samples, columns are
+    input arrays.</p>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li>
+<p><code>mu</code> : learning rate (float). Also known as step size. If it is too slow,
+    the filter may have bad performance. If it is too high,
+    the filter will be unstable. The default value can be unstable
+    for ill-conditioned input data.</p>
+</li>
+<li>
+<p><code>eps</code> : compensation term (float) at the beginning. It is adaptive
+    parameter.</p>
+</li>
+<li>
+<p><code>ro</code> : step size adaptation parameter (float) at the beginning.
+    It is adaptive parameter.</p>
+</li>
+<li>
+<p><code>w</code> : initial weights of filter. Possible values are:</p>
+<ul>
+<li>
+<p>array with initial weights (1 dimensional array) of filter size</p>
+</li>
+<li>
+<p>"random" : create random weights</p>
+</li>
+<li>
+<p>"zeros" : create zero value weights</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>
+<p><code>y</code> : output value (1 dimensional array).
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>e</code> : filter error for every sample (1 dimensional array). 
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>w</code> : set of weights at the end of filtering (1 dimensional array). The size
+    corresponds with the filter size (length of input vector).</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.gngd_filter', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.gngd_filter" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">gngd_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process data with GNGD filter.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : set of weights at the end of filtering (1 dimensional array). The size</span>
+<span class="sd">        corresponds with the filter size (length of input vector).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="padasip.gngd_novelty">
+    <p>def <span class="ident">gngd_novelty</span>(</p><p>d, x, mu=1.0, eps=1.0, ro=0.1, w=&#39;random&#39;)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Evaluate novelty in data with GNGD filter. </p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (1 dimensional array)</p>
+</li>
+<li>
+<p><code>x</code> : input matrix (2-dimensional array). Rows are samples, columns are
+    input arrays.</p>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li>
+<p><code>mu</code> : learning rate (float). Also known as step size. If it is too slow,
+    filter will perform badly. If it is too high,
+    filter will be unstable. The default value can be unstable
+    for ill conditioned input data.</p>
+</li>
+<li>
+<p><code>eps</code> : compensation term (float) at the beginning. It is adaptive
+    parameter.</p>
+</li>
+<li>
+<p><code>ro</code> : step size adaptation parameter (float) at the beginning.
+    It is adaptive parameter.</p>
+</li>
+<li>
+<p><code>w</code> : initial weights of filter. Possible values are:</p>
+<ul>
+<li>
+<p>array with initial weights (1 dimensional array) of filter size</p>
+</li>
+<li>
+<p>"random" : create random weights</p>
+</li>
+<li>
+<p>"zeros" : create zero value weights</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>
+<p><code>y</code> : output value (1 dimensional array).
+    The size correspons with desired value.</p>
+</li>
+<li>
+<p><code>e</code> : filter error for every sample (1 dimensional array). 
+    The size correspons with desired value.</p>
+</li>
+<li>
+<p><code>w</code> : history of all filter weighs (2 dimensional array).
+    The size corresponds with lenght of data
+    and filter size (length of input vector).</p>
+</li>
+<li>
+<p><code>nd</code> : coeficients describing novelty in data (2 dimensional array).
+    The size corresponds with lenght of data
+    and filter size (length of input vector).</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.gngd_novelty', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.gngd_novelty" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">gngd_novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate novelty in data with GNGD filter. </span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        filter will perform badly. If it is too high,</span>
+<span class="sd">        filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `w` : history of all filter weighs (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    * `nd` : coeficients describing novelty in data (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
       
   <div class="item">
     <div class="name def" id="padasip.input_from_history">

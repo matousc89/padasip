@@ -1062,6 +1062,21 @@ table {
 
         </li>
         <li class="mono">
+        <span class="class_name"><a href="#padasip.filters.FilterGNGD">FilterGNGD</a></span>
+        
+          
+  <ul>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.__init__">__init__</a></li>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.adapt">adapt</a></li>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.check_param">check_param</a></li>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.init_weights">init_weights</a></li>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.novelty">novelty</a></li>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.predict">predict</a></li>
+    <li class="mono"><a href="#padasip.filters.FilterGNGD.run">run</a></li>
+  </ul>
+
+        </li>
+        <li class="mono">
         <span class="class_name"><a href="#padasip.filters.FilterLMS">FilterLMS</a></span>
         
           
@@ -1687,6 +1702,184 @@ These classes can be used as standalone filters (e.g.real-time filtering).</p>
             <span class="n">nd</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">dw</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">w_all</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
         <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w_all</span><span class="p">,</span> <span class="n">nd</span>
+
+
+
+<span class="k">class</span> <span class="nc">FilterGNGD</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adaptive GNGD filter.</span>
+
+<span class="sd">    Based on:</span>
+
+<span class="sd">    Mandic, D. P. (2004). A generalized normalized gradient descent algorithm.</span>
+<span class="sd">    Signal Processing Letters, IEEE, 11(2), 115-118.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `n` : length of filter (integer) - how many input is input array</span>
+<span class="sd">        (row of input matrix)</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size.</span>
+<span class="sd">        If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+            <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;NLMS filter&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The size of filter must be an integer&#39;</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD_MIN</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD_MIN</span><span class="p">,</span>
+            <span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">ro</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD_MIN</span><span class="p">,</span>
+            <span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;ro&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adapt weights according one desired value and its input.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : desired value (float)</span>
+
+<span class="sd">        * `x` : input array (1-dimensional array)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">*</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">x</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">=</span> <span class="n">e</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function filters multiple samples in a row.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">            input arrays.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        * `y` : output value (1 dimensional array).</span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">            Every row is set of the weights for given sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># prepare data</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+        <span class="c1"># create empty arrays</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="c1"># adaptation loop</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> \
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+        
+    <span class="k">def</span> <span class="nf">novelty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function estimates novelty in data</span>
+<span class="sd">        according to the learning effort.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
+<span class="sd">            columns are input arrays.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        * `y` : output value (1 dimensional array).</span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">            Every row is set of the weights for given sample.</span>
+
+<span class="sd">        * `nd` : novelty detection coefficients (2 dimensional array).</span>
+<span class="sd">            Every row is set of coefficients for given sample.</span>
+<span class="sd">            One coefficient represents one filter weight.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># prepare data</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+        <span class="c1"># create empty arrays</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">nd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">w_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+        <span class="c1"># adaptation loop</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> \
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+            <span class="n">nd</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">dw</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">w_all</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w_all</span><span class="p">,</span> <span class="n">nd</span>
 </pre></div>
 
   </div>
@@ -1982,6 +2175,769 @@ into a float with a value between <code>low</code> and <code>high</code>.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">y</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      </div>
+      </div>
+      
+      <div class="item">
+      <p id="padasip.filters.FilterGNGD" class="name">class <span class="ident">FilterGNGD</span></p>
+      
+  
+    <div class="desc"><p>Adaptive GNGD filter.</p>
+<p>Based on:</p>
+<p>Mandic, D. P. (2004). A generalized normalized gradient descent algorithm.
+Signal Processing Letters, IEEE, 11(2), 115-118.</p>
+<p>Args:</p>
+<ul>
+<li><code>n</code> : length of filter (integer) - how many input is input array
+    (row of input matrix)</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li>
+<p><code>mu</code> : learning rate (float). Also known as step size.
+    If it is too slow,
+    the filter may have bad performance. If it is too high,
+    the filter will be unstable. The default value can be unstable
+    for ill-conditioned input data.</p>
+</li>
+<li>
+<p><code>eps</code> : compensation term (float) at the beginning. It is adaptive
+    parameter.</p>
+</li>
+<li>
+<p><code>ro</code> : step size adaptation parameter (float) at the beginning.
+    It is adaptive parameter.</p>
+</li>
+<li>
+<p><code>w</code> : initial weights of filter. Possible values are:</p>
+<ul>
+<li>
+<p>array with initial weights (1 dimensional array) of filter size</p>
+</li>
+<li>
+<p>"random" : create random weights</p>
+</li>
+<li>
+<p>"zeros" : create zero value weights</p>
+</li>
+</ul>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">FilterGNGD</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adaptive GNGD filter.</span>
+
+<span class="sd">    Based on:</span>
+
+<span class="sd">    Mandic, D. P. (2004). A generalized normalized gradient descent algorithm.</span>
+<span class="sd">    Signal Processing Letters, IEEE, 11(2), 115-118.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `n` : length of filter (integer) - how many input is input array</span>
+<span class="sd">        (row of input matrix)</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size.</span>
+<span class="sd">        If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+            <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;NLMS filter&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The size of filter must be an integer&#39;</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD_MIN</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD_MIN</span><span class="p">,</span>
+            <span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">ro</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD_MIN</span><span class="p">,</span>
+            <span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;ro&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adapt weights according one desired value and its input.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : desired value (float)</span>
+
+<span class="sd">        * `x` : input array (1-dimensional array)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">*</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">)</span> <span class="o">/</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">x</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">=</span> <span class="n">e</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function filters multiple samples in a row.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">            input arrays.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        * `y` : output value (1 dimensional array).</span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">            Every row is set of the weights for given sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># prepare data</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+        <span class="c1"># create empty arrays</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="c1"># adaptation loop</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> \
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+        
+    <span class="k">def</span> <span class="nf">novelty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function estimates novelty in data</span>
+<span class="sd">        according to the learning effort.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
+<span class="sd">            columns are input arrays.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        * `y` : output value (1 dimensional array).</span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">            The size corresponds with the desired value.</span>
+
+<span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">            Every row is set of the weights for given sample.</span>
+
+<span class="sd">        * `nd` : novelty detection coefficients (2 dimensional array).</span>
+<span class="sd">            Every row is set of coefficients for given sample.</span>
+<span class="sd">            One coefficient represents one filter weight.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># prepare data</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+        <span class="c1"># create empty arrays</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">nd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">w_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+        <span class="c1"># adaptation loop</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> \
+                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+            <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+            <span class="n">nd</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">dw</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">w_all</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w_all</span><span class="p">,</span> <span class="n">nd</span>
+</pre></div>
+
+  </div>
+</div>
+
+
+      <div class="class">
+          <h3>Ancestors (in MRO)</h3>
+          <ul class="class_list">
+          <li><a href="#padasip.filters.FilterGNGD">FilterGNGD</a></li>
+          <li><a href="#padasip.filters.AdaptiveFilter">AdaptiveFilter</a></li>
+          </ul>
+          <h3>Instance variables</h3>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.eps" class="name">var <span class="ident">eps</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.kind" class="name">var <span class="ident">kind</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.last_e" class="name">var <span class="ident">last_e</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.last_x" class="name">var <span class="ident">last_x</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.mu" class="name">var <span class="ident">mu</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.ro" class="name">var <span class="ident">ro</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+            <div class="item">
+            <p id="padasip.filters.FilterGNGD.w" class="name">var <span class="ident">w</span></p>
+            
+
+            
+  
+  <div class="source_cont">
+</div>
+
+            </div>
+          <h3>Methods</h3>
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.__init__">
+    <p>def <span class="ident">__init__</span>(</p><p>self, n, mu=1.0, eps=1.0, ro=0.1, w=&#39;random&#39;)</p>
+    </div>
+    
+
+    
+  
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.__init__', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.__init__" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+        <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;NLMS filter&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The size of filter must be an integer&#39;</span><span class="p">)</span> 
+    <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD_MIN</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD_MIN</span><span class="p">,</span>
+        <span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_param</span><span class="p">(</span><span class="n">ro</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD_MIN</span><span class="p">,</span>
+        <span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD_MAX</span><span class="p">,</span> <span class="s2">&quot;ro&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.adapt">
+    <p>def <span class="ident">adapt</span>(</p><p>self, d, x)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Adapt weights according one desired value and its input.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (float)</p>
+</li>
+<li>
+<p><code>x</code> : input array (1-dimensional array)</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.adapt', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.adapt" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adapt weights according one desired value and its input.</span>
+<span class="sd">    Args:</span>
+<span class="sd">    * `d` : desired value (float)</span>
+<span class="sd">    * `x` : input array (1-dimensional array)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">y</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">*</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">)</span> <span class="o">/</span> \
+        <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_x</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">x</span>        
+    <span class="bp">self</span><span class="o">.</span><span class="n">last_e</span> <span class="o">=</span> <span class="n">e</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.check_param">
+    <p>def <span class="ident">check_param</span>(</p><p>self, param, low, high, name)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#padasip.filters.AdaptiveFilter">AdaptiveFilter</a></code>.<code><a href="#padasip.filters.AdaptiveFilter.check_param">check_param</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>Check if the value of the given parameter is in the given range and a float.
+Designed for testing parameters like <code>mu</code> and <code>eps</code>.
+To pass this function the variable <code>param</code> must be able to be converted
+into a float with a value between <code>low</code> and <code>high</code>.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>param</code> : parameter to check (float or similar)</p>
+</li>
+<li>
+<p><code>low</code> : lowest allowed value (float)</p>
+</li>
+<li>
+<p><code>high</code> : highest allowed value (float)</p>
+</li>
+<li>
+<p><code>name</code> : name of the parameter (string), it is used for an error message</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><code>param</code> : checked parameter converted to float</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.check_param', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.check_param" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">check_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the value of the given parameter is in the given range and a float.</span>
+<span class="sd">    Designed for testing parameters like `mu` and `eps`.</span>
+<span class="sd">    To pass this function the variable `param` must be able to be converted</span>
+<span class="sd">    into a float with a value between `low` and `high`.</span>
+<span class="sd">    Args:</span>
+<span class="sd">    * `param` : parameter to check (float or similar)</span>
+<span class="sd">    * `low` : lowest allowed value (float)</span>
+<span class="sd">    * `high` : highest allowed value (float)</span>
+<span class="sd">    * `name` : name of the parameter (string), it is used for an error message</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    * `param` : checked parameter converted to float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>            
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Parameter {} is not float or similar&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="n">param</span> <span class="o">&lt;</span> <span class="n">high</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Parameter {} is not in range &lt;{}, {}&gt;&#39;</span>
+            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">))</span>    
+    <span class="k">return</span> <span class="n">param</span>  
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.init_weights">
+    <p>def <span class="ident">init_weights</span>(</p><p>self, w, n)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#padasip.filters.AdaptiveFilter">AdaptiveFilter</a></code>.<code><a href="#padasip.filters.AdaptiveFilter.init_weights">init_weights</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>This function initialises the adaptive weights of the filter.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>w</code> : initial weights of filter. Possible values are:</p>
+<ul>
+<li>
+<p>array with initial weights (1 dimensional array) of filter size</p>
+</li>
+<li>
+<p>"random" : create random weights</p>
+</li>
+<li>
+<p>"zeros" : create zero value weights</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>n</code> : size of filter (int) - number of filter coefficients.</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><code>y</code> : output value (float) calculated from input array.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.init_weights', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.init_weights" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function initialises the adaptive weights of the filter.</span>
+<span class="sd">    Args:</span>
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">    </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">    * `n` : size of filter (int) - number of filter coefficients.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    * `y` : output value (float) calculated from input array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="s2">&quot;random&quot;</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">-</span><span class="mf">0.5</span>
+        <span class="k">elif</span> <span class="n">w</span> <span class="o">==</span> <span class="s2">&quot;zeros&quot;</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to understand the w&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to understand the w&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to understand the w&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">w</span>    
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.novelty">
+    <p>def <span class="ident">novelty</span>(</p><p>self, d, x)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>This function estimates novelty in data
+according to the learning effort.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (1 dimensional array)</p>
+</li>
+<li>
+<p><code>x</code> : input matrix (2-dimensional array). Rows are samples,
+    columns are input arrays.</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>
+<p><code>y</code> : output value (1 dimensional array).
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>e</code> : filter error for every sample (1 dimensional array). 
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>w</code> : history of all weights (2 dimensional array).
+    Every row is set of the weights for given sample.</p>
+</li>
+<li>
+<p><code>nd</code> : novelty detection coefficients (2 dimensional array).
+    Every row is set of coefficients for given sample.
+    One coefficient represents one filter weight.</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.novelty', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.novelty" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">novelty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function estimates novelty in data</span>
+<span class="sd">    according to the learning effort.</span>
+<span class="sd">    Args:</span>
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples,</span>
+<span class="sd">        columns are input arrays.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+<span class="sd">    * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">        Every row is set of the weights for given sample.</span>
+<span class="sd">    * `nd` : novelty detection coefficients (2 dimensional array).</span>
+<span class="sd">        Every row is set of coefficients for given sample.</span>
+<span class="sd">        One coefficient represents one filter weight.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># measure the data and check if the dimmension agree</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+    <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># prepare data</span>
+    <span class="k">try</span><span class="p">:</span>    
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+    <span class="c1"># create empty arrays</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">nd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+    <span class="n">w_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+    <span class="c1"># adaptation loop</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+        <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+        <span class="n">nd</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">dw</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">w_all</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w_all</span><span class="p">,</span> <span class="n">nd</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.predict">
+    <p>def <span class="ident">predict</span>(</p><p>self, x)</p>
+    </div>
+    
+    <p class="inheritance">
+     <strong>Inheritance:</strong>
+       <code><a href="#padasip.filters.AdaptiveFilter">AdaptiveFilter</a></code>.<code><a href="#padasip.filters.AdaptiveFilter.predict">predict</a></code>
+    </p>
+
+    
+  
+    <div class="desc inherited"><p>This function calculates the new output value <code>y</code> from input array <code>x</code>.</p>
+<p>Args:</p>
+<ul>
+<li><code>x</code> : input vector (1 dimension array) in length of filter.</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><code>y</code> : output value (float) calculated from input array.</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.predict', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.predict" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function calculates the new output value `y` from input array `x`.</span>
+<span class="sd">    Args:</span>
+<span class="sd">    * `x` : input vector (1 dimension array) in length of filter.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    * `y` : output value (float) calculated from input array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+            
+  <div class="item">
+    <div class="name def" id="padasip.filters.FilterGNGD.run">
+    <p>def <span class="ident">run</span>(</p><p>self, d, x)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>This function filters multiple samples in a row.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (1 dimensional array)</p>
+</li>
+<li>
+<p><code>x</code> : input matrix (2-dimensional array). Rows are samples, columns are
+    input arrays.</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>
+<p><code>y</code> : output value (1 dimensional array).
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>e</code> : filter error for every sample (1 dimensional array). 
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>w</code> : history of all weights (2 dimensional array).
+    Every row is set of the weights for given sample.</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.filters.FilterGNGD.run', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.filters.FilterGNGD.run" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function filters multiple samples in a row.</span>
+<span class="sd">    Args:</span>
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+<span class="sd">    * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">        Every row is set of the weights for given sample.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># measure the data and check if the dimmension agree</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+    <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># prepare data</span>
+    <span class="k">try</span><span class="p">:</span>    
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+    <span class="c1"># create empty arrays</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="c1"># adaptation loop</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ro</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+            <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+        <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
 </pre></div>
 
   </div>
