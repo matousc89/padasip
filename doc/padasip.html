@@ -1058,6 +1058,8 @@ table {
     <li class="mono"><a href="#padasip.lms_novelty">lms_novelty</a></li>
     <li class="mono"><a href="#padasip.nlms_filter">nlms_filter</a></li>
     <li class="mono"><a href="#padasip.nlms_novelty">nlms_novelty</a></li>
+    <li class="mono"><a href="#padasip.ocnlms_filter">ocnlms_filter</a></li>
+    <li class="mono"><a href="#padasip.ocnlms_novelty">ocnlms_novelty</a></li>
     <li class="mono"><a href="#padasip.rls_filter">rls_filter</a></li>
     <li class="mono"><a href="#padasip.rls_novelty">rls_novelty</a></li>
     <li class="mono"><a href="#padasip.standardize">standardize</a></li>
@@ -1108,7 +1110,8 @@ real-time measuring (sample-after-sample feeding).</p>
 <span class="sd">real-time measuring (sample-after-sample feeding).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterLMS</span><span class="p">,</span> <span class="n">FilterNLMS</span><span class="p">,</span> <span class="n">FilterRLS</span><span class="p">,</span> <span class="n">FilterGNGD</span>
+<span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterLMS</span><span class="p">,</span> <span class="n">FilterNLMS</span><span class="p">,</span> <span class="n">FilterOCNLMS</span>
+<span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterRLS</span><span class="p">,</span> <span class="n">FilterGNGD</span>
 <span class="kn">import</span> <span class="nn">padasip.consts</span> <span class="kn">as</span> <span class="nn">co</span>
 
 
@@ -1313,6 +1316,112 @@ real-time measuring (sample-after-sample feeding).</p>
     <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 
+<span class="c1">### OCNLMS</span>
+<span class="k">def</span> <span class="nf">ocnlms_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_OCNLMS</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_OCNLMS</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">mem</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MEM_OCNLMS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process data with OC-NLMS filter.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : regularization term (float). It is introduced to preserve</span>
+<span class="sd">        stability for close-to-zero input vectors</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+
+<span class="sd">    * `mem` : size of filter memory (int). This means how many last targets</span>
+<span class="sd">        and input vectors will be used for centering of current input vector</span>
+<span class="sd">        and target.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : set of weights at the end of filtering (1 dimensional array). The size</span>
+<span class="sd">        corresponds with the filter size (length of input vector).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterOCNLMS</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">mem</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
+
+<span class="k">def</span> <span class="nf">ocnlms_novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_NLMS</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_NLMS</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">mem</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MEM_OCNLMS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate novelty in data with OC-NLMS filter. </span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        filter will perform badly. If it is too high,</span>
+<span class="sd">        filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill conditioned input data.</span>
+
+<span class="sd">    * `eps` : regularization term (float). It is introduced to preserve</span>
+<span class="sd">        stability for close-to-zero input vectors</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+
+<span class="sd">    * `mem` : size of filter memory (int). This means how many last targets</span>
+<span class="sd">        and input vectors will be used for centering of current input vector</span>
+<span class="sd">        and target.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `w` : history of all filter weighs (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    * `nd` : coeficients describing novelty in data (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterOCNLMS</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">mem</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 
 <span class="c1">### RLS</span>
 <span class="k">def</span> <span class="nf">rls_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_RLS</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_RLS</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;zeros&quot;</span><span class="p">):</span>
@@ -1410,6 +1519,111 @@ real-time measuring (sample-after-sample feeding).</p>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 
 
+
+<span class="c1">### GNGD</span>
+<span class="k">def</span> <span class="nf">gngd_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process data with GNGD filter.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : set of weights at the end of filtering (1 dimensional array). The size</span>
+<span class="sd">        corresponds with the filter size (length of input vector).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
+
+<span class="k">def</span> <span class="nf">gngd_novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
+    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate novelty in data with GNGD filter. </span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        filter will perform badly. If it is too high,</span>
+<span class="sd">        filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill conditioned input data.</span>
+
+<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
+<span class="sd">        parameter.</span>
+
+<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
+<span class="sd">        It is adaptive parameter.</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `w` : history of all filter weighs (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    * `nd` : coeficients describing novelty in data (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 
 
 
@@ -1562,112 +1776,6 @@ real-time measuring (sample-after-sample feeding).</p>
     <span class="k">if</span> <span class="n">bias</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">x</span>
-
-
-<span class="c1">### GNGD</span>
-<span class="k">def</span> <span class="nf">gngd_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
-    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Process data with GNGD filter.</span>
-
-<span class="sd">    Args:</span>
-
-<span class="sd">    * `d` : desired value (1 dimensional array)</span>
-
-<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
-<span class="sd">        input arrays.</span>
-
-<span class="sd">    Kwargs:</span>
-
-<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
-<span class="sd">        the filter may have bad performance. If it is too high,</span>
-<span class="sd">        the filter will be unstable. The default value can be unstable</span>
-<span class="sd">        for ill-conditioned input data.</span>
-
-<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
-<span class="sd">        parameter.</span>
-
-<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
-<span class="sd">        It is adaptive parameter.</span>
-
-<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
-<span class="sd">        </span>
-<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
-<span class="sd">    </span>
-<span class="sd">        * &quot;random&quot; : create random weights</span>
-<span class="sd">        </span>
-<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
-<span class="sd">        </span>
-<span class="sd">    Returns:</span>
-
-<span class="sd">    * `y` : output value (1 dimensional array).</span>
-<span class="sd">        The size corresponds with the desired value.</span>
-
-<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
-<span class="sd">        The size corresponds with the desired value.</span>
-
-<span class="sd">    * `w` : set of weights at the end of filtering (1 dimensional array). The size</span>
-<span class="sd">        corresponds with the filter size (length of input vector).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
-
-<span class="k">def</span> <span class="nf">gngd_novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_GNGD</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_GNGD</span><span class="p">,</span>
-    <span class="n">ro</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">RO_GNGD</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Evaluate novelty in data with GNGD filter. </span>
-
-<span class="sd">    Args:</span>
-
-<span class="sd">    * `d` : desired value (1 dimensional array)</span>
-
-<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
-<span class="sd">        input arrays.</span>
-
-<span class="sd">    Kwargs:</span>
-
-<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
-<span class="sd">        filter will perform badly. If it is too high,</span>
-<span class="sd">        filter will be unstable. The default value can be unstable</span>
-<span class="sd">        for ill conditioned input data.</span>
-
-<span class="sd">    * `eps` : compensation term (float) at the beginning. It is adaptive</span>
-<span class="sd">        parameter.</span>
-
-<span class="sd">    * `ro` : step size adaptation parameter (float) at the beginning.</span>
-<span class="sd">        It is adaptive parameter.</span>
-
-<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
-<span class="sd">        </span>
-<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
-<span class="sd">    </span>
-<span class="sd">        * &quot;random&quot; : create random weights</span>
-<span class="sd">        </span>
-<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
-<span class="sd">        </span>
-<span class="sd">    Returns:</span>
-
-<span class="sd">    * `y` : output value (1 dimensional array).</span>
-<span class="sd">        The size correspons with desired value.</span>
-
-<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
-<span class="sd">        The size correspons with desired value.</span>
-
-<span class="sd">    * `w` : history of all filter weighs (2 dimensional array).</span>
-<span class="sd">        The size corresponds with lenght of data</span>
-<span class="sd">        and filter size (length of input vector).</span>
-
-<span class="sd">    * `nd` : coeficients describing novelty in data (2 dimensional array).</span>
-<span class="sd">        The size corresponds with lenght of data</span>
-<span class="sd">        and filter size (length of input vector).</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">ro</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 </pre></div>
 
   </div>
@@ -2532,6 +2640,270 @@ real-time measuring (sample-after-sample feeding).</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">FilterNLMS</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="padasip.ocnlms_filter">
+    <p>def <span class="ident">ocnlms_filter</span>(</p><p>d, x, mu=0.1, eps=1.0, w=&#39;random&#39;, mem=100)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Process data with OC-NLMS filter.</p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (1 dimensional array)</p>
+</li>
+<li>
+<p><code>x</code> : input matrix (2-dimensional array). Rows are samples, columns are
+    input arrays.</p>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li>
+<p><code>mu</code> : learning rate (float). Also known as step size. If it is too slow,
+    the filter may have bad performance. If it is too high,
+    the filter will be unstable. The default value can be unstable
+    for ill-conditioned input data.</p>
+</li>
+<li>
+<p><code>eps</code> : regularization term (float). It is introduced to preserve
+    stability for close-to-zero input vectors</p>
+</li>
+<li>
+<p><code>w</code> : initial weights of filter. Possible values are:</p>
+<ul>
+<li>
+<p>array with initial weights (1 dimensional array) of filter size</p>
+</li>
+<li>
+<p>"random" : create random weights</p>
+</li>
+<li>
+<p>"zeros" : create zero value weights</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>mem</code> : size of filter memory (int). This means how many last targets
+    and input vectors will be used for centering of current input vector
+    and target.</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>
+<p><code>y</code> : output value (1 dimensional array).
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>e</code> : filter error for every sample (1 dimensional array). 
+    The size corresponds with the desired value.</p>
+</li>
+<li>
+<p><code>w</code> : set of weights at the end of filtering (1 dimensional array). The size
+    corresponds with the filter size (length of input vector).</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.ocnlms_filter', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.ocnlms_filter" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ocnlms_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_OCNLMS</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_OCNLMS</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">mem</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MEM_OCNLMS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process data with OC-NLMS filter.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        the filter may have bad performance. If it is too high,</span>
+<span class="sd">        the filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill-conditioned input data.</span>
+
+<span class="sd">    * `eps` : regularization term (float). It is introduced to preserve</span>
+<span class="sd">        stability for close-to-zero input vectors</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+
+<span class="sd">    * `mem` : size of filter memory (int). This means how many last targets</span>
+<span class="sd">        and input vectors will be used for centering of current input vector</span>
+<span class="sd">        and target.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : set of weights at the end of filtering (1 dimensional array). The size</span>
+<span class="sd">        corresponds with the filter size (length of input vector).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterOCNLMS</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">mem</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="padasip.ocnlms_novelty">
+    <p>def <span class="ident">ocnlms_novelty</span>(</p><p>d, x, mu=0.1, eps=1.0, w=&#39;random&#39;, mem=100)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Evaluate novelty in data with OC-NLMS filter. </p>
+<p>Args:</p>
+<ul>
+<li>
+<p><code>d</code> : desired value (1 dimensional array)</p>
+</li>
+<li>
+<p><code>x</code> : input matrix (2-dimensional array). Rows are samples, columns are
+    input arrays.</p>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li>
+<p><code>mu</code> : learning rate (float). Also known as step size. If it is too slow,
+    filter will perform badly. If it is too high,
+    filter will be unstable. The default value can be unstable
+    for ill conditioned input data.</p>
+</li>
+<li>
+<p><code>eps</code> : regularization term (float). It is introduced to preserve
+    stability for close-to-zero input vectors</p>
+</li>
+<li>
+<p><code>w</code> : initial weights of filter. Possible values are:</p>
+<ul>
+<li>
+<p>array with initial weights (1 dimensional array) of filter size</p>
+</li>
+<li>
+<p>"random" : create random weights</p>
+</li>
+<li>
+<p>"zeros" : create zero value weights</p>
+</li>
+</ul>
+</li>
+<li>
+<p><code>mem</code> : size of filter memory (int). This means how many last targets
+    and input vectors will be used for centering of current input vector
+    and target.</p>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li>
+<p><code>y</code> : output value (1 dimensional array).
+    The size correspons with desired value.</p>
+</li>
+<li>
+<p><code>e</code> : filter error for every sample (1 dimensional array). 
+    The size correspons with desired value.</p>
+</li>
+<li>
+<p><code>w</code> : history of all filter weighs (2 dimensional array).
+    The size corresponds with lenght of data
+    and filter size (length of input vector).</p>
+</li>
+<li>
+<p><code>nd</code> : coeficients describing novelty in data (2 dimensional array).
+    The size corresponds with lenght of data
+    and filter size (length of input vector).</p>
+</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-padasip.ocnlms_novelty', this);">Show source &equiv;</a></p>
+  <div id="source-padasip.ocnlms_novelty" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">ocnlms_novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_NLMS</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_NLMS</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
+        <span class="n">mem</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MEM_OCNLMS</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate novelty in data with OC-NLMS filter. </span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">        input arrays.</span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
+<span class="sd">        filter will perform badly. If it is too high,</span>
+<span class="sd">        filter will be unstable. The default value can be unstable</span>
+<span class="sd">        for ill conditioned input data.</span>
+
+<span class="sd">    * `eps` : regularization term (float). It is introduced to preserve</span>
+<span class="sd">        stability for close-to-zero input vectors</span>
+
+<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
+<span class="sd">        </span>
+<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;random&quot; : create random weights</span>
+<span class="sd">        </span>
+<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
+
+<span class="sd">    * `mem` : size of filter memory (int). This means how many last targets</span>
+<span class="sd">        and input vectors will be used for centering of current input vector</span>
+<span class="sd">        and target.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">        The size correspons with desired value.</span>
+
+<span class="sd">    * `w` : history of all filter weighs (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    * `nd` : coeficients describing novelty in data (2 dimensional array).</span>
+<span class="sd">        The size corresponds with lenght of data</span>
+<span class="sd">        and filter size (length of input vector).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">FilterOCNLMS</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">mem</span><span class="p">)</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">novelty</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">nd</span>
 </pre></div>

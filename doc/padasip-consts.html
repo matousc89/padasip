@@ -1055,9 +1055,13 @@ table {
     <li class="mono"><a href="#padasip.consts.EPS_NLMS">EPS_NLMS</a></li>
     <li class="mono"><a href="#padasip.consts.EPS_NLMS_MAX">EPS_NLMS_MAX</a></li>
     <li class="mono"><a href="#padasip.consts.EPS_NLMS_MIN">EPS_NLMS_MIN</a></li>
+    <li class="mono"><a href="#padasip.consts.EPS_OCNLMS">EPS_OCNLMS</a></li>
+    <li class="mono"><a href="#padasip.consts.EPS_OCNLMS_MAX">EPS_OCNLMS_MAX</a></li>
+    <li class="mono"><a href="#padasip.consts.EPS_OCNLMS_MIN">EPS_OCNLMS_MIN</a></li>
     <li class="mono"><a href="#padasip.consts.EPS_RLS">EPS_RLS</a></li>
     <li class="mono"><a href="#padasip.consts.EPS_RLS_MAX">EPS_RLS_MAX</a></li>
     <li class="mono"><a href="#padasip.consts.EPS_RLS_MIN">EPS_RLS_MIN</a></li>
+    <li class="mono"><a href="#padasip.consts.MEM_OCNLMS">MEM_OCNLMS</a></li>
     <li class="mono"><a href="#padasip.consts.MU_GNGD">MU_GNGD</a></li>
     <li class="mono"><a href="#padasip.consts.MU_GNGD_MAX">MU_GNGD_MAX</a></li>
     <li class="mono"><a href="#padasip.consts.MU_GNGD_MIN">MU_GNGD_MIN</a></li>
@@ -1067,6 +1071,9 @@ table {
     <li class="mono"><a href="#padasip.consts.MU_NLMS">MU_NLMS</a></li>
     <li class="mono"><a href="#padasip.consts.MU_NLMS_MAX">MU_NLMS_MAX</a></li>
     <li class="mono"><a href="#padasip.consts.MU_NLMS_MIN">MU_NLMS_MIN</a></li>
+    <li class="mono"><a href="#padasip.consts.MU_OCNLMS">MU_OCNLMS</a></li>
+    <li class="mono"><a href="#padasip.consts.MU_OCNLMS_MAX">MU_OCNLMS_MAX</a></li>
+    <li class="mono"><a href="#padasip.consts.MU_OCNLMS_MIN">MU_OCNLMS_MIN</a></li>
     <li class="mono"><a href="#padasip.consts.MU_RLS">MU_RLS</a></li>
     <li class="mono"><a href="#padasip.consts.MU_RLS_MAX">MU_RLS_MAX</a></li>
     <li class="mono"><a href="#padasip.consts.MU_RLS_MIN">MU_RLS_MIN</a></li>
@@ -1132,6 +1139,28 @@ These settings are often used in multiple files, thus why it is all in one file.
 <span class="n">EPS_NLMS_MAX</span> <span class="o">=</span> <span class="mf">1000.</span>
 <span class="sd">&quot;&quot;&quot; Minimal allowed regularization term for NLMS algorithm &quot;&quot;&quot;</span>
 
+<span class="c1">### OCNLMS adaptive filter</span>
+
+<span class="n">MU_OCNLMS</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="sd">&quot;&quot;&quot; Default learning rate for OC-NLMS algorithm &quot;&quot;&quot;</span>
+
+<span class="n">MU_OCNLMS_MIN</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="sd">&quot;&quot;&quot; Minimal allowed learning rate for OC-NLMS algorithm &quot;&quot;&quot;</span>
+
+<span class="n">MU_OCNLMS_MAX</span> <span class="o">=</span> <span class="mf">1000.</span>
+<span class="sd">&quot;&quot;&quot; Minimal allowed learning rate for OC-NLMS algorithm &quot;&quot;&quot;</span>
+
+<span class="n">EPS_OCNLMS</span> <span class="o">=</span> <span class="mf">1.</span>
+<span class="sd">&quot;&quot;&quot; Default regularization term for OC-NLMS algorithm &quot;&quot;&quot;</span>
+
+<span class="n">EPS_OCNLMS_MIN</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="sd">&quot;&quot;&quot; Minimal allowed regularization term for OC-NLMS algorithm &quot;&quot;&quot;</span>
+
+<span class="n">EPS_OCNLMS_MAX</span> <span class="o">=</span> <span class="mf">1000.</span>
+<span class="sd">&quot;&quot;&quot; Minimal allowed regularization term for OC-NLMS algorithm &quot;&quot;&quot;</span>
+
+<span class="n">MEM_OCNLMS</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="sd">&quot;&quot;&quot; Default memory size for OC-NLMS algorithm. &quot;&quot;&quot;</span>
 
 <span class="c1">##### RLS adaptive filter</span>
 
@@ -1247,6 +1276,33 @@ These settings are often used in multiple files, thus why it is all in one file.
 
       </div>
       <div class="item">
+      <p id="padasip.consts.EPS_OCNLMS" class="name">var <span class="ident">EPS_OCNLMS</span></p>
+      
+  
+    <div class="desc"><p>Default regularization term for OC-NLMS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="padasip.consts.EPS_OCNLMS_MAX" class="name">var <span class="ident">EPS_OCNLMS_MAX</span></p>
+      
+  
+    <div class="desc"><p>Minimal allowed regularization term for OC-NLMS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="padasip.consts.EPS_OCNLMS_MIN" class="name">var <span class="ident">EPS_OCNLMS_MIN</span></p>
+      
+  
+    <div class="desc"><p>Minimal allowed regularization term for OC-NLMS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
       <p id="padasip.consts.EPS_RLS" class="name">var <span class="ident">EPS_RLS</span></p>
       
   
@@ -1269,6 +1325,15 @@ These settings are often used in multiple files, thus why it is all in one file.
       
   
     <div class="desc"><p>Minimal allowed regularization term for RLS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="padasip.consts.MEM_OCNLMS" class="name">var <span class="ident">MEM_OCNLMS</span></p>
+      
+  
+    <div class="desc"><p>Default memory size for OC-NLMS algorithm.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1350,6 +1415,33 @@ These settings are often used in multiple files, thus why it is all in one file.
       
   
     <div class="desc"><p>Minimal allowed learning rate for NLMS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="padasip.consts.MU_OCNLMS" class="name">var <span class="ident">MU_OCNLMS</span></p>
+      
+  
+    <div class="desc"><p>Default learning rate for OC-NLMS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="padasip.consts.MU_OCNLMS_MAX" class="name">var <span class="ident">MU_OCNLMS_MAX</span></p>
+      
+  
+    <div class="desc"><p>Minimal allowed learning rate for OC-NLMS algorithm</p></div>
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="padasip.consts.MU_OCNLMS_MIN" class="name">var <span class="ident">MU_OCNLMS_MIN</span></p>
+      
+  
+    <div class="desc"><p>Minimal allowed learning rate for OC-NLMS algorithm</p></div>
   <div class="source_cont">
 </div>
 
