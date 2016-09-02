@@ -33,9 +33,11 @@ So far it is possible to use following filters:
 
 - RLS (recursive-least-squares) adaptive filter
 
+- GNGD (generalized normalized gradient descent) adaptive filter
+
 *************************
 Novelty/Outlier Detection
 *************************
 
-This method is based on adaptive parameters and filtering error evaluation (for LMS, NLMS and RLS filters)
+This method is based on adaptive parameters and filtering error evaluation (for LMS, NLMS, GNGD and RLS filters)
 

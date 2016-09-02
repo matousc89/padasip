@@ -10,7 +10,8 @@ The library is designed to be used with datasets and also with
 real-time measuring (sample-after-sample feeding).
 """
 import numpy as np
-from padasip.filters import FilterLMS, FilterNLMS, FilterRLS
+from padasip.filters import FilterLMS, FilterNLMS, FilterOCNLMS
+from padasip.filters import FilterRLS, FilterGNGD
 import padasip.consts as co
 
 
@@ -215,6 +216,112 @@ def nlms_novelty(d, x, mu=co.MU_NLMS, eps=co.EPS_NLMS, w="random"):
     y, e, w, nd = f.novelty(d, x)
     return y, e, w, nd
 
+### OCNLMS
+def ocnlms_filter(d, x, mu=co.MU_OCNLMS, eps=co.EPS_OCNLMS, w="random",
+        mem=co.MEM_OCNLMS):
+    """
+    Process data with OC-NLMS filter.
+
+    Args:
+
+    * `d` : desired value (1 dimensional array)
+
+    * `x` : input matrix (2-dimensional array). Rows are samples, columns are
+        input arrays.
+
+    Kwargs:
+
+    * `mu` : learning rate (float). Also known as step size. If it is too slow,
+        the filter may have bad performance. If it is too high,
+        the filter will be unstable. The default value can be unstable
+        for ill-conditioned input data.
+
+    * `eps` : regularization term (float). It is introduced to preserve
+        stability for close-to-zero input vectors
+
+    * `w` : initial weights of filter. Possible values are:
+        
+        * array with initial weights (1 dimensional array) of filter size
+    
+        * "random" : create random weights
+        
+        * "zeros" : create zero value weights
+
+    * `mem` : size of filter memory (int). This means how many last targets
+        and input vectors will be used for centering of current input vector
+        and target.
+        
+    Returns:
+
+    * `y` : output value (1 dimensional array).
+        The size corresponds with the desired value.
+
+    * `e` : filter error for every sample (1 dimensional array). 
+        The size corresponds with the desired value.
+
+    * `w` : set of weights at the end of filtering (1 dimensional array). The size
+        corresponds with the filter size (length of input vector).
+    """
+    n = len(x[0])
+    f = FilterOCNLMS(n, mu, eps, w, mem)
+    y, e, w = f.run(d, x)
+    return y, e, w
+
+def ocnlms_novelty(d, x, mu=co.MU_NLMS, eps=co.EPS_NLMS, w="random",
+        mem=co.MEM_OCNLMS):
+    """
+    Evaluate novelty in data with OC-NLMS filter. 
+
+    Args:
+
+    * `d` : desired value (1 dimensional array)
+
+    * `x` : input matrix (2-dimensional array). Rows are samples, columns are
+        input arrays.
+
+    Kwargs:
+
+    * `mu` : learning rate (float). Also known as step size. If it is too slow,
+        filter will perform badly. If it is too high,
+        filter will be unstable. The default value can be unstable
+        for ill conditioned input data.
+
+    * `eps` : regularization term (float). It is introduced to preserve
+        stability for close-to-zero input vectors
+
+    * `w` : initial weights of filter. Possible values are:
+        
+        * array with initial weights (1 dimensional array) of filter size
+    
+        * "random" : create random weights
+        
+        * "zeros" : create zero value weights
+
+    * `mem` : size of filter memory (int). This means how many last targets
+        and input vectors will be used for centering of current input vector
+        and target.
+        
+    Returns:
+
+    * `y` : output value (1 dimensional array).
+        The size correspons with desired value.
+
+    * `e` : filter error for every sample (1 dimensional array). 
+        The size correspons with desired value.
+
+    * `w` : history of all filter weighs (2 dimensional array).
+        The size corresponds with lenght of data
+        and filter size (length of input vector).
+
+    * `nd` : coeficients describing novelty in data (2 dimensional array).
+        The size corresponds with lenght of data
+        and filter size (length of input vector).
+
+    """
+    n = len(x[0])
+    f = FilterOCNLMS(n, mu, eps, w, mem)
+    y, e, w, nd = f.novelty(d, x)
+    return y, e, w, nd
 
 ### RLS
 def rls_filter(d, x, mu=co.MU_RLS, eps=co.EPS_RLS, w="zeros"):
@@ -312,6 +419,111 @@ def rls_novelty(d, x, mu=co.MU_RLS, eps=co.EPS_RLS, w="zeros"):
     return y, e, w, nd
 
 
+
+### GNGD
+def gngd_filter(d, x, mu=co.MU_GNGD, eps=co.EPS_GNGD,
+    ro=co.RO_GNGD, w="random"):
+    """
+    Process data with GNGD filter.
+
+    Args:
+
+    * `d` : desired value (1 dimensional array)
+
+    * `x` : input matrix (2-dimensional array). Rows are samples, columns are
+        input arrays.
+
+    Kwargs:
+
+    * `mu` : learning rate (float). Also known as step size. If it is too slow,
+        the filter may have bad performance. If it is too high,
+        the filter will be unstable. The default value can be unstable
+        for ill-conditioned input data.
+
+    * `eps` : compensation term (float) at the beginning. It is adaptive
+        parameter.
+
+    * `ro` : step size adaptation parameter (float) at the beginning.
+        It is adaptive parameter.
+
+    * `w` : initial weights of filter. Possible values are:
+        
+        * array with initial weights (1 dimensional array) of filter size
+    
+        * "random" : create random weights
+        
+        * "zeros" : create zero value weights
+        
+    Returns:
+
+    * `y` : output value (1 dimensional array).
+        The size corresponds with the desired value.
+
+    * `e` : filter error for every sample (1 dimensional array). 
+        The size corresponds with the desired value.
+
+    * `w` : set of weights at the end of filtering (1 dimensional array). The size
+        corresponds with the filter size (length of input vector).
+    """
+    n = len(x[0])
+    f = FilterGNGD(n, mu, eps, ro, w)
+    y, e, w = f.run(d, x)
+    return y, e, w
+
+def gngd_novelty(d, x, mu=co.MU_GNGD, eps=co.EPS_GNGD,
+    ro=co.RO_GNGD, w="random"):
+    """
+    Evaluate novelty in data with GNGD filter. 
+
+    Args:
+
+    * `d` : desired value (1 dimensional array)
+
+    * `x` : input matrix (2-dimensional array). Rows are samples, columns are
+        input arrays.
+
+    Kwargs:
+
+    * `mu` : learning rate (float). Also known as step size. If it is too slow,
+        filter will perform badly. If it is too high,
+        filter will be unstable. The default value can be unstable
+        for ill conditioned input data.
+
+    * `eps` : compensation term (float) at the beginning. It is adaptive
+        parameter.
+
+    * `ro` : step size adaptation parameter (float) at the beginning.
+        It is adaptive parameter.
+
+    * `w` : initial weights of filter. Possible values are:
+        
+        * array with initial weights (1 dimensional array) of filter size
+    
+        * "random" : create random weights
+        
+        * "zeros" : create zero value weights
+        
+    Returns:
+
+    * `y` : output value (1 dimensional array).
+        The size correspons with desired value.
+
+    * `e` : filter error for every sample (1 dimensional array). 
+        The size correspons with desired value.
+
+    * `w` : history of all filter weighs (2 dimensional array).
+        The size corresponds with lenght of data
+        and filter size (length of input vector).
+
+    * `nd` : coeficients describing novelty in data (2 dimensional array).
+        The size corresponds with lenght of data
+        and filter size (length of input vector).
+
+    """
+    n = len(x[0])
+    f = FilterGNGD(n, mu, eps, ro, w)
+    y, e, w, nd = f.novelty(d, x)
+    return y, e, w, nd
 
 
 
@@ -464,7 +676,6 @@ def input_from_history(a, n, bias=False):
     if bias:
         x = np.vstack((x.T, np.ones(len(x)))).T
     return x
-
 
 
 
