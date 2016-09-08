@@ -1071,8 +1071,9 @@ table {
 
     <li class="set"><h3><a href="#header-submodules">Sub-modules</a></h3>
       <ul>
-        <li class="mono"><a href="padasip-consts.html">padasip.consts</a></li>
-        <li class="mono"><a href="padasip-filters.html">padasip.filters</a></li>
+        <li class="mono"><a href="/padasip/doc/ann.html">padasip.ann</a></li>
+        <li class="mono"><a href="/padasip/doc/consts.html">padasip.consts</a></li>
+        <li class="mono"><a href="/padasip/doc/filters.html">padasip.filters</a></li>
       </ul>
     </li>
     </ul>
@@ -1109,11 +1110,12 @@ real-time measuring (sample-after-sample feeding).</p>
 <span class="sd">The library is designed to be used with datasets and also with </span>
 <span class="sd">real-time measuring (sample-after-sample feeding).</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterLMS</span><span class="p">,</span> <span class="n">FilterNLMS</span><span class="p">,</span> <span class="n">FilterOCNLMS</span>
 <span class="kn">from</span> <span class="nn">padasip.filters</span> <span class="kn">import</span> <span class="n">FilterRLS</span><span class="p">,</span> <span class="n">FilterGNGD</span>
+<span class="kn">from</span> <span class="nn">padasip</span> <span class="kn">import</span> <span class="n">ann</span>
 <span class="kn">import</span> <span class="nn">padasip.consts</span> <span class="kn">as</span> <span class="nn">co</span>
-
 
 <span class="c1">### LMS</span>
 <span class="k">def</span> <span class="nf">lms_filter</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_LMS</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
@@ -3337,7 +3339,13 @@ real-time measuring (sample-after-sample feeding).</p>
 
     <h2 class="section-title" id="header-submodules">Sub-modules</h2>
       <div class="item">
-      <p class="name"><a href="padasip-consts.html">padasip.consts</a></p>
+      <p class="name"><a href="/padasip/doc/ann.html">padasip.ann</a></p>
+      
+  
+
+      </div>
+      <div class="item">
+      <p class="name"><a href="/padasip/doc/consts.html">padasip.consts</a></p>
       
   
     <div class="desc"><p>All settings (constants) for the whole library are stored in this file.
@@ -3345,7 +3353,7 @@ These settings are often used in multiple files, thus why it is all in one file.
 
       </div>
       <div class="item">
-      <p class="name"><a href="padasip-filters.html">padasip.filters</a></p>
+      <p class="name"><a href="/padasip/doc/filters.html">padasip.filters</a></p>
       
   
     <div class="desc"><p>Classes of adaptive filters are stored in this file.
