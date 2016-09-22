@@ -20,7 +20,7 @@ Current Features
 ================
 
 *********
-Filtering
+Adaptive Filters
 *********
 
 The library features multiple adaptive filters. Input vectors for filters can be
@@ -35,9 +35,17 @@ So far it is possible to use following filters:
 
 - GNGD (generalized normalized gradient descent) adaptive filter
 
+
 *************************
 Novelty/Outlier Detection
 *************************
 
 This method is based on adaptive parameters and filtering error evaluation (for LMS, NLMS, GNGD and RLS filters)
+
+
+******************
+Neural Networks
+******************
+
+So far it is imlemented only MLP neural network.
 

@@ -10,7 +10,7 @@ def readme():
 setup(
     name = 'padasip',
     packages = ['padasip'],
-    version = '0.2',
+    version = '0.3',
     description = 'Python Adaptive Signal Processing',
     long_description = readme(),
     author = 'Matous Cejnek',
