@@ -1,0 +1,7 @@
+.. _ann-mlp-label:
+
+Multi-layer Perceptron (MLP)
+===================================
+
+.. automodule:: padasip.ann.mlp
+    :members:

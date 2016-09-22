@@ -1,0 +1,491 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Multi-layer Perceptron (MLP) &#8212; Padasip 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Padasip 0.3 documentation" href="../../index.html" />
+    <link rel="up" title="Artificial Neural Networks (ANN)" href="../ann.html" />
+    <link rel="prev" title="Artificial Neural Networks (ANN)" href="../ann.html" />
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-padasip.ann.mlp">
+<span id="multi-layer-perceptron-mlp"></span><span id="ann-mlp-label"></span><h1>Multi-layer Perceptron (MLP)<a class="headerlink" href="#module-padasip.ann.mlp" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.3.</span></p>
+</div>
+<p>In this module is stored everything related to Multi-layer perceptron (MLP).
+This neural network can be used for classification and regression.</p>
+<div class="section" id="minimal-working-example">
+<h2>Minimal Working Example<a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span>
+
+<span class="c1"># data creation</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">])</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="c1"># creation of neural network</span>
+<span class="n">nn</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ann</span><span class="o">.</span><span class="n">NetworkMLP</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">)</span>    
+
+<span class="c1"># training</span>
+<span class="n">e</span><span class="p">,</span> <span class="n">mse</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>    
+
+<span class="c1"># get results</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And the result (pairs: target, output) can look like</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> <span class="nb">print</span> <span class="n">i</span>
+<span class="gp">... </span>
+<span class="go">(0, 0.0032477183193071906)</span>
+<span class="go">(1, 1.0058082383308447)</span>
+<span class="go">(1, 1.0047503447788306)</span>
+<span class="go">(0, 0.0046026142618665845)</span>
+<span class="go">(0, 0.0003037425037410007)</span>
+<span class="go">(1, 1.0017672193832869)</span>
+<span class="go">(0, 0.0015817734995124679)</span>
+<span class="go">(0, 0.0019115885715706904)</span>
+<span class="go">(1, 0.99342117275580499)</span>
+<span class="go">(0, 0.00069114178424850147)</span>
+<span class="go">(1, 1.0021789943501729)</span>
+<span class="go">(0, 0.0021355836851727717)</span>
+<span class="go">(1, 0.99809312951378826)</span>
+<span class="go">(1, 1.0071488717506856)</span>
+<span class="go">(1, 1.0067500768423701)</span>
+<span class="go">(0, -0.0045962250501771244)</span>
+<span class="gp">&gt;&gt;&gt; </span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="learning-rate-selection">
+<h2>Learning Rate Selection<a class="headerlink" href="#learning-rate-selection" title="Permalink to this headline">¶</a></h2>
+<p>If you select the learning rate (<span class="math">\(\mu\)</span> in equations,
+or <cite>mu</cite> in code) manually, it will be used the same value for all nodes,
+otherwise it is selected automatically <a class="reference internal" href="#lecun2012efficient" id="id1">[1]</a> as follows</p>
+<p><span class="math">\(\mu_{ij} = m^{-0.5}\)</span></p>
+<p>where the <span class="math">\(m\)</span> is the amount of nodes on input of given node.
+The automatic selection is recomended and default option.</p>
+</div>
+<div class="section" id="default-values-of-weights">
+<h2>Default Values of Weights<a class="headerlink" href="#default-values-of-weights" title="Permalink to this headline">¶</a></h2>
+<p>The distribution from what the weights are taken is chosen automatically
+<a class="reference internal" href="#lecun2012efficient" id="id2">[1]</a>, it has zero mean and
+the standard derivation estimated as follows</p>
+<p><span class="math">\(\sigma_{w} = m^{-0.5}\)</span></p>
+<p>where the <span class="math">\(m\)</span> is the amount of nodes on input of given node.</p>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="bibtex-bibliography-sources/ann/mlp-0"><table class="docutils citation" frame="void" id="lecun2012efficient" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>)</em> Yann&nbsp;A LeCun, Léon Bottou, Genevieve&nbsp;B Orr, and Klaus-Robert Müller. Efficient backprop. In <em>Neural networks: Tricks of the trade</em>, pages 9–48. Springer, 2012.</td></tr>
+</tbody>
+</table>
+</p>
+</div>
+<div class="section" id="code-explanation">
+<h2>Code Explanation<a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="padasip.ann.mlp.Layer">
+<em class="property">class </em><code class="descclassname">padasip.ann.mlp.</code><code class="descname">Layer</code><span class="sig-paren">(</span><em>n_layer</em>, <em>n_input</em>, <em>activation_f</em>, <em>mu</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a single hidden layer of the MLP.</p>
+<p>Args:</p>
+<ul>
+<li><p class="first"><cite>n_layer</cite> : size of the layer (int)</p>
+</li>
+<li><p class="first"><cite>n_input</cite> : how many inputs the layer have (int)</p>
+</li>
+<li><p class="first"><cite>activation_f</cite> : what function should be used as activation function (str)</p>
+</li>
+<li><dl class="first docutils">
+<dt><cite>mu</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">learning rate (float or str), it can be directly the float value,</span><dd><p class="first last">or string <cite>auto</cite> for automatic selection of learning rate
+<a class="reference internal" href="#lecun2012efficient" id="id3">[1]</a></p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="padasip.ann.mlp.Layer.activation">
+<code class="descname">activation</code><span class="sig-paren">(</span><em>x</em>, <em>f='sigmoid'</em>, <em>der=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer.activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer.activation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function process values of layer outputs with activation function.</p>
+<p>Args:</p>
+<ul class="simple">
+<li><cite>x</cite> : array to process (1-dimensional array)</li>
+</ul>
+<p>Kwargs:</p>
+<ul class="simple">
+<li><cite>f</cite> : activation function</li>
+<li><cite>der</cite> : normal output, or its derivation (bool)</li>
+</ul>
+<p>Returns:</p>
+<ul class="simple">
+<li>values processed with activation function (1-dimensional array)</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.ann.mlp.Layer.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function make forward pass through this layer (no update).</p>
+<p>Args:</p>
+<ul class="simple">
+<li><cite>x</cite> : input vector (1-dimensional array)</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>y</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">output of MLP (float or 1-diemnsional array).</span><dd><p class="first last">Size depends on number of nodes in this layer.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.ann.mlp.Layer.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>w</em>, <em>e</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function make update according provided target
+and the last used input vector.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>d</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">target (float or 1-dimensional array).</span><dd><p class="first last">Size depends on number of MLP outputs.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>w</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">weights of the layers (2-dimensional layer).</span><dd><p class="first last">Every row represents one node.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>e</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">error used for update (float or 1-diemnsional array).</span><dd><p class="first last">Size correspond to size of input <cite>d</cite>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="padasip.ann.mlp.NetworkMLP">
+<em class="property">class </em><code class="descclassname">padasip.ann.mlp.</code><code class="descname">NetworkMLP</code><span class="sig-paren">(</span><em>layers</em>, <em>n_input</em>, <em>outputs=1</em>, <em>activation='sigmoid'</em>, <em>mu='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a Multi-layer Perceptron neural network.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>layers</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array describing hidden layers of network</span><dd><p class="first last">(1-dimensional array of integers). Every number in array represents
+one hidden layer. For example [3, 6, 2] create
+network with three hidden layers. First layer will have 3 nodes,
+second layer will have 6 nodes and the last hidden layer
+will have 2 nodes.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><cite>n_input</cite> : number of network inputs (int).</p>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li><p class="first"><cite>outputs</cite> : number of network outputs (int). Default is 1.</p>
+</li>
+<li><p class="first"><cite>activation</cite> : activation function (str)</p>
+<blockquote>
+<div><ul class="simple">
+<li>&#8220;sigmoid&#8221; - sigmoid</li>
+<li>&#8220;tanh&#8221; : hyperbolic tangens</li>
+</ul>
+</div></blockquote>
+</li>
+<li><dl class="first docutils">
+<dt><cite>mu</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">learning rate (float or str), it can be:</span><dd><ul class="first simple">
+<li>float value - value is directly used as <cite>mu</cite></li>
+<li>&#8220;auto&#8221; - this will trigger automatic selection of learning rate</li>
+</ul>
+<p class="last">according to <a class="reference internal" href="#lecun2012efficient" id="id4">[1]</a></p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="method">
+<dt id="padasip.ann.mlp.NetworkMLP.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function make forward pass through MLP (no update).</p>
+<p>Args:</p>
+<ul class="simple">
+<li><cite>x</cite> : input vector (1-dimensional array)</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>y</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">output of MLP (float or 1-diemnsional array).</span><dd><p class="first last">Size depends on number of MLP outputs.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.ann.mlp.NetworkMLP.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for batch usage of already trained and tested MLP.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>x</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input array (2-dimensional array).</span><dd><p class="first last">Every row represents one input vector (features).</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>y</cite>: output vector (n-dimensional array). Every row represents</dt>
+<dd><p class="first last">output (outputs) for an input vector.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.ann.mlp.NetworkMLP.test">
+<code class="descname">test</code><span class="sig-paren">(</span><em>x</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for batch test of already trained MLP.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>x</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input array (2-dimensional array).</span><dd><p class="first last">Every row represents one input vector (features).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>d</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input array (n-dimensional array).</span><dd><p class="first last">Every row represents target for one input vector.
+Target can be one or more values (in case of multiple outputs).</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>e</cite>: output vector (n-dimensional array). Every row represents</dt>
+<dd><p class="first last">error (or errors) for an input and output.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.ann.mlp.NetworkMLP.train">
+<code class="descname">train</code><span class="sig-paren">(</span><em>x</em>, <em>d</em>, <em>epochs=10</em>, <em>shuffle=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for batch training of MLP.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>x</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input array (2-dimensional array).</span><dd><p class="first last">Every row represents one input vector (features).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>d</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input array (n-dimensional array).</span><dd><p class="first last">Every row represents target for one input vector.
+Target can be one or more values (in case of multiple outputs).</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>epochs</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">amount of epochs (int). That means how many times</span><dd><p class="first last">the MLP will iterate over the passed set of data (<cite>x</cite>, <cite>d</cite>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>shuffle</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">if true, the order of inputs and outpust are shuffled (bool).</span><dd><p class="first last">That means the pairs input-output are in different order in every epoch.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>e</cite>: output vector (m-dimensional array). Every row represents</dt>
+<dd><p class="first last">error (or errors) for an input and output in given epoch.
+The size of this array is length of provided data times
+amount of epochs (<cite>N*epochs</cite>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>MSE</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">mean squared error (1-dimensional array). Every value</span><dd><p class="first last">stands for MSE of one epoch.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.ann.mlp.NetworkMLP.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function make update according provided target
+and the last used input vector.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>d</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">target (float or 1-dimensional array).</span><dd><p class="first last">Size depends on number of MLP outputs.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>e</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">error used for update (float or 1-diemnsional array).</span><dd><p class="first last">Size correspond to size of input <cite>d</cite>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#instalation">Instalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-layer Perceptron (MLP)</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../ann.html">Artificial Neural Networks (ANN)</a><ul>
+      <li>Previous: <a href="../ann.html" title="previous chapter">Artificial Neural Networks (ANN)</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/sources/ann/mlp.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

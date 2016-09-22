@@ -1,0 +1,7 @@
+.. _filter-gngd-label:
+
+GNGD Filter
+===================================
+
+.. automodule:: padasip.filters.gngd
+    :members:

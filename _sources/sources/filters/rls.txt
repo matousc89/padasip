@@ -1,0 +1,7 @@
+.. _filter-rls-label:
+
+RLS Filter
+***************************
+
+.. automodule:: padasip.filters.rls
+    :members:

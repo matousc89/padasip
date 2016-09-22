@@ -9348,7 +9348,8 @@ div.input {
 div.input_area {
     border: 1px solid #cfcfcf;
     border-radius: 4px;
-    background: #f7f7f7
+    background: #f7f7f7;
+    width: 960px;
 }
 
 div.input_prompt {
@@ -9799,6 +9800,7 @@ div.output_subarea {
 div.output_text {
     text-align: left;
     color: #000;
+    width: 960px;
     font-family: monospace;
     line-height: 1.231em
 }

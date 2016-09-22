@@ -1,0 +1,20 @@
+.. _changelog-label:
+
+Changelog
+===========
+
+**Version 0.3**
+ Added :ref:`ann-mlp-label`
+
+**Version 0.2** *Released: 2016-09-02*
+ Added :ref:`filter-gngd-label`
+
+**Version 0.1** *Released: 2016-03-18*
+ Created
+ :ref:`filter-lms-label`,
+ :ref:`filter-nlms-label`, 
+ :ref:`filter-rls-label`,
+ :ref:`preprocess-inputfromhistorylabel`,
+ :ref:`preprocess-standardization-label`,
+ :ref:`preprocess-destandardization-label` 
+

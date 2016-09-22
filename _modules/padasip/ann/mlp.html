@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>padasip.ann.mlp &#8212; Padasip 0.3 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Padasip 0.3 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for padasip.ann.mlp</h1><div class="highlight"><pre>
+<span></span><span class="sd">r&quot;&quot;&quot;</span>
+<span class="sd">.. versionadded:: 0.3</span>
+
+<span class="sd">In this module is stored everything related to Multi-layer perceptron (MLP).</span>
+<span class="sd">This neural network can be used for classification and regression.</span>
+
+
+<span class="sd">Minimal Working Example</span>
+<span class="sd">************************</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import numpy as np</span>
+<span class="sd">    import padasip as pa</span>
+
+<span class="sd">    # data creation</span>
+<span class="sd">    x = np.array([</span>
+<span class="sd">            [0,0,0,0], [1,0,0,0], [0,1,0,0], [1,1,0,0],</span>
+<span class="sd">            [0,0,1,0], [1,0,1,0], [0,1,1,0], [1,1,1,0],</span>
+<span class="sd">            [0,0,0,1], [1,0,0,1], [0,1,0,1], [1,1,0,1],</span>
+<span class="sd">            [0,0,1,1], [1,0,1,1], [0,1,1,1], [1,1,1,1]</span>
+<span class="sd">        ])</span>
+<span class="sd">    d = np.array([0,1,1,0,0,1,0,0,1,0,1,0,1,1,1,0])</span>
+<span class="sd">    N = len(d)</span>
+<span class="sd">    n = 4</span>
+
+<span class="sd">    # creation of neural network</span>
+<span class="sd">    nn = pa.ann.NetworkMLP([5,6], n, outputs=1, activation=&quot;tanh&quot;, mu=&quot;auto&quot;)    </span>
+
+<span class="sd">    # training</span>
+<span class="sd">    e, mse = nn.train(x, d, epochs=200, shuffle=True)    </span>
+
+<span class="sd">    # get results</span>
+<span class="sd">    y = nn.run(x)</span>
+
+<span class="sd">And the result (pairs: target, output) can look like</span>
+
+<span class="sd">&gt;&gt;&gt; for i in zip(d, y): print i</span>
+<span class="sd">... </span>
+<span class="sd">(0, 0.0032477183193071906)</span>
+<span class="sd">(1, 1.0058082383308447)</span>
+<span class="sd">(1, 1.0047503447788306)</span>
+<span class="sd">(0, 0.0046026142618665845)</span>
+<span class="sd">(0, 0.0003037425037410007)</span>
+<span class="sd">(1, 1.0017672193832869)</span>
+<span class="sd">(0, 0.0015817734995124679)</span>
+<span class="sd">(0, 0.0019115885715706904)</span>
+<span class="sd">(1, 0.99342117275580499)</span>
+<span class="sd">(0, 0.00069114178424850147)</span>
+<span class="sd">(1, 1.0021789943501729)</span>
+<span class="sd">(0, 0.0021355836851727717)</span>
+<span class="sd">(1, 0.99809312951378826)</span>
+<span class="sd">(1, 1.0071488717506856)</span>
+<span class="sd">(1, 1.0067500768423701)</span>
+<span class="sd">(0, -0.0045962250501771244)</span>
+<span class="sd">&gt;&gt;&gt; </span>
+
+
+
+<span class="sd">Learning Rate Selection</span>
+<span class="sd">**************************</span>
+
+<span class="sd">If you select the learning rate (:math:`\mu` in equations,</span>
+<span class="sd">or `mu` in code) manually, it will be used the same value for all nodes,</span>
+<span class="sd">otherwise it is selected automatically :cite:`lecun2012efficient` as follows</span>
+
+<span class="sd">:math:`\mu_{ij} = m^{-0.5}`</span>
+
+<span class="sd">where the :math:`m` is the amount of nodes on input of given node.</span>
+<span class="sd">The automatic selection is recomended and default option.</span>
+
+
+<span class="sd">Default Values of Weights</span>
+<span class="sd">****************************</span>
+
+<span class="sd">The distribution from what the weights are taken is chosen automatically</span>
+<span class="sd">:cite:`lecun2012efficient`, it has zero mean and</span>
+<span class="sd">the standard derivation estimated as follows</span>
+
+<span class="sd">:math:`\sigma_{w} = m^{-0.5}`</span>
+
+<span class="sd">where the :math:`m` is the amount of nodes on input of given node.</span>
+
+
+<span class="sd">References</span>
+<span class="sd">***************</span>
+
+<span class="sd">.. bibliography:: ../../references.bib</span>
+<span class="sd">    :style: plain</span>
+
+<span class="sd">Code Explanation</span>
+<span class="sd">******************</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">padasip.consts</span> <span class="k">as</span> <span class="nn">co</span>
+
+<div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a single hidden layer of the MLP.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `n_layer` : size of the layer (int)</span>
+
+<span class="sd">    * `n_input` : how many inputs the layer have (int)</span>
+
+<span class="sd">    * `activation_f` : what function should be used as activation function (str)</span>
+
+<span class="sd">    * `mu` : learning rate (float or str), it can be directly the float value,</span>
+<span class="sd">        or string `auto` for automatic selection of learning rate</span>
+<span class="sd">        :cite:`lecun2012efficient`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_layer</span><span class="p">,</span> <span class="n">n_input</span><span class="p">,</span> <span class="n">activation_f</span><span class="p">,</span> <span class="n">mu</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">n_input</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mu</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span> <span class="o">=</span> <span class="n">n_input</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="p">(</span><span class="n">n_layer</span><span class="p">,</span> <span class="n">n_input</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_input</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_input</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">activation_f</span>
+
+<div class="viewcode-block" id="Layer.activation"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.Layer.activation">[docs]</a>    <span class="k">def</span> <span class="nf">activation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function process values of layer outputs with activation function.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `x` : array to process (1-dimensional array) </span>
+
+<span class="sd">        Kwargs:</span>
+
+<span class="sd">        * `f` : activation function</span>
+
+<span class="sd">        * `der` : normal output, or its derivation (bool)</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        * values processed with activation function (1-dimensional array)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">der</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;tanh&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">der</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> 
+            <span class="k">return</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">)))</span> <span class="o">-</span> <span class="mi">1</span>       </div>
+                
+<div class="viewcode-block" id="Layer.predict"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.Layer.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function make forward pass through this layer (no update).</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `x` : input vector (1-dimensional array)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        * `y` : output of MLP (float or 1-diemnsional array).</span>
+<span class="sd">            Size depends on number of nodes in this layer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">f</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span></div>
+    
+<div class="viewcode-block" id="Layer.update"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.Layer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function make update according provided target</span>
+<span class="sd">        and the last used input vector.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : target (float or 1-dimensional array).</span>
+<span class="sd">            Size depends on number of MLP outputs.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        * `w` : weights of the layers (2-dimensional layer).</span>
+<span class="sd">            Every row represents one node.</span>
+<span class="sd">        </span>
+<span class="sd">        * `e` : error used for update (float or 1-diemnsional array).</span>
+<span class="sd">            Size correspond to size of input `d`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">w</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">der</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">e</span></div></div>
+        
+        
+<div class="viewcode-block" id="NetworkMLP"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.NetworkMLP">[docs]</a><span class="k">class</span> <span class="nc">NetworkMLP</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a Multi-layer Perceptron neural network.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">    * `layers` : array describing hidden layers of network</span>
+<span class="sd">        (1-dimensional array of integers). Every number in array represents</span>
+<span class="sd">        one hidden layer. For example [3, 6, 2] create</span>
+<span class="sd">        network with three hidden layers. First layer will have 3 nodes,</span>
+<span class="sd">        second layer will have 6 nodes and the last hidden layer</span>
+<span class="sd">        will have 2 nodes.</span>
+
+<span class="sd">    * `n_input` : number of network inputs (int). </span>
+
+<span class="sd">    Kwargs:</span>
+
+<span class="sd">    * `outputs` : number of network outputs (int). Default is 1.</span>
+
+<span class="sd">    * `activation` : activation function (str)</span>
+
+<span class="sd">        * &quot;sigmoid&quot; - sigmoid</span>
+<span class="sd">    </span>
+<span class="sd">        * &quot;tanh&quot; : hyperbolic tangens</span>
+
+<span class="sd">    * `mu` : learning rate (float or str), it can be:</span>
+<span class="sd">        * float value - value is directly used as `mu`</span>
+
+<span class="sd">        * &quot;auto&quot; - this will trigger automatic selection of learning rate</span>
+<span class="sd">        according to :cite:`lecun2012efficient`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">n_input</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">):</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="c1"># set learning rate</span>
+        <span class="k">if</span> <span class="n">mu</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">param</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>            
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Parameter mu is not float or similar&#39;</span>
+                    <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span> <span class="o">=</span> <span class="n">n_input</span>
+        <span class="c1"># create output layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="n">outputs</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># create hidden layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">Layer</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">n_input</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">Layer</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">layers</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">activation</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+ 
+<div class="viewcode-block" id="NetworkMLP.train"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.NetworkMLP.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function for batch training of MLP.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `x` : input array (2-dimensional array).</span>
+<span class="sd">            Every row represents one input vector (features).</span>
+
+<span class="sd">        * `d` : input array (n-dimensional array).</span>
+<span class="sd">            Every row represents target for one input vector.</span>
+<span class="sd">            Target can be one or more values (in case of multiple outputs).</span>
+
+<span class="sd">        Kwargs:</span>
+<span class="sd">        </span>
+<span class="sd">        * `epochs` : amount of epochs (int). That means how many times</span>
+<span class="sd">            the MLP will iterate over the passed set of data (`x`, `d`).</span>
+
+<span class="sd">        * `shuffle` : if true, the order of inputs and outpust are shuffled (bool).</span>
+<span class="sd">            That means the pairs input-output are in different order in every epoch.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        * `e`: output vector (m-dimensional array). Every row represents</span>
+<span class="sd">            error (or errors) for an input and output in given epoch.</span>
+<span class="sd">            The size of this array is length of provided data times</span>
+<span class="sd">            amount of epochs (`N*epochs`).</span>
+
+<span class="sd">        * `MSE` : mean squared error (1-dimensional array). Every value</span>
+<span class="sd">            stands for MSE of one epoch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of network inputs is not correct.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;For one output MLP the d must have one dimension&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of outputs must agree with number of columns in d&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+        <span class="c1"># create empty arrays</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">epochs</span><span class="o">*</span><span class="n">N</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">epochs</span><span class="o">*</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">))</span>
+        <span class="n">MSE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">epochs</span><span class="p">)</span>
+        <span class="c1"># shuffle data if demanded</span>
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="n">randomize</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">randomize</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">randomize</span><span class="p">]</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">randomize</span><span class="p">]</span>
+        <span class="c1"># adaptation loop</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">e</span><span class="p">[(</span><span class="n">epoch</span><span class="o">*</span><span class="n">N</span><span class="p">)</span><span class="o">+</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">MSE</span><span class="p">[</span><span class="n">epoch</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">epoch</span><span class="o">*</span><span class="n">N</span><span class="p">:(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span>
+        <span class="k">return</span> <span class="n">e</span><span class="p">,</span> <span class="n">MSE</span></div>
+
+<div class="viewcode-block" id="NetworkMLP.run"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.NetworkMLP.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function for batch usage of already trained and tested MLP.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `x` : input array (2-dimensional array).</span>
+<span class="sd">            Every row represents one input vector (features).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        * `y`: output vector (n-dimensional array). Every row represents</span>
+<span class="sd">            output (outputs) for an input vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x to a numpy array&#39;</span><span class="p">)</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>   
+        <span class="c1"># create empty arrays     </span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">))</span>
+        <span class="c1"># predict data in loop        </span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="NetworkMLP.test"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.NetworkMLP.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function for batch test of already trained MLP.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `x` : input array (2-dimensional array).</span>
+<span class="sd">            Every row represents one input vector (features).</span>
+
+<span class="sd">        * `d` : input array (n-dimensional array).</span>
+<span class="sd">            Every row represents target for one input vector.</span>
+<span class="sd">            Target can be one or more values (in case of multiple outputs).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        * `e`: output vector (n-dimensional array). Every row represents</span>
+<span class="sd">            error (or errors) for an input and output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># measure the data and check if the dimmension agree</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of network inputs is not correct.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;For one output MLP the d must have one dimension&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The number of outputs must agree with number of columns in d&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>    
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
+        <span class="c1"># create empty arrays</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">))</span>
+        <span class="c1"># measure in loop        </span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">d</span> <span class="o">-</span> <span class="n">y</span>    </div>
+
+<div class="viewcode-block" id="NetworkMLP.predict"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.NetworkMLP.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function make forward pass through MLP (no update).</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `x` : input vector (1-dimensional array)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        * `y` : output of MLP (float or 1-diemnsional array).</span>
+<span class="sd">            Size depends on number of MLP outputs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># forward pass to hidden layers</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="c1"># forward pass to output layer</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span></div>
+    
+<div class="viewcode-block" id="NetworkMLP.update"><a class="viewcode-back" href="../../../sources/ann/mlp.html#padasip.ann.mlp.NetworkMLP.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function make update according provided target</span>
+<span class="sd">        and the last used input vector.</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">        * `d` : target (float or 1-dimensional array).</span>
+<span class="sd">            Size depends on number of MLP outputs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">        </span>
+<span class="sd">        * `e` : error used for update (float or 1-diemnsional array).</span>
+<span class="sd">            Size correspond to size of input `d`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># update output layer</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>   
+            <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
+        <span class="c1"># update hidden layers</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">w</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">error</span></div></div>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Padasip</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sources/filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

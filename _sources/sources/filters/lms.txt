@@ -1,0 +1,7 @@
+.. _filter-lms-label:
+
+LMS Filter
+===================================
+
+.. automodule:: padasip.filters.lms
+    :members:

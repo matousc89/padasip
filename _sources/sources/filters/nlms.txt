@@ -1,0 +1,7 @@
+.. _filter-nlms-label:
+
+NLMS Filter
+===================================
+
+.. automodule:: padasip.filters.nlms
+    :members:

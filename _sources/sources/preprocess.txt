@@ -1,0 +1,44 @@
+.. _preprocess-label:
+
+Data Preprocessing
+===================================
+
+.. automodule:: padasip.preprocess
+
+
+.. _preprocess-standardization-label:
+
+Data Standardization
+******************************************
+
+.. autofunction:: padasip.preprocess.standardize
+
+
+
+.. _preprocess-destandardization-label:
+
+Data De-standardization
+*******************************************
+
+.. autofunction:: padasip.preprocess.standardize_back
+
+
+
+.. _preprocess-inputfromhistorylabel:
+
+Input Matrix Constructor
+*******************************************
+
+.. autofunction:: padasip.preprocess.input_from_history
+
+
+
+
+
+
+
+
+
+
+
+
