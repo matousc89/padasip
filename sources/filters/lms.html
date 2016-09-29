@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>LMS Filter &#8212; Padasip 0.3 documentation</title>
+    <title>LMS Filter &#8212; Padasip 0.4 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.3',
+        VERSION:     '0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,10 +24,12 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.3 documentation" href="../../index.html" />
-    <link rel="up" title="Adaptive Filters" href="../filters.html" />
+    <link rel="top" title="Padasip 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="Adaptive Filters" href="../filters_mod.html" />
     <link rel="next" title="NLMS Filter" href="nlms.html" />
     <link rel="prev" title="GNGD Filter" href="gngd.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -52,8 +54,140 @@
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.1.</span></p>
 </div>
+<p>The lest-mean-squares (LMS) adaptive filter <a class="reference internal" href="#haykin2003least" id="id1">[1]</a>
+is the most popular adaptive filter.</p>
+<p>The LMS filter can be created as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterLMS</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <cite>n</cite> is the size (number of taps) of the filter.</p>
+<p>Content of this page:</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#algorithm-explanation" id="id2">Algorithm Explanation</a></li>
+<li><a class="reference internal" href="#stability-and-optimal-performance" id="id3">Stability and Optimal Performance</a></li>
+<li><a class="reference internal" href="#minimal-working-examples" id="id4">Minimal Working Examples</a></li>
+<li><a class="reference internal" href="#references" id="id5">References</a></li>
+<li><a class="reference internal" href="#code-explanation" id="id6">Code Explanation</a></li>
+</ul>
+</div>
+<div class="section" id="algorithm-explanation">
+<h2><a class="toc-backref" href="#id2">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<p>The LMS adaptive filter could be described as</p>
+<p><span class="math">\(y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)\)</span>,</p>
+<p>or in a vector form</p>
+<p><span class="math">\(y(k) = \textbf{x}^T(k) \textbf{w}(k)\)</span>,</p>
+<p>where <span class="math">\(k\)</span> is discrete time index, <span class="math">\((.)^T\)</span> denotes the transposition,
+<span class="math">\(y(k)\)</span> is filtered signal,
+<span class="math">\(\textbf{w}\)</span> is vector of filter adaptive parameters and
+<span class="math">\(\textbf{x}\)</span> is input vector (for a filter of size <span class="math">\(n\)</span>) as follows</p>
+<p><span class="math">\(\textbf{x}(k) = [x_1(k), ...,  x_n(k)]\)</span>.</p>
+<p>The LMS weights adaptation could be described as follows</p>
+<p><span class="math">\(\textbf{w}(k+1) = \textbf{w}(k) + \Delta \textbf{w}(k)\)</span>,</p>
+<p>where <span class="math">\(\Delta \textbf{w}(k)\)</span> is</p>
+<p><span class="math">\(\Delta \textbf{w}(k) = \frac{1}{2} \mu \frac{\partial e^2(k)}
+{ \partial \textbf{w}(k)}\ = \mu \cdot e(k) \cdot \textbf{x}(k)\)</span>,</p>
+<p>where <span class="math">\(\mu\)</span> is the learning rate (step size) and <span class="math">\(e\)</span>
+is error defined as</p>
+<p><span class="math">\(e(k) = d(k) - y(k)\)</span>.</p>
+</div>
+<div class="section" id="stability-and-optimal-performance">
+<h2><a class="toc-backref" href="#id3">Stability and Optimal Performance</a><a class="headerlink" href="#stability-and-optimal-performance" title="Permalink to this headline">¶</a></h2>
+<p>The general stability criteria of LMS stands as follows</p>
+<p><span class="math">\(|1 - \mu \cdot ||\textbf{x}(k)||^2 | \leq 1\)</span>.</p>
+<p>In practice the key argument <cite>mu</cite> should be set to really small number
+in most of the cases
+(recomended value can be something in range from 0.1 to 0.00001).
+If you have still problems stability or performance of the filter,
+then try the normalized LMS (<a class="reference internal" href="nlms.html#filter-nlms-label"><span class="std std-ref">NLMS Filter</span></a>).</p>
+</div>
+<div class="section" id="minimal-working-examples">
+<h2><a class="toc-backref" href="#id4">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
+<p>If you have measured data you can filter it as follows</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
+
+<span class="c1"># creation of data</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1"># input matrix</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="c1"># noise</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span> <span class="c1"># target</span>
+
+<span class="c1"># identification</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterLMS</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+<span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># show results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Adaptation&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;d - target&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y - output&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Filter error&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;e - error [dB]&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Example how to filter data measured in real-time</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
+
+<span class="c1"># these two function supplement your online measurment</span>
+<span class="k">def</span> <span class="nf">measure_x</span><span class="p">():</span>
+    <span class="c1"># it produces input vector of size 3</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+    
+<span class="k">def</span> <span class="nf">measure_d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1"># meausure system output</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">d</span>
+    
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">log_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">log_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterLMS</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="c1"># measure input</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">measure_x</span><span class="p">()</span>
+    <span class="c1"># predict new value</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># do the important stuff with prediction output</span>
+    <span class="k">pass</span>    
+    <span class="c1"># measure output</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">measure_d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># update filter</span>
+    <span class="n">filt</span><span class="o">.</span><span class="n">adapt</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="c1"># log values</span>
+    <span class="n">log_d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+    <span class="n">log_y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    
+<span class="c1">### show results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Adaptation&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_d</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;d - target&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_y</span><span class="p">,</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y - output&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Filter error&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">((</span><span class="n">log_d</span><span class="o">-</span><span class="n">log_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;e - error [dB]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="references">
+<h2><a class="toc-backref" href="#id5">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="bibtex-bibliography-sources/filters/lms-0"><table class="docutils citation" frame="void" id="haykin2003least" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Simon Haykin and Bernard Widrow. <em>Least-mean-square adaptive filters</em>. volume 31. John Wiley &amp; Sons, 2003.</td></tr>
+</tbody>
+</table>
+</p>
+</div>
 <div class="section" id="code-explanation">
-<h2>Code Explanation<a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="padasip.filters.lms.FilterLMS">
 <em class="property">class </em><code class="descclassname">padasip.filters.lms.</code><code class="descname">FilterLMS</code><span class="sig-paren">(</span><em>n</em>, <em>mu=0.01</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/lms.html#FilterLMS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.lms.FilterLMS" title="Permalink to this definition">¶</a></dt>
@@ -193,6 +327,13 @@ One coefficient represents one filter weight.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
 <h3><a href="../../index.html">Table Of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
@@ -207,7 +348,8 @@ One coefficient represents one filter weight.</p>
 </ul>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../filters.html">Adaptive Filters</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ap.html">AP Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gngd.html">GNGD Filter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">LMS Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlms.html">NLMS Filter</a></li>
@@ -220,7 +362,7 @@ One coefficient represents one filter weight.</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
-  <li><a href="../filters.html">Adaptive Filters</a><ul>
+  <li><a href="../filters_mod.html">Adaptive Filters</a><ul>
       <li>Previous: <a href="gngd.html" title="previous chapter">GNGD Filter</a></li>
       <li>Next: <a href="nlms.html" title="next chapter">NLMS Filter</a></li>
   </ul></li>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>padasip.filters.gngd &#8212; Padasip 0.3 documentation</title>
+    <title>padasip.filters.gngd &#8212; Padasip 0.4 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3',
+        VERSION:     '0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,10 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.3 documentation" href="../../../index.html" />
+    <link rel="top" title="Padasip 0.4 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -48,6 +50,29 @@
   <h1>Source code for padasip.filters.gngd</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. versionadded:: 0.2</span>
+
+<span class="sd">The generalized normalized gradient descent (GNGD) adaptive filter</span>
+<span class="sd">:cite:`mandic2004generalized`</span>
+<span class="sd">is an extension of the NLMS adaptive filter (:ref:`filter-nlms-label`).</span>
+
+<span class="sd">The GNGD filter can be created as follows</span>
+
+<span class="sd">    &gt;&gt;&gt; import padasip as pa</span>
+<span class="sd">    &gt;&gt;&gt; pa.filters.FilterGNGD(n)</span>
+<span class="sd">    </span>
+<span class="sd">where `n` is the size (number of taps) of the filter.</span>
+
+<span class="sd">Content of this page:</span>
+
+<span class="sd">.. contents::</span>
+<span class="sd">   :local:</span>
+<span class="sd">   :depth: 1</span>
+<span class="sd">   </span>
+<span class="sd">References</span>
+<span class="sd">***************</span>
+
+<span class="sd">.. bibliography:: gngd.bib</span>
+<span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
 <span class="sd">***************** </span>
@@ -250,13 +275,20 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
 <h3><a href="../../../index.html">Table Of Contents</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Padasip</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../sources/filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sources/filters_mod.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
 </ul>
 <div class="relations">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>padasip.filters.lms &#8212; Padasip 0.3 documentation</title>
+    <title>padasip.filters.lms &#8212; Padasip 0.4 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.3',
+        VERSION:     '0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,10 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.3 documentation" href="../../../index.html" />
+    <link rel="top" title="Padasip 0.4 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -48,6 +50,152 @@
   <h1>Source code for padasip.filters.lms</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. versionadded:: 0.1</span>
+
+<span class="sd">The lest-mean-squares (LMS) adaptive filter :cite:`haykin2003least`</span>
+<span class="sd">is the most popular adaptive filter.</span>
+
+<span class="sd">The LMS filter can be created as follows</span>
+
+<span class="sd">    &gt;&gt;&gt; import padasip as pa</span>
+<span class="sd">    &gt;&gt;&gt; pa.filters.FilterLMS(n)</span>
+<span class="sd">    </span>
+<span class="sd">where `n` is the size (number of taps) of the filter.</span>
+
+<span class="sd">Content of this page:</span>
+
+<span class="sd">.. contents::</span>
+<span class="sd">   :local:</span>
+<span class="sd">   :depth: 1</span>
+
+<span class="sd">Algorithm Explanation</span>
+<span class="sd">************************</span>
+
+<span class="sd">The LMS adaptive filter could be described as</span>
+
+<span class="sd">:math:`y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)`,</span>
+
+<span class="sd">or in a vector form</span>
+
+<span class="sd">:math:`y(k) = \\textbf{x}^T(k) \\textbf{w}(k)`,</span>
+
+<span class="sd">where :math:`k` is discrete time index, :math:`(.)^T` denotes the transposition,</span>
+<span class="sd">:math:`y(k)` is filtered signal,</span>
+<span class="sd">:math:`\\textbf{w}` is vector of filter adaptive parameters and</span>
+<span class="sd">:math:`\\textbf{x}` is input vector (for a filter of size :math:`n`) as follows</span>
+
+<span class="sd">:math:`\\textbf{x}(k) = [x_1(k), ...,  x_n(k)]`.</span>
+
+<span class="sd">The LMS weights adaptation could be described as follows</span>
+
+<span class="sd">:math:`\\textbf{w}(k+1) = \\textbf{w}(k) + \Delta \\textbf{w}(k)`,</span>
+
+<span class="sd">where :math:`\Delta \\textbf{w}(k)` is</span>
+
+<span class="sd">:math:`\Delta \\textbf{w}(k) = \\frac{1}{2} \mu \\frac{\partial e^2(k)}</span>
+<span class="sd">{ \partial \\textbf{w}(k)}\ = \mu \cdot e(k) \cdot \\textbf{x}(k)`,</span>
+
+<span class="sd">where :math:`\mu` is the learning rate (step size) and :math:`e`</span>
+<span class="sd">is error defined as</span>
+
+<span class="sd">:math:`e(k) = d(k) - y(k)`.</span>
+
+
+<span class="sd">Stability and Optimal Performance</span>
+<span class="sd">*************************************</span>
+
+<span class="sd">The general stability criteria of LMS stands as follows</span>
+
+<span class="sd">:math:`|1 - \mu \cdot ||\\textbf{x}(k)||^2 | \leq 1`.</span>
+
+<span class="sd">In practice the key argument `mu` should be set to really small number</span>
+<span class="sd">in most of the cases</span>
+<span class="sd">(recomended value can be something in range from 0.1 to 0.00001).</span>
+<span class="sd">If you have still problems stability or performance of the filter,</span>
+<span class="sd">then try the normalized LMS (:ref:`filter-nlms-label`).</span>
+
+<span class="sd">Minimal Working Examples</span>
+<span class="sd">**************************</span>
+
+<span class="sd">If you have measured data you can filter it as follows</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import numpy as np</span>
+<span class="sd">    import matplotlib.pylab as plt</span>
+<span class="sd">    import padasip as pa </span>
+
+<span class="sd">    # creation of data</span>
+<span class="sd">    N = 500</span>
+<span class="sd">    x = np.random.normal(0, 1, (N, 4)) # input matrix</span>
+<span class="sd">    v = np.random.normal(0, 0.1, N) # noise</span>
+<span class="sd">    d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target</span>
+
+<span class="sd">    # identification</span>
+<span class="sd">    f = pa.filters.FilterLMS(n=4, mu=0.1, w=&quot;random&quot;)</span>
+<span class="sd">    y, e, w = f.run(d, x)</span>
+
+<span class="sd">    # show results</span>
+<span class="sd">    plt.figure(figsize=(15,9))</span>
+<span class="sd">    plt.subplot(211);plt.title(&quot;Adaptation&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(d,&quot;b&quot;, label=&quot;d - target&quot;)</span>
+<span class="sd">    plt.plot(y,&quot;g&quot;, label=&quot;y - output&quot;);plt.legend()</span>
+<span class="sd">    plt.subplot(212);plt.title(&quot;Filter error&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(10*np.log10(e**2),&quot;r&quot;, label=&quot;e - error [dB]&quot;);plt.legend()</span>
+<span class="sd">    plt.tight_layout()</span>
+<span class="sd">    plt.show()</span>
+
+<span class="sd">Example how to filter data measured in real-time</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import numpy as np</span>
+<span class="sd">    import matplotlib.pylab as plt</span>
+<span class="sd">    import padasip as pa </span>
+
+<span class="sd">    # these two function supplement your online measurment</span>
+<span class="sd">    def measure_x():</span>
+<span class="sd">        # it produces input vector of size 3</span>
+<span class="sd">        x = np.random.random(3)</span>
+<span class="sd">        return x</span>
+<span class="sd">        </span>
+<span class="sd">    def measure_d(x):</span>
+<span class="sd">        # meausure system output</span>
+<span class="sd">        d = 2*x[0] + 1*x[1] - 1.5*x[2]</span>
+<span class="sd">        return d</span>
+<span class="sd">        </span>
+<span class="sd">    N = 100</span>
+<span class="sd">    log_d = np.zeros(N)</span>
+<span class="sd">    log_y = np.zeros(N)</span>
+<span class="sd">    filt = pa.filters.FilterLMS(3, mu=1.)</span>
+<span class="sd">    for k in range(N):</span>
+<span class="sd">        # measure input</span>
+<span class="sd">        x = measure_x()</span>
+<span class="sd">        # predict new value</span>
+<span class="sd">        y = filt.predict(x)</span>
+<span class="sd">        # do the important stuff with prediction output</span>
+<span class="sd">        pass    </span>
+<span class="sd">        # measure output</span>
+<span class="sd">        d = measure_d(x)</span>
+<span class="sd">        # update filter</span>
+<span class="sd">        filt.adapt(d, x)</span>
+<span class="sd">        # log values</span>
+<span class="sd">        log_d[k] = d</span>
+<span class="sd">        log_y[k] = y</span>
+<span class="sd">        </span>
+<span class="sd">    ### show results</span>
+<span class="sd">    plt.figure(figsize=(15,9))</span>
+<span class="sd">    plt.subplot(211);plt.title(&quot;Adaptation&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(log_d,&quot;b&quot;, label=&quot;d - target&quot;)</span>
+<span class="sd">    plt.plot(log_y,&quot;g&quot;, label=&quot;y - output&quot;);plt.legend()</span>
+<span class="sd">    plt.subplot(212);plt.title(&quot;Filter error&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(10*np.log10((log_d-log_y)**2),&quot;r&quot;, label=&quot;e - error [dB]&quot;)</span>
+<span class="sd">    plt.legend(); plt.tight_layout(); plt.show()</span>
+
+<span class="sd">References</span>
+<span class="sd">***************</span>
+
+<span class="sd">.. bibliography:: lms.bib</span>
+<span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
 <span class="sd">***************** </span>
@@ -213,13 +361,20 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
 <h3><a href="../../../index.html">Table Of Contents</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Padasip</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../sources/filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sources/filters_mod.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
 </ul>
 <div class="relations">

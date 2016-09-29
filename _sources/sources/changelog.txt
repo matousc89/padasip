@@ -3,7 +3,10 @@
 Changelog
 ===========
 
-**Version 0.3**
+**Version 0.4** 
+ Added :ref:`filter-ap-label`. And also the first unit tests were implemented.
+
+**Version 0.3** *Released: 2016-09-22*
  Added :ref:`ann-mlp-label`
 
 **Version 0.2** *Released: 2016-09-02*

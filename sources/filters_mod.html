@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &#8212; Padasip 0.4 documentation</title>
+    <title>Adaptive Filters &#8212; Padasip 0.4 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -25,6 +25,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Padasip 0.4 documentation" href="../index.html" />
+    <link rel="next" title="AP Filter" href="filters/ap.html" />
+    <link rel="prev" title="Data Preprocessing" href="preprocess.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -46,24 +48,41 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="changelog">
-<span id="changelog-label"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
-<dl class="docutils">
-<dt><strong>Version 0.4</strong></dt>
-<dd>Added <a class="reference internal" href="filters/ap.html#filter-ap-label"><span class="std std-ref">AP Filter</span></a>. And also the first unit tests were implemented.</dd>
-<dt><strong>Version 0.3</strong> <em>Released: 2016-09-22</em></dt>
-<dd>Added <a class="reference internal" href="ann/mlp.html#ann-mlp-label"><span class="std std-ref">Multi-layer Perceptron (MLP)</span></a></dd>
-<dt><strong>Version 0.2</strong> <em>Released: 2016-09-02</em></dt>
-<dd>Added <a class="reference internal" href="filters/gngd.html#filter-gngd-label"><span class="std std-ref">GNGD Filter</span></a></dd>
-<dt><strong>Version 0.1</strong> <em>Released: 2016-03-18</em></dt>
-<dd>Created
-<a class="reference internal" href="filters/lms.html#filter-lms-label"><span class="std std-ref">LMS Filter</span></a>,
-<a class="reference internal" href="filters/nlms.html#filter-nlms-label"><span class="std std-ref">NLMS Filter</span></a>,
-<a class="reference internal" href="filters/rls.html#filter-rls-label"><span class="std std-ref">RLS Filter</span></a>,
-<a class="reference internal" href="preprocess.html#preprocess-inputfromhistorylabel"><span class="std std-ref">Input Matrix Constructor</span></a>,
-<a class="reference internal" href="preprocess.html#preprocess-standardization-label"><span class="std std-ref">Data Standardization</span></a>,
-<a class="reference internal" href="preprocess.html#preprocess-destandardization-label"><span class="std std-ref">Data De-standardization</span></a></dd>
+  <div class="section" id="module-padasip.filters">
+<span id="adaptive-filters"></span><span id="filters-label"></span><h1>Adaptive Filters<a class="headerlink" href="#module-padasip.filters" title="Permalink to this headline">¶</a></h1>
+<p>This sub-module stores adaptive filters and all related stuff.</p>
+<p>An adaptive filter is a system that changes its adaptive parameteres
+- adaptive weights <span class="math">\(\textbf{w}(k)\)</span> - according to an optimization algorithm.</p>
+<p>The parameters of all implemented adaptive filters can be:</p>
+<ul>
+<li><p class="first">selected manually and passed to a filter as an array</p>
+</li>
+<li><dl class="first docutils">
+<dt>set to random - this will produce a vector of random values (zero mean,</dt>
+<dd><p class="first last">0.5 standard deviation)</p>
+</dd>
 </dl>
+</li>
+<li><p class="first">set to zeros</p>
+</li>
+</ul>
+<p>All filters can be called directly from padasip without further imports
+as follows (LMS filter example):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterLMS</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="go">&lt;padasip.filters.lms.FilterLMS instance at 0xb726edec&gt;</span>
+</pre></div>
+</div>
+<p>Filters implemented so far:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters/ap.html">AP Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/gngd.html">GNGD Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/lms.html">LMS Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/nlms.html">NLMS Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/rls.html">RLS Filter</a></li>
+</ul>
+</div>
 </div>
 
 
@@ -80,18 +99,35 @@
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
 <h3><a href="../index.html">Table Of Contents</a></h3>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Padasip</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Padasip</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#instalation">Instalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#tutorials">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#the-user-quide">The User Quide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
-<ul>
+</li>
+</ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="preprocess.html">Data Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filters_mod.html">Adaptive Filters</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Adaptive Filters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="filters/ap.html">AP Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/gngd.html">GNGD Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/lms.html">LMS Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/nlms.html">NLMS Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/rls.html">RLS Filter</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="ann.html">Artificial Neural Networks (ANN)</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="preprocess.html" title="previous chapter">Data Preprocessing</a></li>
+      <li>Next: <a href="filters/ap.html" title="next chapter">AP Filter</a></li>
   </ul></li>
 </ul>
 </div>
@@ -117,7 +153,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
-      <a href="../_sources/sources/changelog.txt"
+      <a href="../_sources/sources/filters_mod.txt"
           rel="nofollow">Page source</a>
     </div>
 

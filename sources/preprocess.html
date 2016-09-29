@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Data Preprocessing &#8212; Padasip 0.3 documentation</title>
+    <title>Data Preprocessing &#8212; Padasip 0.4 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.3',
+        VERSION:     '0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,11 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.3 documentation" href="../index.html" />
-    <link rel="next" title="Adaptive Filters" href="filters.html" />
+    <link rel="top" title="Padasip 0.4 documentation" href="../index.html" />
+    <link rel="next" title="Adaptive Filters" href="filters_mod.html" />
     <link rel="prev" title="Padasip" href="../index.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -54,8 +56,10 @@
 <dl class="function">
 <dt id="padasip.preprocess.standardize">
 <code class="descclassname">padasip.preprocess.</code><code class="descname">standardize</code><span class="sig-paren">(</span><em>x</em>, <em>offset=None</em>, <em>scale=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/padasip/preprocess.html#standardize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.standardize" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function standardizes the series.</p>
-<p>xs = (x - offset) / scale</p>
+<dd><p>This function standardizes (z-score) the series according to equation</p>
+<p><span class="math">\(\textbf{x}_s = \frac{\textbf{x} - a}{b}\)</span></p>
+<p>where <span class="math">\(\textbf{x}\)</span> is time series to standardize,
+<span class="math">\(a\)</span> is offset to remove and <span class="math">\(b\)</span> scale to remove</p>
 <p>Args:</p>
 <ul class="simple">
 <li><cite>x</cite> : series (1 dimensional array)</li>
@@ -102,8 +106,11 @@
 <dl class="function">
 <dt id="padasip.preprocess.standardize_back">
 <code class="descclassname">padasip.preprocess.</code><code class="descname">standardize_back</code><span class="sig-paren">(</span><em>xs</em>, <em>offset</em>, <em>scale</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/padasip/preprocess.html#standardize_back"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.standardize_back" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function transforms series to the original score.</p>
-<p>x = xs * scale + offset</p>
+<dd><p>This function transforms series to the original score according to
+equation:</p>
+<p><span class="math">\(\textbf{x} = \textbf{x}_s \cdot b + a\)</span></p>
+<p>where <span class="math">\(\textbf{x}\)</span> is time series to de-standardize,
+<span class="math">\(a\)</span> is offset to add and <span class="math">\(b\)</span> desired scaling factor.</p>
 <p>Args:</p>
 <ul class="simple">
 <li><cite>xs</cite> : standardized input (1 dimensional array)</li>
@@ -181,6 +188,13 @@ amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span><
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
 <h3><a href="../index.html">Table Of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Padasip</a><ul class="current">
@@ -200,7 +214,7 @@ amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span><
 <li class="toctree-l2"><a class="reference internal" href="#input-matrix-constructor">Input Matrix Constructor</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters_mod.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ann.html">Artificial Neural Networks (ANN)</a></li>
 </ul>
 <div class="relations">
@@ -208,7 +222,7 @@ amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span><
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="../index.html" title="previous chapter">Padasip</a></li>
-      <li>Next: <a href="filters.html" title="next chapter">Adaptive Filters</a></li>
+      <li>Next: <a href="filters_mod.html" title="next chapter">Adaptive Filters</a></li>
   </ul></li>
 </ul>
 </div>

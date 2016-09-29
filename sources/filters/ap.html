@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>AP Filter &#8212; Padasip 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Padasip 0.4 documentation" href="../../index.html" />
+    <link rel="up" title="Adaptive Filters" href="../filters_mod.html" />
+    <link rel="next" title="GNGD Filter" href="gngd.html" />
+    <link rel="prev" title="Adaptive Filters" href="../filters_mod.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-padasip.filters.ap">
+<span id="ap-filter"></span><span id="filter-ap-label"></span><h1>AP Filter<a class="headerlink" href="#module-padasip.filters.ap" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.4.</span></p>
+</div>
+<p>The Affine Projection (AP) algorithm is implemented according to paper
+<a class="reference internal" href="#gonzalez2012affine" id="id1">[1]</a>. Usage of this filter should be benefical especially
+when input data is highly correlated.
+This filter is based on LMS. The difference is,
+that AP uses multiple input vectors in every sample.
+The number of vectors is called projection order.
+In this implementation the historic input vectors from input matrix are used
+as the additional input vectors in every sample.</p>
+<p>The AP filter can be created as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterAP</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <cite>n</cite> is the size of the filter.</p>
+<div class="section" id="algorithm-explanation">
+<h2>Algorithm Explanation<a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<p>The input for AP filter is created as follows</p>
+<p><span class="math">\(\textbf{X}_{AP}(k) = (\textbf{x}(k), ..., \textbf{x}(k-L))\)</span>,</p>
+<p>where <span class="math">\(\textbf{X}_{AP}\)</span> is filter input, <span class="math">\(L\)</span> is projection order,
+<span class="math">\(k\)</span> is discrete time index and    extbf{x}_{k} is input vector.
+The output of filter si calculated as follows:</p>
+<p><span class="math">\(\textbf{y}_{AP}(k) = \textbf{X}^{T}_{AP}(k) \textbf{w}(k)\)</span>,</p>
+<p>where <span class="math">\(\textbf{x}(k)\)</span> is the vector of filter adaptive parameters.
+The vector of targets is construced as follows</p>
+<p><span class="math">\(\textbf{d}_{AP}(k) = (d(k), ..., d(k-L))^T\)</span>,</p>
+<p>where <span class="math">\(d(k)\)</span> is target in time <span class="math">\(k\)</span>.</p>
+<p>The error of the filter is estimated as</p>
+<p><span class="math">\(\textbf{e}_{AP}(k) = \textbf{d}_{AP}(k) - \textbf{y}_{AP}(k)\)</span>.</p>
+<p>And the adaptation of adaptive parameters is calculated according to equation</p>
+<p><span class="math">\(\textbf{w}_{AP}(k+1) = 
+\textbf{w}_{AP}(k+1) + \mu \textbf{X}_{AP}(k) (\textbf{X}_{AP}^{T}(k)
+\textbf{X}_{AP}(k) + \epsilon \textbf{I})^{-1} \textbf{e}_{AP}(k)\)</span>.</p>
+<p>During the filtering we are interested just in output of filter <span class="math">\(y(k)\)</span>
+and the error <span class="math">\(e(k)\)</span>. These two values are the first elements in
+vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
+<span class="math">\(\textbf{e}_{AP}(k)\)</span> for error.</p>
+</div>
+<div class="section" id="minimal-working-example">
+<h2>Minimal Working Example<a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
+
+<span class="c1"># creation of data</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1"># input matrix</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="c1"># noise</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span> <span class="c1"># target</span>
+
+<span class="c1"># identification</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterAP</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+<span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># show results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Adaptation&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;d - target&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y - output&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Filter error&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">e</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;e - error [dB]&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="bibtex-bibliography-sources/filters/ap-0"><table class="docutils citation" frame="void" id="gonzalez2012affine" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Alberto Gonzalez, Miguel Ferrer, Felix Albu, and Maria de&nbsp;Diego. Affine projection algorithms: evolution to smart and fast algorithms and applications. In <em>Signal Processing Conference (EUSIPCO), 2012 Proceedings of the 20th European</em>, 1965–1969. IEEE, 2012.</td></tr>
+</tbody>
+</table>
+</p>
+</div>
+<div class="section" id="code-explanation">
+<h2>Code Explanation<a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="padasip.filters.ap.FilterAP">
+<em class="property">class </em><code class="descclassname">padasip.filters.ap.</code><code class="descname">FilterAP</code><span class="sig-paren">(</span><em>n</em>, <em>order=5</em>, <em>mu=0.1</em>, <em>eps=0.001</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adaptive AP filter.</p>
+<p>Args:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>n</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">length of filter (integer) - how many input is input array</span><dd><p class="first last">(row of input matrix)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Kwargs:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>order</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">projection order (integer) - how many input vectors</span><dd><p class="first last">are in one input matrix</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>mu</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">learning rate (float). Also known as step size.</span><dd><p class="first last">If it is too slow,
+the filter may have bad performance. If it is too high,
+the filter will be unstable. The default value can be unstable
+for ill-conditioned input data.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><cite>eps</cite> : initial offset covariance (float)</p>
+</li>
+<li><p class="first"><cite>w</cite> : initial weights of filter. Possible values are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>array with initial weights (1 dimensional array) of filter size</li>
+<li>&#8220;random&#8221; : create random weights</li>
+<li>&#8220;zeros&#8221; : create zero value weights</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<dl class="method">
+<dt id="padasip.filters.ap.FilterAP.adapt">
+<code class="descname">adapt</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP.adapt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP.adapt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adapt weights according one desired value and its input.</p>
+<p>Args:</p>
+<ul class="simple">
+<li><cite>d</cite> : desired value (float)</li>
+<li><cite>x</cite> : input array (1-dimensional array)</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="padasip.filters.ap.FilterAP.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function filters multiple samples in a row.</p>
+<p>Args:</p>
+<ul>
+<li><p class="first"><cite>d</cite> : desired value (1 dimensional array)</p>
+</li>
+<li><dl class="first docutils">
+<dt><cite>x</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input matrix (2-dimensional array). Rows are samples,</span><dd><p class="first last">columns are input arrays.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>y</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">output value (1 dimensional array).</span><dd><p class="first last">The size corresponds with the desired value.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>e</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">filter error for every sample (1 dimensional array). </span><dd><p class="first last">The size corresponds with the desired value.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>w</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">history of all weights (2 dimensional array).</span><dd><p class="first last">Every row is set of the weights for given sample.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#instalation">Instalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">AP Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gngd.html">GNGD Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lms.html">LMS Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlms.html">NLMS Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rls.html">RLS Filter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../filters_mod.html">Adaptive Filters</a><ul>
+      <li>Previous: <a href="../filters_mod.html" title="previous chapter">Adaptive Filters</a></li>
+      <li>Next: <a href="gngd.html" title="next chapter">GNGD Filter</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/sources/filters/ap.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
