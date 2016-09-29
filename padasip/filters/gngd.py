@@ -1,6 +1,29 @@
 """
 .. versionadded:: 0.2
 
+The generalized normalized gradient descent (GNGD) adaptive filter
+:cite:`mandic2004generalized`
+is an extension of the NLMS adaptive filter (:ref:`filter-nlms-label`).
+
+The GNGD filter can be created as follows
+
+    >>> import padasip as pa
+    >>> pa.filters.FilterGNGD(n)
+    
+where `n` is the size (number of taps) of the filter.
+
+Content of this page:
+
+.. contents::
+   :local:
+   :depth: 1
+   
+References
+***************
+
+.. bibliography:: gngd.bib
+    :style: plain
+
 Code Explanation
 ***************** 
 """

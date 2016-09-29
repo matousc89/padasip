@@ -1,4 +1,4 @@
-from distutils.core import setup
+from distutils.core import setup, find_packages
 
 def readme():
     try:
@@ -9,19 +9,21 @@ def readme():
 
 setup(
     name = 'padasip',
-    packages = ['padasip'],
-    version = '0.3',
+    packages = findpackages(),
+    version = '0.4',
     description = 'Python Adaptive Signal Processing',
     long_description = readme(),
     author = 'Matous Cejnek',
+    maintainer: "Matous Cejnek",
     author_email = 'matousc@gmail.com',
     license = 'MIT',
-    url = 'https://github.com/matousc89/padasip.git',
-    download_url = 'https://github.com/matousc89/padasip.git/tarball/0.1',
+    url = 'http://matousc89.github.io/padasip/',
+#    download_url = 'https://github.com/matousc89/padasip/',
     keywords = ['adaptive', 'signal-processing'],
     install_requires=[
         'numpy',
-    ],
+    ],    
+    bugtrack_url = "https://github.com/matousc89/padasip/issues", 
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'License :: OSI Approved :: MIT License',

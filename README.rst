@@ -19,9 +19,9 @@ http://matousc89.github.io/padasip/
 Current Features
 ================
 
-*********
+******************
 Adaptive Filters
-*********
+******************
 
 The library features multiple adaptive filters. Input vectors for filters can be
 constructed manually or with the assistance of included functions.

@@ -7,10 +7,13 @@ import numpy as np
 ### data normalization
 def standardize(x, offset=None, scale=None):
     """
-    This function standardizes the series.
-
-    xs = (x - offset) / scale
-
+    This function standardizes (z-score) the series according to equation
+    
+    :math:`\\textbf{x}_s = \\frac{\\textbf{x} - a}{b}`
+    
+    where :math:`\\textbf{x}` is time series to standardize,
+    :math:`a` is offset to remove and :math:`b` scale to remove
+    
     Args:
 
     * `x` : series (1 dimensional array)
@@ -27,8 +30,8 @@ def standardize(x, offset=None, scale=None):
 
     * `xs` : standardized series
 
-    Example:
 
+    Example:
 
         >>> import numpy as np
         >>> import padasip as pa
@@ -67,9 +70,13 @@ def standardize(x, offset=None, scale=None):
 
 def standardize_back(xs, offset, scale):
     """
-    This function transforms series to the original score.
+    This function transforms series to the original score according to
+    equation:
 
-    x = xs * scale + offset
+    :math:`\\textbf{x} = \\textbf{x}_s \cdot b + a`
+    
+    where :math:`\\textbf{x}` is time series to de-standardize,
+    :math:`a` is offset to add and :math:`b` desired scaling factor.
 
     Args:
 

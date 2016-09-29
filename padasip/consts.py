@@ -1,4 +1,6 @@
 """
+.. versionadded:: 0.1
+
 All settings (constants) for the whole library are stored in this file.
 These settings are often used in multiple files, thus why it is all in one file.
 """
@@ -109,5 +111,24 @@ RO_GNGD_MIN = 0.
 RO_GNGD_MAX = 1.
 """ Minimal allowed regularization term for GNGD algorithm """
 
+### AP adaptive filter
+
+MU_AP = 0.1
+""" Default learning rate for AP algorithm """
+
+MU_AP_MIN = 0.
+""" Minimal allowed learning rate for AP algorithm """
+
+MU_AP_MAX = 1000.
+""" Minimal allowed learning rate for AP algorithm """
+
+EPS_AP = 0.001
+""" Default regularization term for AP algorithm """
+
+EPS_AP_MIN = 0.
+""" Minimal allowed regularization term for AP algorithm """
+
+EPS_AP_MAX = 1000.
+""" Minimal allowed regularization term for AP algorithm """
 
 

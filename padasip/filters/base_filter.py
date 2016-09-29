@@ -1,3 +1,6 @@
+"""
+.. versionchanged:: 0.4
+"""
 import numpy as np
 import padasip.consts as co
 
@@ -30,7 +33,7 @@ class AdaptiveFilter():
         """
         if type(w) == str:
             if w == "random":
-                w = np.random.random(n)-0.5
+                w = np.random.normal(0, 0.5, n)
             elif w == "zeros":
                 w = np.zeros(n)
             else:
@@ -94,6 +97,17 @@ class AdaptiveFilter():
                 raise ValueError('Parameter {} is not in range <{}, {}>'
                     .format(name, low, high))    
         return param 
+        
+    def check_int(self, param, error_msg):
+        """
+        This function check if the parameter is int.
+        If yes, the function returns the parameter,
+        if not, it raises error message.
+        """
+        if type(param) == int:
+            return param
+        else:
+            raise ValueError(error_msg)   
 
     def check_int_param(self, param, low, high, name):
         """

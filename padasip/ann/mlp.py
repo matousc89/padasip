@@ -85,7 +85,7 @@ where the :math:`m` is the amount of nodes on input of given node.
 References
 ***************
 
-.. bibliography:: ../../references.bib
+.. bibliography:: mlp.bib
     :style: plain
 
 Code Explanation

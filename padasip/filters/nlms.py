@@ -1,6 +1,62 @@
 """
 .. versionadded:: 0.1
 
+The normalized lest-mean-squares (NLMS) adaptive filter
+:cite:`mandic2004generalized`
+is an extension of the popular LMS adaptive filter (:ref:`filter-lms-label`).
+
+The NLMS filter can be created as follows
+
+    >>> import padasip as pa
+    >>> pa.filters.FilterNLMS(n)
+    
+where `n` is the size (number of taps) of the filter.
+
+Content of this page:
+
+.. contents::
+   :local:
+   :depth: 1
+
+Algorithm Explanation
+*********************** 
+
+The NLMS is extension of LMS filter. See :ref:`filter-lms-label`
+for explanation of the algorithm behind.
+
+The extension is based on normalization of learning rate.
+The learning rage :math:`\mu` is replaced by learning rate :math:`\eta(k)`
+normalized with every new sample according to input power as follows
+
+:math:`\eta (k) = \\frac{\mu}{\epsilon + || \\textbf{x}(k) ||^2}`,
+
+where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and 
+:math:`\epsilon` is a small positive constant (regularization term).
+This constant is introduced to preserve the stability in cases where
+the input is close to zero.
+
+Stability and Optimal Performance
+**********************************
+
+The stability of the NLMS filter si given as follows
+
+:math:`0 \le \mu \le 2 + \\frac{2\epsilon}{||\\textbf{x}(k)||^2}`,
+
+or in case without regularization term :math:`\epsilon`
+
+:math:`\mu \in <0, 2>`.
+
+In other words, if you use the zero or only small key argument `\eps`,
+the key argument `\mu` should be between 0 and 2. Best convergence
+should be produced by `mu=1.` according to theory. However in practice
+the optimal value can be strongly case specific.
+
+References
+***************
+
+.. bibliography:: nlms.bib
+    :style: plain
+
 Code Explanation
 ***************** 
 """

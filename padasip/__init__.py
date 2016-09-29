@@ -17,7 +17,6 @@ real-time measuring (sample-after-sample feeding).
     
     index
 
-
 License
 ************
 
@@ -62,7 +61,7 @@ check the complete documentation here
     :maxdepth: 2
     
     sources/preprocess
-    sources/filters
+    sources/filters_mod
     sources/ann
 
 
