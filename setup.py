@@ -14,11 +14,11 @@ setup(
     description = 'Python Adaptive Signal Processing',
     long_description = readme(),
     author = 'Matous Cejnek',
-    maintainer: "Matous Cejnek",
+    maintainer = "Matous Cejnek",
     author_email = 'matousc@gmail.com',
     license = 'MIT',
     url = 'http://matousc89.github.io/padasip/',
-#    download_url = 'https://github.com/matousc89/padasip/',
+    download_url = 'https://github.com/matousc89/padasip/',
     keywords = ['adaptive', 'signal-processing'],
     install_requires=[
         'numpy',
