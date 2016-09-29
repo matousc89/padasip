@@ -1,4 +1,5 @@
-from distutils.core import setup, find_packages
+from distutils.core import setup
+from setuptools import find_packages
 
 def readme():
     try:
@@ -9,7 +10,7 @@ def readme():
 
 setup(
     name = 'padasip',
-    packages = findpackages(),
+    packages = find_packages(exclude=("tests",)),
     version = '0.4',
     description = 'Python Adaptive Signal Processing',
     long_description = readme(),
