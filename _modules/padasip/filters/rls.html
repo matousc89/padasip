@@ -51,7 +51,7 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. versionadded:: 0.1</span>
 
-<span class="sd">The RLS filter can be created as follows</span>
+<span class="sd">The RLS filter :cite:`sayed1998recursive` can be created as follows</span>
 
 <span class="sd">    &gt;&gt;&gt; import padasip as pa</span>
 <span class="sd">    &gt;&gt;&gt; pa.filters.FilterRLS(n)</span>
@@ -63,6 +63,61 @@
 <span class="sd">.. contents::</span>
 <span class="sd">   :local:</span>
 <span class="sd">   :depth: 1</span>
+
+<span class="sd">Algorithm Explanation</span>
+<span class="sd">*********************** </span>
+
+<span class="sd">The RLS adaptive filter may be described as</span>
+
+<span class="sd">:math:`y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)`,</span>
+
+<span class="sd">or in a vector form</span>
+
+<span class="sd">:math:`y(k) = \\textbf{x}^T(k) \\textbf{w}(k)`,</span>
+
+<span class="sd">where :math:`k` is discrete time index, :math:`(.)^T` denotes the transposition,</span>
+<span class="sd">:math:`y(k)` is filtered signal,</span>
+<span class="sd">:math:`\\textbf{w}` is vector of filter adaptive parameters and</span>
+<span class="sd">:math:`\\textbf{x}` is input vector (for a filter of size :math:`n`) as follows</span>
+
+<span class="sd">:math:`\\textbf{x}(k) = [x_1(k), ...,  x_n(k)]`.</span>
+
+<span class="sd">The update is done as folows</span>
+
+<span class="sd">:math:`\\textbf{w}(k+1) = \\textbf{w}(k) + \Delta \\textbf{w}(k)`</span>
+
+<span class="sd">where :math:`\Delta \\textbf{w}(k)` is obtained as follows</span>
+
+<span class="sd">:math:`\Delta \\textbf{w}(k) = \\textbf{R}(k) \\textbf{x}(k) e(k)`,</span>
+
+<span class="sd">where :math:`e(k)` is error and it is estimated according to filter output</span>
+<span class="sd">and desired value :math:`d(k)` as follows</span>
+
+<span class="sd">:math:`e(k) = d(k) - y(k)`</span>
+
+<span class="sd">The :math:`\\textbf{R}(k)` is inverse of autocorrelation matrix</span>
+<span class="sd">and it is calculated as follows</span>
+
+<span class="sd">:math:`\\textbf{R}(k) = \\frac{1}{\\mu}(</span>
+<span class="sd">\\textbf{R}(k-1) -</span>
+<span class="sd">\\frac{\\textbf{R}(k-1)\\textbf{x}(k) \\textbf{x}(k)^{T} \\textbf{R}(k-1)}</span>
+<span class="sd">{\\mu + \\textbf{x}(k)^{T}\\textbf{R}(k-1)\\textbf{x}(k)}</span>
+<span class="sd">)`.</span>
+
+<span class="sd">The initial value of autocorrelation matrix should be set to</span>
+
+<span class="sd">:math:`\\textbf{R}(0) = \\frac{1}{\\delta} \\textbf{I}`,</span>
+
+<span class="sd">where :math:`\\textbf{I}` is identity matrix and :math:`\delta`</span>
+<span class="sd">is small positive constant.</span>
+
+<span class="sd">Stability and Optimal Performance</span>
+<span class="sd">*************************************</span>
+
+<span class="sd">Make the RLS working correctly with a real data can be tricky.</span>
+<span class="sd">The forgetting factor :math:`\\mu` should be in range from 0 to 1.</span>
+<span class="sd">But in a lot of cases it works only with values close to 1</span>
+<span class="sd">(for example something like 0.99).</span>
 
 <span class="sd">Minimal Working Examples</span>
 <span class="sd">**************************</span>
@@ -142,6 +197,13 @@
 <span class="sd">    plt.subplot(212);plt.title(&quot;Filter error&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
 <span class="sd">    plt.plot(10*np.log10((log_d-log_y)**2),&quot;r&quot;, label=&quot;e - error [dB]&quot;)</span>
 <span class="sd">    plt.legend(); plt.tight_layout(); plt.show()</span>
+
+
+<span class="sd">References</span>
+<span class="sd">***************</span>
+
+<span class="sd">.. bibliography:: rls.bib</span>
+<span class="sd">    :style: plain</span>
 
 
 <span class="sd">Code Explanation</span>

@@ -54,7 +54,7 @@
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.1.</span></p>
 </div>
-<p>The RLS filter can be created as follows</p>
+<p>The RLS filter <a class="reference internal" href="#sayed1998recursive" id="id1">[1]</a> can be created as follows</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterRLS</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 </pre></div>
@@ -63,12 +63,52 @@
 <p>Content of this page:</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#minimal-working-examples" id="id1">Minimal Working Examples</a></li>
-<li><a class="reference internal" href="#code-explanation" id="id2">Code Explanation</a></li>
+<li><a class="reference internal" href="#algorithm-explanation" id="id2">Algorithm Explanation</a></li>
+<li><a class="reference internal" href="#stability-and-optimal-performance" id="id3">Stability and Optimal Performance</a></li>
+<li><a class="reference internal" href="#minimal-working-examples" id="id4">Minimal Working Examples</a></li>
+<li><a class="reference internal" href="#references" id="id5">References</a></li>
+<li><a class="reference internal" href="#code-explanation" id="id6">Code Explanation</a></li>
 </ul>
 </div>
+<div class="section" id="algorithm-explanation">
+<h2><a class="toc-backref" href="#id2">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<p>The RLS adaptive filter may be described as</p>
+<p><span class="math">\(y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)\)</span>,</p>
+<p>or in a vector form</p>
+<p><span class="math">\(y(k) = \textbf{x}^T(k) \textbf{w}(k)\)</span>,</p>
+<p>where <span class="math">\(k\)</span> is discrete time index, <span class="math">\((.)^T\)</span> denotes the transposition,
+<span class="math">\(y(k)\)</span> is filtered signal,
+<span class="math">\(\textbf{w}\)</span> is vector of filter adaptive parameters and
+<span class="math">\(\textbf{x}\)</span> is input vector (for a filter of size <span class="math">\(n\)</span>) as follows</p>
+<p><span class="math">\(\textbf{x}(k) = [x_1(k), ...,  x_n(k)]\)</span>.</p>
+<p>The update is done as folows</p>
+<p><span class="math">\(\textbf{w}(k+1) = \textbf{w}(k) + \Delta \textbf{w}(k)\)</span></p>
+<p>where <span class="math">\(\Delta \textbf{w}(k)\)</span> is obtained as follows</p>
+<p><span class="math">\(\Delta \textbf{w}(k) = \textbf{R}(k) \textbf{x}(k) e(k)\)</span>,</p>
+<p>where <span class="math">\(e(k)\)</span> is error and it is estimated according to filter output
+and desired value <span class="math">\(d(k)\)</span> as follows</p>
+<p><span class="math">\(e(k) = d(k) - y(k)\)</span></p>
+<p>The <span class="math">\(\textbf{R}(k)\)</span> is inverse of autocorrelation matrix
+and it is calculated as follows</p>
+<p><span class="math">\(\textbf{R}(k) = \frac{1}{\mu}(
+\textbf{R}(k-1) -
+\frac{\textbf{R}(k-1)\textbf{x}(k) \textbf{x}(k)^{T} \textbf{R}(k-1)}
+{\mu + \textbf{x}(k)^{T}\textbf{R}(k-1)\textbf{x}(k)}
+)\)</span>.</p>
+<p>The initial value of autocorrelation matrix should be set to</p>
+<p><span class="math">\(\textbf{R}(0) = \frac{1}{\delta} \textbf{I}\)</span>,</p>
+<p>where <span class="math">\(\textbf{I}\)</span> is identity matrix and <span class="math">\(\delta\)</span>
+is small positive constant.</p>
+</div>
+<div class="section" id="stability-and-optimal-performance">
+<h2><a class="toc-backref" href="#id3">Stability and Optimal Performance</a><a class="headerlink" href="#stability-and-optimal-performance" title="Permalink to this headline">¶</a></h2>
+<p>Make the RLS working correctly with a real data can be tricky.
+The forgetting factor <span class="math">\(\mu\)</span> should be in range from 0 to 1.
+But in a lot of cases it works only with values close to 1
+(for example something like 0.99).</p>
+</div>
 <div class="section" id="minimal-working-examples">
-<h2><a class="toc-backref" href="#id1">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
 <p>If you have measured data you may filter it as follows</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -141,8 +181,18 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="references">
+<h2><a class="toc-backref" href="#id5">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="bibtex-bibliography-sources/filters/rls-0"><table class="docutils citation" frame="void" id="sayed1998recursive" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Ali&nbsp;H Sayed and Thomas Kailath. Recursive least-squares adaptive filters. <em>The Digital Signal Processing Handbook</em>, pages 21–1, 1998.</td></tr>
+</tbody>
+</table>
+</p>
+</div>
 <div class="section" id="code-explanation">
-<h2><a class="toc-backref" href="#id2">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="padasip.filters.rls.FilterRLS">
 <em class="property">class </em><code class="descclassname">padasip.filters.rls.</code><code class="descname">FilterRLS</code><span class="sig-paren">(</span><em>n</em>, <em>mu=0.99</em>, <em>eps=0.1</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/rls.html#FilterRLS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.rls.FilterRLS" title="Permalink to this definition">¶</a></dt>
