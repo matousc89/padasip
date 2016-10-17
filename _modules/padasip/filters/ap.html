@@ -67,6 +67,12 @@
 <span class="sd">    </span>
 <span class="sd">where `n` is the size of the filter.</span>
 
+<span class="sd">Content of this page:</span>
+
+<span class="sd">.. contents::</span>
+<span class="sd">   :local:</span>
+<span class="sd">   :depth: 1</span>
+
 <span class="sd">Algorithm Explanation</span>
 <span class="sd">************************</span>
 
@@ -107,6 +113,8 @@
 <span class="sd">Minimal Working Example</span>
 <span class="sd">************************</span>
 
+<span class="sd">If you have measured data you may filter it as follows</span>
+
 <span class="sd">.. code-block:: python</span>
 <span class="sd">    </span>
 <span class="sd">    import numpy as np</span>
@@ -133,6 +141,53 @@
 <span class="sd">    plt.tight_layout()</span>
 <span class="sd">    plt.show()</span>
 
+<span class="sd">An example how to filter data measured in real-time</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import numpy as np</span>
+<span class="sd">    import matplotlib.pylab as plt</span>
+<span class="sd">    import padasip as pa </span>
+
+<span class="sd">    # these two function supplement your online measurment</span>
+<span class="sd">    def measure_x():</span>
+<span class="sd">        # it produces input vector of size 3</span>
+<span class="sd">        x = np.random.random(3)</span>
+<span class="sd">        return x</span>
+<span class="sd">        </span>
+<span class="sd">    def measure_d(x):</span>
+<span class="sd">        # meausure system output</span>
+<span class="sd">        d = 2*x[0] + 1*x[1] - 1.5*x[2]</span>
+<span class="sd">        return d</span>
+<span class="sd">        </span>
+<span class="sd">    N = 100</span>
+<span class="sd">    log_d = np.zeros(N)</span>
+<span class="sd">    log_y = np.zeros(N)</span>
+<span class="sd">    filt = pa.filters.FilterAP(3, mu=1.)</span>
+<span class="sd">    for k in range(N):</span>
+<span class="sd">        # measure input</span>
+<span class="sd">        x = measure_x()</span>
+<span class="sd">        # predict new value</span>
+<span class="sd">        y = filt.predict(x)</span>
+<span class="sd">        # do the important stuff with prediction output</span>
+<span class="sd">        pass    </span>
+<span class="sd">        # measure output</span>
+<span class="sd">        d = measure_d(x)</span>
+<span class="sd">        # update filter</span>
+<span class="sd">        filt.adapt(d, x)</span>
+<span class="sd">        # log values</span>
+<span class="sd">        log_d[k] = d</span>
+<span class="sd">        log_y[k] = y</span>
+<span class="sd">        </span>
+<span class="sd">    ### show results</span>
+<span class="sd">    plt.figure(figsize=(15,9))</span>
+<span class="sd">    plt.subplot(211);plt.title(&quot;Adaptation&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(log_d,&quot;b&quot;, label=&quot;d - target&quot;)</span>
+<span class="sd">    plt.plot(log_y,&quot;g&quot;, label=&quot;y - output&quot;);plt.legend()</span>
+<span class="sd">    plt.subplot(212);plt.title(&quot;Filter error&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(10*np.log10((log_d-log_y)**2),&quot;r&quot;, label=&quot;e - error [dB]&quot;)</span>
+<span class="sd">    plt.legend(); plt.tight_layout(); plt.show()</span>
+
 
 <span class="sd">References</span>
 <span class="sd">***************</span>
@@ -152,14 +207,12 @@
 
 <div class="viewcode-block" id="FilterAP"><a class="viewcode-back" href="../../../sources/filters/ap.html#padasip.filters.ap.FilterAP">[docs]</a><span class="k">class</span> <span class="nc">FilterAP</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adaptive AP filter.</span>
-
-<span class="sd">    Args:</span>
+<span class="sd">    **Args:**</span>
 
 <span class="sd">    * `n` : length of filter (integer) - how many input is input array</span>
 <span class="sd">        (row of input matrix)</span>
 
-<span class="sd">    Kwargs:</span>
+<span class="sd">    **Kwargs:**</span>
 
 <span class="sd">    * `order` : projection order (integer) - how many input vectors</span>
 <span class="sd">        are in one input matrix</span>
@@ -203,7 +256,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adapt weights according one desired value and its input.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : desired value (float)</span>
 
@@ -227,14 +280,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function filters multiple samples in a row.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : desired value (1 dimensional array)</span>
 
 <span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
 <span class="sd">            columns are input arrays.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 
 <span class="sd">        * `y` : output value (1 dimensional array).</span>
 <span class="sd">            The size corresponds with the desired value.</span>

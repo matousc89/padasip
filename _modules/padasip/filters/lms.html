@@ -116,7 +116,7 @@
 <span class="sd">Minimal Working Examples</span>
 <span class="sd">**************************</span>
 
-<span class="sd">If you have measured data you can filter it as follows</span>
+<span class="sd">If you have measured data you may filter it as follows</span>
 
 <span class="sd">.. code-block:: python</span>
 
@@ -144,7 +144,7 @@
 <span class="sd">    plt.tight_layout()</span>
 <span class="sd">    plt.show()</span>
 
-<span class="sd">Example how to filter data measured in real-time</span>
+<span class="sd">An example how to filter data measured in real-time</span>
 
 <span class="sd">.. code-block:: python</span>
 
@@ -210,12 +210,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class represents an adaptive LMS filter.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    **Args:**</span>
 
 <span class="sd">    * `n` : length of filter (integer) - how many input is input array</span>
 <span class="sd">        (row of input matrix)</span>
 
-<span class="sd">    Kwargs:</span>
+<span class="sd">    **Kwargs:**</span>
 
 <span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
 <span class="sd">        the filter may have bad performance. If it is too high,</span>
@@ -245,7 +245,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adapt weights according one desired value and its input.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : desired value (float)</span>
 
@@ -259,14 +259,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function filters multiple samples in a row.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : desired value (1 dimensional array)</span>
 
 <span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
 <span class="sd">            input arrays.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 
 <span class="sd">        * `y` : output value (1 dimensional array).</span>
 <span class="sd">            The size corresponds with the desired value.</span>
@@ -305,14 +305,14 @@
 <span class="sd">        This function estimates novelty in data</span>
 <span class="sd">        according to the learning effort.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : desired value (1 dimensional array)</span>
 
 <span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
 <span class="sd">            columns are input arrays.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 
 <span class="sd">        * `y` : output value (1 dimensional array).</span>
 <span class="sd">            The size corresponds with the desired value.</span>

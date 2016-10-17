@@ -68,8 +68,17 @@ as the additional input vectors in every sample.</p>
 </pre></div>
 </div>
 <p>where <cite>n</cite> is the size of the filter.</p>
+<p>Content of this page:</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#algorithm-explanation" id="id2">Algorithm Explanation</a></li>
+<li><a class="reference internal" href="#minimal-working-example" id="id3">Minimal Working Example</a></li>
+<li><a class="reference internal" href="#references" id="id4">References</a></li>
+<li><a class="reference internal" href="#code-explanation" id="id5">Code Explanation</a></li>
+</ul>
+</div>
 <div class="section" id="algorithm-explanation">
-<h2>Algorithm Explanation<a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
 <p>The input for AP filter is created as follows</p>
 <p><span class="math">\(\textbf{X}_{AP}(k) = (\textbf{x}(k), ..., \textbf{x}(k-L))\)</span>,</p>
 <p>where <span class="math">\(\textbf{X}_{AP}\)</span> is filter input, <span class="math">\(L\)</span> is projection order,
@@ -92,7 +101,8 @@ vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
 <span class="math">\(\textbf{e}_{AP}(k)\)</span> for error.</p>
 </div>
 <div class="section" id="minimal-working-example">
-<h2>Minimal Working Example<a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Minimal Working Example</a><a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<p>If you have measured data you may filter it as follows</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
@@ -118,9 +128,54 @@ vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>An example how to filter data measured in real-time</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
+
+<span class="c1"># these two function supplement your online measurment</span>
+<span class="k">def</span> <span class="nf">measure_x</span><span class="p">():</span>
+    <span class="c1"># it produces input vector of size 3</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+    
+<span class="k">def</span> <span class="nf">measure_d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1"># meausure system output</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">d</span>
+    
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">log_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">log_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterAP</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="c1"># measure input</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">measure_x</span><span class="p">()</span>
+    <span class="c1"># predict new value</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># do the important stuff with prediction output</span>
+    <span class="k">pass</span>    
+    <span class="c1"># measure output</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">measure_d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># update filter</span>
+    <span class="n">filt</span><span class="o">.</span><span class="n">adapt</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="c1"># log values</span>
+    <span class="n">log_d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+    <span class="n">log_y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+    
+<span class="c1">### show results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Adaptation&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_d</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;d - target&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_y</span><span class="p">,</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y - output&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Filter error&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">((</span><span class="n">log_d</span><span class="o">-</span><span class="n">log_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;e - error [dB]&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p id="bibtex-bibliography-sources/filters/ap-0"><table class="docutils citation" frame="void" id="gonzalez2012affine" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -130,12 +185,11 @@ vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
 </p>
 </div>
 <div class="section" id="code-explanation">
-<h2>Code Explanation<a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="padasip.filters.ap.FilterAP">
 <em class="property">class </em><code class="descclassname">padasip.filters.ap.</code><code class="descname">FilterAP</code><span class="sig-paren">(</span><em>n</em>, <em>order=5</em>, <em>mu=0.1</em>, <em>eps=0.001</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adaptive AP filter.</p>
-<p>Args:</p>
+<dd><p><strong>Args:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>n</cite></dt>
@@ -144,7 +198,7 @@ vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
 </dl>
 </li>
 </ul>
-<p>Kwargs:</p>
+<p><strong>Kwargs:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>order</cite></dt>
@@ -177,7 +231,7 @@ for ill-conditioned input data.</p>
 <dt id="padasip.filters.ap.FilterAP.adapt">
 <code class="descname">adapt</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP.adapt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP.adapt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adapt weights according one desired value and its input.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul class="simple">
 <li><cite>d</cite> : desired value (float)</li>
 <li><cite>x</cite> : input array (1-dimensional array)</li>
@@ -188,7 +242,7 @@ for ill-conditioned input data.</p>
 <dt id="padasip.filters.ap.FilterAP.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function filters multiple samples in a row.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul>
 <li><p class="first"><cite>d</cite> : desired value (1 dimensional array)</p>
 </li>
@@ -199,7 +253,7 @@ for ill-conditioned input data.</p>
 </dl>
 </li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>y</cite></dt>
