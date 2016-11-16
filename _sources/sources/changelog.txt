@@ -3,6 +3,9 @@
 Changelog
 ===========
 
+**Version 0.5** *Released: 2016-11-16*
+ Bugfix according to issue opened by https://github.com/lolpenguin
+
 **Version 0.4** *Released: 2016-09-29*
  Added :ref:`filter-ap-label`. And also the first unit tests were implemented.
 
