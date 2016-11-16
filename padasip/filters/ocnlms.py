@@ -154,7 +154,7 @@ class FilterOCNLMS(AdaptiveFilter):
             nu = self.mu / (self.eps + np.dot(x[k]-m_x, x[k]-m_x))
             dw = nu * e[k] * (x[k]-m_x)
             self.w += dw
-            self.w_history[k:] = self.w
+            self.w_history[k,:] = self.w
             self.update_memory_d(d[k])
         return y, e, self.w
 
@@ -211,7 +211,7 @@ class FilterOCNLMS(AdaptiveFilter):
             nu = self.mu / (self.eps + np.dot(x[k]-m_x, x[k]-m_x))
             dw = nu * e[k] * (x[k]-m_x)
             self.w += dw
-            self.w_history[k:] = self.w
+            self.w_history[k,:] = self.w
             nd[k,:] = dw * e[k]
             self.update_memory_d(d[k])
         return y, e, self.w_history, nd

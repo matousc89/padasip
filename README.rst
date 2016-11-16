@@ -35,6 +35,8 @@ So far it is possible to use following filters:
 
 - GNGD (generalized normalized gradient descent) adaptive filter
 
+- AP (affine projection) adaptive filter
+
 
 *************************
 Novelty/Outlier Detection

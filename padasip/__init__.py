@@ -37,16 +37,16 @@ All tutorials are created as Jupyter notebooks.
 You can open the tutorial as html, or you can download it as notebook.
 
 * Noise Cancelation, Identification and Prediction with Adaptive Filters
-    (`see online <tutorials/tutorial1.html>`_) (`download notebook <ipynb/tutorial1.ipynb>`_)
+    (`see online <tutorials/tutorial1.html>`_) (`download notebook <notebooks/tutorial1.ipynb>`_)
 
 * Adaptive Novelty Detection
-    (`see online <tutorials/tutorial2.html>`_) (`download notebook <ipynb/tutorial2.ipynb>`_)
+    (`see online <tutorials/tutorial2.html>`_) (`download notebook <notebooks/tutorial2.ipynb>`_)
     
 * Adaptive filters in Real-time with PADASIP Module
-    (`see online <tutorials/tutorial3.html>`_) (`download notebook <ipynb/tutorial3.ipynb>`_)
+    (`see online <tutorials/tutorial3.html>`_) (`download notebook <notebooks/tutorial3.ipynb>`_)
 
 * Multi-layer Perceptron (MLP) Neural Network - Basic Examples
-    (`see online <tutorials/mlp_tutorial.html>`_) (`download notebook <ipynb/mlp_tutorial.ipynb>`_)
+    (`see online <tutorials/mlp_tutorial.html>`_) (`download notebook <notebooks/mlp_tutorial.ipynb>`_)
 
 
 The User Quide

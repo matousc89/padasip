@@ -17,6 +17,12 @@ The AP filter can be created as follows
     
 where `n` is the size of the filter.
 
+Content of this page:
+
+.. contents::
+   :local:
+   :depth: 1
+
 Algorithm Explanation
 ************************
 
@@ -57,6 +63,8 @@ vectors: :math:`\\textbf{y}_{AP}(k)` for output and
 Minimal Working Example
 ************************
 
+If you have measured data you may filter it as follows
+
 .. code-block:: python
     
     import numpy as np
@@ -83,6 +91,53 @@ Minimal Working Example
     plt.tight_layout()
     plt.show()
 
+An example how to filter data measured in real-time
+
+.. code-block:: python
+
+    import numpy as np
+    import matplotlib.pylab as plt
+    import padasip as pa 
+
+    # these two function supplement your online measurment
+    def measure_x():
+        # it produces input vector of size 3
+        x = np.random.random(3)
+        return x
+        
+    def measure_d(x):
+        # meausure system output
+        d = 2*x[0] + 1*x[1] - 1.5*x[2]
+        return d
+        
+    N = 100
+    log_d = np.zeros(N)
+    log_y = np.zeros(N)
+    filt = pa.filters.FilterAP(3, mu=1.)
+    for k in range(N):
+        # measure input
+        x = measure_x()
+        # predict new value
+        y = filt.predict(x)
+        # do the important stuff with prediction output
+        pass    
+        # measure output
+        d = measure_d(x)
+        # update filter
+        filt.adapt(d, x)
+        # log values
+        log_d[k] = d
+        log_y[k] = y
+        
+    ### show results
+    plt.figure(figsize=(15,9))
+    plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
+    plt.plot(log_d,"b", label="d - target")
+    plt.plot(log_y,"g", label="y - output");plt.legend()
+    plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
+    plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
+    plt.legend(); plt.tight_layout(); plt.show()
+
 
 References
 ***************
@@ -102,14 +157,12 @@ from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterAP(AdaptiveFilter):
     """
-    Adaptive AP filter.
-
-    Args:
+    **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
         (row of input matrix)
 
-    Kwargs:
+    **Kwargs:**
 
     * `order` : projection order (integer) - how many input vectors
         are in one input matrix
@@ -153,7 +206,7 @@ class FilterAP(AdaptiveFilter):
         """
         Adapt weights according one desired value and its input.
 
-        Args:
+        **Args:**
 
         * `d` : desired value (float)
 
@@ -177,14 +230,14 @@ class FilterAP(AdaptiveFilter):
         """
         This function filters multiple samples in a row.
 
-        Args:
+        **Args:**
 
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
             columns are input arrays.
 
-        Returns:
+        **Returns:**
 
         * `y` : output value (1 dimensional array).
             The size corresponds with the desired value.
@@ -227,6 +280,6 @@ class FilterAP(AdaptiveFilter):
             dw_part2 = np.linalg.solve(dw_part1, self.ide)
             dw = np.dot(self.x_mem, np.dot(dw_part2, self.e_mem))
             self.w += self.mu * dw           
-            self.w_history[k:] = self.w
+            self.w_history[k,:] = self.w
         return y, e, self.w
         

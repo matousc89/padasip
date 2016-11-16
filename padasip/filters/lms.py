@@ -44,7 +44,7 @@ where :math:`\Delta \\textbf{w}(k)` is
 :math:`\Delta \\textbf{w}(k) = \\frac{1}{2} \mu \\frac{\partial e^2(k)}
 { \partial \\textbf{w}(k)}\ = \mu \cdot e(k) \cdot \\textbf{x}(k)`,
 
-where :math:`\mu` is the learning rate (step size) and :math:`e`
+where :math:`\mu` is the learning rate (step size) and :math:`e(k)`
 is error defined as
 
 :math:`e(k) = d(k) - y(k)`.
@@ -66,7 +66,7 @@ then try the normalized LMS (:ref:`filter-nlms-label`).
 Minimal Working Examples
 **************************
 
-If you have measured data you can filter it as follows
+If you have measured data you may filter it as follows
 
 .. code-block:: python
 
@@ -94,7 +94,7 @@ If you have measured data you can filter it as follows
     plt.tight_layout()
     plt.show()
 
-Example how to filter data measured in real-time
+An example how to filter data measured in real-time
 
 .. code-block:: python
 
@@ -160,12 +160,12 @@ class FilterLMS(AdaptiveFilter):
     """
     This class represents an adaptive LMS filter.
 
-    Args:
+    **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
         (row of input matrix)
 
-    Kwargs:
+    **Kwargs:**
 
     * `mu` : learning rate (float). Also known as step size. If it is too slow,
         the filter may have bad performance. If it is too high,
@@ -195,7 +195,7 @@ class FilterLMS(AdaptiveFilter):
         """
         Adapt weights according one desired value and its input.
 
-        Args:
+        **Args:**
 
         * `d` : desired value (float)
 
@@ -209,14 +209,14 @@ class FilterLMS(AdaptiveFilter):
         """
         This function filters multiple samples in a row.
 
-        Args:
+        **Args:**
 
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples, columns are
             input arrays.
 
-        Returns:
+        **Returns:**
 
         * `y` : output value (1 dimensional array).
             The size corresponds with the desired value.
@@ -248,6 +248,7 @@ class FilterLMS(AdaptiveFilter):
             e[k] = d[k] - y[k]
             dw = self.mu * e[k] * x[k]
             self.w += dw
+            self.w_history[k,:] = self.w
         return y, e, self.w
         
     def novelty(self, d, x):
@@ -255,14 +256,14 @@ class FilterLMS(AdaptiveFilter):
         This function estimates novelty in data
         according to the learning effort.
 
-        Args:
+        **Args:**
 
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
             columns are input arrays.
 
-        Returns:
+        **Returns:**
 
         * `y` : output value (1 dimensional array).
             The size corresponds with the desired value.
@@ -300,7 +301,7 @@ class FilterLMS(AdaptiveFilter):
             dw = self.mu * e[k] * x[k]
             self.w += dw
             nd[k,:] = dw * e[k]
-            self.w_history[k:] = self.w
+            self.w_history[k,:] = self.w
         return y, e, self.w_history, nd
 
 
