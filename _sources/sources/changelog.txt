@@ -1,7 +1,11 @@
-.. _changelog-label:
+.. _changelog:
 
 Changelog
 ===========
+
+**Version 0.6**  *Released: 2016-12-15*
+ Added :ref:`preprocess-pca` and :ref:`preprocess-lda`. The whole documentation
+ for preprocess module was updated.
 
 **Version 0.5** *Released: 2016-11-16*
  Bugfix according to issue opened by https://github.com/lolpenguin
@@ -16,11 +20,8 @@ Changelog
  Added :ref:`filter-gngd-label`
 
 **Version 0.1** *Released: 2016-03-18*
- Created
- :ref:`filter-lms-label`,
- :ref:`filter-nlms-label`, 
- :ref:`filter-rls-label`,
- :ref:`preprocess-inputfromhistorylabel`,
- :ref:`preprocess-standardization-label`,
- :ref:`preprocess-destandardization-label` 
+ Created 
+ :ref:`filter-lms-label`, :ref:`filter-nlms-label`,
+ :ref:`filter-rls-label`, :ref:`preprocess-input_from_history-label`,
+ :ref:`preprocess-standardize-label`, :ref:`preprocess-standardize_back-label` 
 

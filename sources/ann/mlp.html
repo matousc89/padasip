@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Multi-layer Perceptron (MLP) &#8212; Padasip 0.5 documentation</title>
+    <title>Multi-layer Perceptron (MLP) &#8212; Padasip 0.6 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5',
+        VERSION:     '0.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.5 documentation" href="../../index.html" />
+    <link rel="top" title="Padasip 0.6 documentation" href="../../index.html" />
     <link rel="up" title="Artificial Neural Networks (ANN)" href="../ann.html" />
     <link rel="prev" title="Artificial Neural Networks (ANN)" href="../ann.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
@@ -157,16 +157,16 @@ the standard derivation estimated as follows</p>
 <dt id="padasip.ann.mlp.Layer.activation">
 <code class="descname">activation</code><span class="sig-paren">(</span><em>x</em>, <em>f='sigmoid'</em>, <em>der=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer.activation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer.activation" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function process values of layer outputs with activation function.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul class="simple">
 <li><cite>x</cite> : array to process (1-dimensional array)</li>
 </ul>
-<p>Kwargs:</p>
+<p><strong>Kwargs:</strong></p>
 <ul class="simple">
 <li><cite>f</cite> : activation function</li>
 <li><cite>der</cite> : normal output, or its derivation (bool)</li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul class="simple">
 <li>values processed with activation function (1-dimensional array)</li>
 </ul>
@@ -176,11 +176,11 @@ the standard derivation estimated as follows</p>
 <dt id="padasip.ann.mlp.Layer.predict">
 <code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function make forward pass through this layer (no update).</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul class="simple">
 <li><cite>x</cite> : input vector (1-dimensional array)</li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>y</cite></dt>
@@ -196,7 +196,7 @@ the standard derivation estimated as follows</p>
 <code class="descname">update</code><span class="sig-paren">(</span><em>w</em>, <em>e</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#Layer.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.Layer.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function make update according provided target
 and the last used input vector.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>d</cite></dt>
@@ -205,7 +205,7 @@ and the last used input vector.</p>
 </dl>
 </li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>w</cite></dt>
@@ -228,7 +228,7 @@ and the last used input vector.</p>
 <dt id="padasip.ann.mlp.NetworkMLP">
 <em class="property">class </em><code class="descclassname">padasip.ann.mlp.</code><code class="descname">NetworkMLP</code><span class="sig-paren">(</span><em>layers</em>, <em>n_input</em>, <em>outputs=1</em>, <em>activation='sigmoid'</em>, <em>mu='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class represents a Multi-layer Perceptron neural network.</p>
-<p>Args:</p>
+<p><em>Args:*</em></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>layers</cite></dt>
@@ -243,7 +243,7 @@ will have 2 nodes.</p>
 <li><p class="first"><cite>n_input</cite> : number of network inputs (int).</p>
 </li>
 </ul>
-<p>Kwargs:</p>
+<p><strong>Kwargs:</strong></p>
 <ul>
 <li><p class="first"><cite>outputs</cite> : number of network outputs (int). Default is 1.</p>
 </li>
@@ -270,11 +270,11 @@ will have 2 nodes.</p>
 <dt id="padasip.ann.mlp.NetworkMLP.predict">
 <code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function make forward pass through MLP (no update).</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul class="simple">
 <li><cite>x</cite> : input vector (1-dimensional array)</li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>y</cite></dt>
@@ -289,7 +289,7 @@ will have 2 nodes.</p>
 <dt id="padasip.ann.mlp.NetworkMLP.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for batch usage of already trained and tested MLP.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>x</cite></dt>
@@ -298,7 +298,7 @@ will have 2 nodes.</p>
 </dl>
 </li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>y</cite>: output vector (n-dimensional array). Every row represents</dt>
@@ -313,7 +313,7 @@ will have 2 nodes.</p>
 <dt id="padasip.ann.mlp.NetworkMLP.test">
 <code class="descname">test</code><span class="sig-paren">(</span><em>x</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for batch test of already trained MLP.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>x</cite></dt>
@@ -329,7 +329,7 @@ Target can be one or more values (in case of multiple outputs).</p>
 </dl>
 </li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>e</cite>: output vector (n-dimensional array). Every row represents</dt>
@@ -344,7 +344,7 @@ Target can be one or more values (in case of multiple outputs).</p>
 <dt id="padasip.ann.mlp.NetworkMLP.train">
 <code class="descname">train</code><span class="sig-paren">(</span><em>x</em>, <em>d</em>, <em>epochs=10</em>, <em>shuffle=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for batch training of MLP.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>x</cite></dt>
@@ -360,7 +360,7 @@ Target can be one or more values (in case of multiple outputs).</p>
 </dl>
 </li>
 </ul>
-<p>Kwargs:</p>
+<p><strong>Kwargs:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>epochs</cite></dt>
@@ -375,7 +375,7 @@ Target can be one or more values (in case of multiple outputs).</p>
 </dl>
 </li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>e</cite>: output vector (m-dimensional array). Every row represents</dt>
@@ -399,7 +399,7 @@ amount of epochs (<cite>N*epochs</cite>).</p>
 <code class="descname">update</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/ann/mlp.html#NetworkMLP.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.ann.mlp.NetworkMLP.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function make update according provided target
 and the last used input vector.</p>
-<p>Args:</p>
+<p><strong>Args:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>d</cite></dt>
@@ -408,7 +408,7 @@ and the last used input vector.</p>
 </dl>
 </li>
 </ul>
-<p>Returns:</p>
+<p><strong>Returns:</strong></p>
 <ul>
 <li><dl class="first docutils">
 <dt><cite>e</cite></dt>

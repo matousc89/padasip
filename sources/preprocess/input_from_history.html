@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Input Matrix Construction &#8212; Padasip 0.6 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Padasip 0.6 documentation" href="../../index.html" />
+    <link rel="up" title="Data Preprocessing" href="../preprocess.html" />
+    <link rel="next" title="Linear discriminant analysis (LDA)" href="lda.html" />
+    <link rel="prev" title="Data Preprocessing" href="../preprocess.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-padasip.preprocess.input_from_history">
+<span id="input-matrix-construction"></span><span id="preprocess-input-from-history-label"></span><h1>Input Matrix Construction<a class="headerlink" href="#module-padasip.preprocess.input_from_history" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.1.</span></p>
+</div>
+<p>This function creates input matrix from historical values.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#minimal-working-example" id="id5">Minimal Working Example</a></li>
+<li><a class="reference internal" href="#code-explanation" id="id6">Code Explanation</a></li>
+</ul>
+</div>
+<div class="section" id="minimal-working-example">
+<h2><a class="toc-backref" href="#id5">Minimal Working Example</a><a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<p>An example how to create input matrix from historical values</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">array([1, 2, 3, 4, 5, 6])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">input_from_history</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">array([[1, 2, 3],</span>
+<span class="go">       [2, 3, 4],</span>
+<span class="go">       [3, 4, 5],</span>
+<span class="go">       [4, 5, 6]])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-explanation">
+<h2><a class="toc-backref" href="#id6">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="padasip.preprocess.input_from_history.input_from_history">
+<code class="descclassname">padasip.preprocess.input_from_history.</code><code class="descname">input_from_history</code><span class="sig-paren">(</span><em>a</em>, <em>n</em>, <em>bias=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/input_from_history.html#input_from_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.input_from_history.input_from_history" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is function for creation of input matrix.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><cite>a</cite> : series (1 dimensional array)</li>
+<li><cite>n</cite> : size of input matrix row (int). It means how many samples         of previous history you want to use         as the filter input. It also represents the filter length.</li>
+</ul>
+<p><strong>Kwargs:</strong></p>
+<ul class="simple">
+<li><cite>bias</cite> : decides if the bias is used (Boolean). If True,         array of all ones is appended as a last column to matrix <cite>x</cite>.         So matrix <cite>x</cite> has <a href="#id1"><span class="problematic" id="id2">`</span></a>n`+1 columns.</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><cite>x</cite> : input matrix (2 dimensional array)         constructed from an array <cite>a</cite>. The length of <cite>x</cite>         is calculated as length of <cite>a</cite> - <cite>n</cite> + 1.         If the <cite>bias</cite> is used, then the amount of columns is <cite>n</cite> if not then         amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span></a>n`+1).</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#instalation">Instalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Input Matrix Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lda.html">Linear discriminant analysis (LDA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pca.html">Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardize.html">Data Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardize_back.html">Data De-standardization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../preprocess.html">Data Preprocessing</a><ul>
+      <li>Previous: <a href="../preprocess.html" title="previous chapter">Data Preprocessing</a></li>
+      <li>Next: <a href="lda.html" title="next chapter">Linear discriminant analysis (LDA)</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/sources/preprocess/input_from_history.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

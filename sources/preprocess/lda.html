@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Linear Discriminant Analysis (LDA) &#8212; Padasip 0.6 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Padasip 0.6 documentation" href="../../index.html" />
+    <link rel="up" title="Data Preprocessing" href="../preprocess.html" />
+    <link rel="next" title="Principal Component Analysis (PCA)" href="pca.html" />
+    <link rel="prev" title="Input Matrix Construction" href="input_from_history.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-padasip.preprocess.lda">
+<span id="linear-discriminant-analysis-lda"></span><span id="preprocess-lda"></span><h1>Linear Discriminant Analysis (LDA)<a class="headerlink" href="#module-padasip.preprocess.lda" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.6.</span></p>
+</div>
+<p>Linear discriminant analysis (LDA) <a class="reference internal" href="#fisher1936use" id="id1">[1]</a>
+is a method used to determine the features
+that separates some classes of items. The output of LDA may be used as
+a linear classifier, or for dimensionality reduction for purposes of
+classification.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#usage-explanation" id="id2">Usage Explanation</a></li>
+<li><a class="reference internal" href="#minimal-working-examples" id="id3">Minimal Working Examples</a></li>
+<li><a class="reference internal" href="#references" id="id4">References</a></li>
+<li><a class="reference internal" href="#code-explanation" id="id5">Code Explanation</a></li>
+</ul>
+</div>
+<p>See also: <a class="reference internal" href="pca.html#preprocess-pca"><span class="std std-ref">Principal Component Analysis (PCA)</span></a></p>
+<div class="section" id="usage-explanation">
+<h2><a class="toc-backref" href="#id2">Usage Explanation</a><a class="headerlink" href="#usage-explanation" title="Permalink to this headline">¶</a></h2>
+<p>For reduction of data-set <code class="code docutils literal"><span class="pre">x</span></code> with labels stored in array (<code class="code docutils literal"><span class="pre">labels</span></code>)
+to new dataset <code class="code docutils literal"><span class="pre">new_x</span></code> containg just <code class="code docutils literal"><span class="pre">n</span></code> number of
+columns</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">new_x</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> 
+</pre></div>
+</div>
+<p>The sorted array of scattermatrix eigenvalues for dataset <code class="code docutils literal"><span class="pre">x</span></code> described
+with variable <code class="code docutils literal"><span class="pre">labels</span></code> can be obtained as follows</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA_discriminants</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="minimal-working-examples">
+<h2><a class="toc-backref" href="#id3">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
+<p>In this example we create data-set <code class="code docutils literal"><span class="pre">x</span></code> of 150 random samples. Every sample
+is described by 4 values and label. The labels are stored in 
+array <code class="code docutils literal"><span class="pre">labels</span></code>.</p>
+<p>Firstly, it is good to see the eigenvalues of scatter matrix to determine
+how many rows is reasonable to reduce</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># constant seed to keep the results consistent</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">150</span> <span class="c1"># number of samples</span>
+<span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="c1"># names of classes</span>
+<span class="n">cols</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1"># number of features (columns in dataset)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span> <span class="c1"># random data</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span> <span class="c1"># random labels</span>
+
+<span class="k">print</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA_discriminants</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>what prints</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span>  <span class="mf">2.90863957e-02</span>   <span class="mf">2.28352079e-02</span>   <span class="mf">1.23545720e-18</span>  <span class="o">-</span><span class="mf">1.61163011e-18</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>From this output it is obvious that reasonable number of columns to keep is 2.
+The following code reduce the number of features to 2.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># constant seed to keep the results consistent</span>
+
+<span class="n">N</span> <span class="o">=</span> <span class="mi">150</span> <span class="c1"># number of samples</span>
+<span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="c1"># names of classes</span>
+<span class="n">cols</span> <span class="o">=</span> <span class="mi">4</span> <span class="c1"># number of features (columns in dataset)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span> <span class="c1"># random data</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span> <span class="c1"># random labels</span>
+
+<span class="n">new_x</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>to check if the size of new data-set is really correct we can print the shapes
+as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;Shape of original dataset: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> 
+<span class="go">Shape of original dataset: (150, 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;Shape of new dataset: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">Shape of new dataset: (150, 2)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="references">
+<h2><a class="toc-backref" href="#id4">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="bibtex-bibliography-sources/preprocess/lda-0"><table class="docutils citation" frame="void" id="fisher1936use" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Ronald&nbsp;A Fisher. The use of multiple measurements in taxonomic problems. <em>Annals of eugenics</em>, 7(2):179–188, 1936.</td></tr>
+</tbody>
+</table>
+</p>
+</div>
+<div class="section" id="code-explanation">
+<h2><a class="toc-backref" href="#id5">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="padasip.preprocess.lda.LDA">
+<code class="descclassname">padasip.preprocess.lda.</code><code class="descname">LDA</code><span class="sig-paren">(</span><em>x</em>, <em>labels</em>, <em>n=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear Discriminant Analysis function.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><cite>x</cite> : input matrix (2d array), every row represents new sample</li>
+<li><cite>labels</cite> : list of labels (iterable), every item should be label for         sample with corresponding index</li>
+</ul>
+<p><strong>Kwargs:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>n</cite></dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">number of features returned (integer) - how many columns </span><dd><p class="first last">should the output keep</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li>new_x : matrix with reduced size (number of columns are equal <cite>n</cite>)</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="padasip.preprocess.lda.LDA_base">
+<code class="descclassname">padasip.preprocess.lda.</code><code class="descname">LDA_base</code><span class="sig-paren">(</span><em>x</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base function used for Linear Discriminant Analysis.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><cite>x</cite> : input matrix (2d array), every row represents new sample</li>
+<li><cite>labels</cite> : list of labels (iterable), every item should be label for         sample with corresponding index</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><cite>eigenvalues</cite>, <cite>eigenvectors</cite> : eigenvalues and eigenvectors         from LDA analysis</li>
+</ul>
+</dd></dl>
+
+<dl class="function">
+<dt id="padasip.preprocess.lda.LDA_discriminants">
+<code class="descclassname">padasip.preprocess.lda.</code><code class="descname">LDA_discriminants</code><span class="sig-paren">(</span><em>x</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA_discriminants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA_discriminants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear Discriminant Analysis helper for determination how many columns of
+data should be reduced.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><cite>x</cite> : input matrix (2d array), every row represents new sample</li>
+<li><cite>labels</cite> : list of labels (iterable), every item should be label for         sample with corresponding index</li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><cite>discriminants</cite> : array of eigenvalues sorted in descending order</li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#instalation">Instalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="input_from_history.html">Input Matrix Construction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Linear Discriminant Analysis (LDA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pca.html">Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardize.html">Data Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standardize_back.html">Data De-standardization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../preprocess.html">Data Preprocessing</a><ul>
+      <li>Previous: <a href="input_from_history.html" title="previous chapter">Input Matrix Construction</a></li>
+      <li>Next: <a href="pca.html" title="next chapter">Principal Component Analysis (PCA)</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../../_sources/sources/preprocess/lda.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

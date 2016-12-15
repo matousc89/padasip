@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Data Preprocessing &#8212; Padasip 0.5 documentation</title>
+    <title>Data Preprocessing &#8212; Padasip 0.6 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5',
+        VERSION:     '0.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.5 documentation" href="../index.html" />
-    <link rel="next" title="Adaptive Filters" href="filters_mod.html" />
+    <link rel="top" title="Padasip 0.6 documentation" href="../index.html" />
+    <link rel="next" title="Input Matrix Construction" href="preprocess/input_from_history.html" />
     <link rel="prev" title="Padasip" href="../index.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -50,135 +50,16 @@
             
   <div class="section" id="module-padasip.preprocess">
 <span id="data-preprocessing"></span><span id="preprocess-label"></span><h1>Data Preprocessing<a class="headerlink" href="#module-padasip.preprocess" title="Permalink to this headline">¶</a></h1>
-<p>This sub-module contains functions usefull for data preprocessing.</p>
-<div class="section" id="data-standardization">
-<span id="preprocess-standardization-label"></span><h2>Data Standardization<a class="headerlink" href="#data-standardization" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="padasip.preprocess.standardize">
-<code class="descclassname">padasip.preprocess.</code><code class="descname">standardize</code><span class="sig-paren">(</span><em>x</em>, <em>offset=None</em>, <em>scale=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/padasip/preprocess.html#standardize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.standardize" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function standardizes (z-score) the series according to equation</p>
-<p><span class="math">\(\textbf{x}_s = \frac{\textbf{x} - a}{b}\)</span></p>
-<p>where <span class="math">\(\textbf{x}\)</span> is time series to standardize,
-<span class="math">\(a\)</span> is offset to remove and <span class="math">\(b\)</span> scale to remove</p>
-<p>Args:</p>
-<ul class="simple">
-<li><cite>x</cite> : series (1 dimensional array)</li>
-</ul>
-<p>Kwargs:</p>
+<p>In this module are placed functions related to preprocessing of data.</p>
+<p>Content</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li><dl class="first docutils">
-<dt><cite>offset</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">offset to remove (float). If not given,</span><dd><p class="first last">the mean value of <cite>x</cite> is used.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>scale</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">scale (float). If not given,</span><dd><p class="first last">the standard deviation of <cite>x</cite> is used.</p>
-</dd>
-</dl>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess/input_from_history.html">Input Matrix Construction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess/lda.html">Linear Discriminant Analysis (LDA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess/pca.html">Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess/standardize.html">Data Standardization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preprocess/standardize_back.html">Data De-standardization</a></li>
 </ul>
-<p>Returns:</p>
-<ul class="simple">
-<li><cite>xs</cite> : standardized series</li>
-</ul>
-<p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="go">0.49755420774866677</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-<span class="go">0.29015765297767376</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">standardize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="go">1.4123424652012772e-16</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">xs</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-<span class="go">0.99999999999999989</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</div>
-<div class="section" id="data-de-standardization">
-<span id="preprocess-destandardization-label"></span><h2>Data De-standardization<a class="headerlink" href="#data-de-standardization" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="padasip.preprocess.standardize_back">
-<code class="descclassname">padasip.preprocess.</code><code class="descname">standardize_back</code><span class="sig-paren">(</span><em>xs</em>, <em>offset</em>, <em>scale</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/padasip/preprocess.html#standardize_back"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.standardize_back" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function transforms series to the original score according to
-equation:</p>
-<p><span class="math">\(\textbf{x} = \textbf{x}_s \cdot b + a\)</span></p>
-<p>where <span class="math">\(\textbf{x}\)</span> is time series to de-standardize,
-<span class="math">\(a\)</span> is offset to add and <span class="math">\(b\)</span> desired scaling factor.</p>
-<p>Args:</p>
-<ul class="simple">
-<li><cite>xs</cite> : standardized input (1 dimensional array)</li>
-<li><cite>offset</cite> : offset to add (float).</li>
-<li><cite>scale</cite> : scale (float).</li>
-</ul>
-<p>Returns:</p>
-<ul class="simple">
-<li><cite>x</cite> : original (destandardised) series</li>
-</ul>
-</dd></dl>
-
-</div>
-<div class="section" id="input-matrix-constructor">
-<span id="preprocess-inputfromhistorylabel"></span><h2>Input Matrix Constructor<a class="headerlink" href="#input-matrix-constructor" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="padasip.preprocess.input_from_history">
-<code class="descclassname">padasip.preprocess.</code><code class="descname">input_from_history</code><span class="sig-paren">(</span><em>a</em>, <em>n</em>, <em>bias=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/padasip/preprocess.html#input_from_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.input_from_history" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function creates input matrix from historical values.</p>
-<p>Args:</p>
-<ul>
-<li><p class="first"><cite>a</cite> : series (1 dimensional array)</p>
-</li>
-<li><dl class="first docutils">
-<dt><cite>n</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">size of input matrix row (int).</span><dd><p class="first last">It means how many samples of previous history you want to use
-as the filter input. It also represents the filter length.</p>
-</dd>
-</dl>
-</li>
-</ul>
-<p>Kwargs:</p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>bias</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">decides if the bias is used (Boolean). If True,</span><dd><p class="first last">array of all ones is appended as a last column to matrix <cite>x</cite>.
-So matrix <cite>x</cite> has <a href="#id1"><span class="problematic" id="id2">`</span></a>n`+1 columns.</p>
-</dd>
-</dl>
-</li>
-</ul>
-<p>Returns:</p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>x</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">input matrix (2 dimensional array)</span><dd><p class="first last">constructed from an array <cite>a</cite>. The length of <cite>x</cite>
-is calculated as length of <cite>a</cite> - <cite>n</cite> + 1. 
-If the <cite>bias</cite> is used, then the amount of columns is <cite>n</cite> if not then
-amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span></a>n`+1).</p>
-</dd>
-</dl>
-</li>
-</ul>
-<p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
-<span class="go">array([1, 2, 3, 4, 5, 6])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">input_from_history</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">array([[1, 2, 3],</span>
-<span class="go">       [2, 3, 4],</span>
-<span class="go">       [3, 4, 5],</span>
-<span class="go">       [4, 5, 6]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </div>
 </div>
 
@@ -209,9 +90,11 @@ amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span><
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Data Preprocessing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#data-standardization">Data Standardization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-de-standardization">Data De-standardization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#input-matrix-constructor">Input Matrix Constructor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess/input_from_history.html">Input Matrix Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess/lda.html">Linear Discriminant Analysis (LDA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess/pca.html">Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess/standardize.html">Data Standardization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preprocess/standardize_back.html">Data De-standardization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="filters_mod.html">Adaptive Filters</a></li>
@@ -222,7 +105,7 @@ amount of columns is <a href="#id3"><span class="problematic" id="id4">`</span><
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="../index.html" title="previous chapter">Padasip</a></li>
-      <li>Next: <a href="filters_mod.html" title="next chapter">Adaptive Filters</a></li>
+      <li>Next: <a href="preprocess/input_from_history.html" title="next chapter">Input Matrix Construction</a></li>
   </ul></li>
 </ul>
 </div>

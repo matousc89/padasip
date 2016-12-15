@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>padasip.ann.mlp &#8212; Padasip 0.5 documentation</title>
+    <title>padasip.ann.mlp &#8212; Padasip 0.6 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.5',
+        VERSION:     '0.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.5 documentation" href="../../../index.html" />
+    <link rel="top" title="Padasip 0.6 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -178,19 +178,20 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function process values of layer outputs with activation function.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `x` : array to process (1-dimensional array) </span>
 
-<span class="sd">        Kwargs:</span>
+<span class="sd">        **Kwargs:**</span>
 
 <span class="sd">        * `f` : activation function</span>
 
 <span class="sd">        * `der` : normal output, or its derivation (bool)</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 
 <span class="sd">        * values processed with activation function (1-dimensional array)</span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">der</span><span class="p">:</span>
@@ -205,14 +206,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function make forward pass through this layer (no update).</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `x` : input vector (1-dimensional array)</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `y` : output of MLP (float or 1-diemnsional array).</span>
 <span class="sd">            Size depends on number of nodes in this layer.</span>
+<span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">x</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activation</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">f</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
@@ -223,12 +225,12 @@
 <span class="sd">        This function make update according provided target</span>
 <span class="sd">        and the last used input vector.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : target (float or 1-dimensional array).</span>
 <span class="sd">            Size depends on number of MLP outputs.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 
 <span class="sd">        * `w` : weights of the layers (2-dimensional layer).</span>
 <span class="sd">            Every row represents one node.</span>
@@ -251,7 +253,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class represents a Multi-layer Perceptron neural network.</span>
 
-<span class="sd">    Args:</span>
+<span class="sd">    *Args:**</span>
 
 <span class="sd">    * `layers` : array describing hidden layers of network</span>
 <span class="sd">        (1-dimensional array of integers). Every number in array represents</span>
@@ -262,7 +264,7 @@
 
 <span class="sd">    * `n_input` : number of network inputs (int). </span>
 
-<span class="sd">    Kwargs:</span>
+<span class="sd">    **Kwargs:**</span>
 
 <span class="sd">    * `outputs` : number of network outputs (int). Default is 1.</span>
 
@@ -317,7 +319,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function for batch training of MLP.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `x` : input array (2-dimensional array).</span>
 <span class="sd">            Every row represents one input vector (features).</span>
@@ -326,7 +328,7 @@
 <span class="sd">            Every row represents target for one input vector.</span>
 <span class="sd">            Target can be one or more values (in case of multiple outputs).</span>
 
-<span class="sd">        Kwargs:</span>
+<span class="sd">        **Kwargs:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `epochs` : amount of epochs (int). That means how many times</span>
 <span class="sd">            the MLP will iterate over the passed set of data (`x`, `d`).</span>
@@ -334,7 +336,7 @@
 <span class="sd">        * `shuffle` : if true, the order of inputs and outpust are shuffled (bool).</span>
 <span class="sd">            That means the pairs input-output are in different order in every epoch.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `e`: output vector (m-dimensional array). Every row represents</span>
 <span class="sd">            error (or errors) for an input and output in given epoch.</span>
@@ -343,6 +345,7 @@
 
 <span class="sd">        * `MSE` : mean squared error (1-dimensional array). Every value</span>
 <span class="sd">            stands for MSE of one epoch.</span>
+<span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># measure the data and check if the dimmension agree</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -385,15 +388,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function for batch usage of already trained and tested MLP.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `x` : input array (2-dimensional array).</span>
 <span class="sd">            Every row represents one input vector (features).</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `y`: output vector (n-dimensional array). Every row represents</span>
 <span class="sd">            output (outputs) for an input vector.</span>
+<span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># measure the data and check if the dimmension agree</span>
         <span class="k">try</span><span class="p">:</span>    
@@ -415,7 +419,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function for batch test of already trained MLP.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `x` : input array (2-dimensional array).</span>
 <span class="sd">            Every row represents one input vector (features).</span>
@@ -424,10 +428,11 @@
 <span class="sd">            Every row represents target for one input vector.</span>
 <span class="sd">            Target can be one or more values (in case of multiple outputs).</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `e`: output vector (n-dimensional array). Every row represents</span>
 <span class="sd">            error (or errors) for an input and output.</span>
+<span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># measure the data and check if the dimmension agree</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -460,14 +465,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function make forward pass through MLP (no update).</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `x` : input vector (1-dimensional array)</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `y` : output of MLP (float or 1-diemnsional array).</span>
 <span class="sd">            Size depends on number of MLP outputs.</span>
+<span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># forward pass to hidden layers</span>
         <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
@@ -485,15 +491,16 @@
 <span class="sd">        This function make update according provided target</span>
 <span class="sd">        and the last used input vector.</span>
 
-<span class="sd">        Args:</span>
+<span class="sd">        **Args:**</span>
 
 <span class="sd">        * `d` : target (float or 1-dimensional array).</span>
 <span class="sd">            Size depends on number of MLP outputs.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        **Returns:**</span>
 <span class="sd">        </span>
 <span class="sd">        * `e` : error used for update (float or 1-diemnsional array).</span>
 <span class="sd">            Size correspond to size of input `d`.</span>
+<span class="sd">            </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># update output layer</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>

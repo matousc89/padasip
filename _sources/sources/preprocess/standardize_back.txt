@@ -1,0 +1,7 @@
+.. _preprocess-standardize_back-label:
+
+Data De-standardization
+===================================
+
+.. automodule:: padasip.preprocess.standardize_back
+    :members:
