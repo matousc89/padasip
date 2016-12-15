@@ -1,5 +1,5 @@
 """
-Current version: |version| (:ref:`changelog-label`)
+Current version: |version| (:ref:`changelog`)
 
 This library is designed to simplify adaptive signal 
 processing tasks within python
@@ -78,7 +78,16 @@ Indices and tables
 * :ref:`search`
 
 """
-from padasip.preprocess import *
+#from padasip.preprocess import 
 from padasip.filters.shortcuts import *
 import padasip.ann
 import padasip.filters
+
+import padasip.preprocess
+
+# back compatibility with v0.5
+from padasip.preprocess.standardize import standardize
+from padasip.preprocess.standardize_back import standardize_back
+from padasip.preprocess.input_from_history import input_from_history
+
+

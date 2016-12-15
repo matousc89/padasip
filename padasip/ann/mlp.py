@@ -128,19 +128,20 @@ class Layer():
         """
         This function process values of layer outputs with activation function.
 
-        Args:
+        **Args:**
 
         * `x` : array to process (1-dimensional array) 
 
-        Kwargs:
+        **Kwargs:**
 
         * `f` : activation function
 
         * `der` : normal output, or its derivation (bool)
 
-        Returns:
+        **Returns:**
 
         * values processed with activation function (1-dimensional array)
+        
         """
         if f == "sigmoid":
             if der:
@@ -155,14 +156,15 @@ class Layer():
         """
         This function make forward pass through this layer (no update).
 
-        Args:
+        **Args:**
 
         * `x` : input vector (1-dimensional array)
 
-        Returns:
+        **Returns:**
         
         * `y` : output of MLP (float or 1-diemnsional array).
             Size depends on number of nodes in this layer.
+            
         """
         self.x[1:] = x
         self.y = self.activation(np.sum(self.w*self.x, axis=1), f=self.f)
@@ -173,12 +175,12 @@ class Layer():
         This function make update according provided target
         and the last used input vector.
 
-        Args:
+        **Args:**
 
         * `d` : target (float or 1-dimensional array).
             Size depends on number of MLP outputs.
 
-        Returns:
+        **Returns:**
 
         * `w` : weights of the layers (2-dimensional layer).
             Every row represents one node.
@@ -201,7 +203,7 @@ class NetworkMLP():
     """
     This class represents a Multi-layer Perceptron neural network.
 
-    Args:
+    *Args:**
 
     * `layers` : array describing hidden layers of network
         (1-dimensional array of integers). Every number in array represents
@@ -212,7 +214,7 @@ class NetworkMLP():
 
     * `n_input` : number of network inputs (int). 
 
-    Kwargs:
+    **Kwargs:**
 
     * `outputs` : number of network outputs (int). Default is 1.
 
@@ -267,7 +269,7 @@ class NetworkMLP():
         """
         Function for batch training of MLP.
 
-        Args:
+        **Args:**
 
         * `x` : input array (2-dimensional array).
             Every row represents one input vector (features).
@@ -276,7 +278,7 @@ class NetworkMLP():
             Every row represents target for one input vector.
             Target can be one or more values (in case of multiple outputs).
 
-        Kwargs:
+        **Kwargs:**
         
         * `epochs` : amount of epochs (int). That means how many times
             the MLP will iterate over the passed set of data (`x`, `d`).
@@ -284,7 +286,7 @@ class NetworkMLP():
         * `shuffle` : if true, the order of inputs and outpust are shuffled (bool).
             That means the pairs input-output are in different order in every epoch.
 
-        Returns:
+        **Returns:**
         
         * `e`: output vector (m-dimensional array). Every row represents
             error (or errors) for an input and output in given epoch.
@@ -293,6 +295,7 @@ class NetworkMLP():
 
         * `MSE` : mean squared error (1-dimensional array). Every value
             stands for MSE of one epoch.
+            
         """
         # measure the data and check if the dimmension agree
         N = len(x)
@@ -335,15 +338,16 @@ class NetworkMLP():
         """
         Function for batch usage of already trained and tested MLP.
 
-        Args:
+        **Args:**
 
         * `x` : input array (2-dimensional array).
             Every row represents one input vector (features).
 
-        Returns:
+        **Returns:**
         
         * `y`: output vector (n-dimensional array). Every row represents
             output (outputs) for an input vector.
+            
         """
         # measure the data and check if the dimmension agree
         try:    
@@ -365,7 +369,7 @@ class NetworkMLP():
         """
         Function for batch test of already trained MLP.
 
-        Args:
+        **Args:**
 
         * `x` : input array (2-dimensional array).
             Every row represents one input vector (features).
@@ -374,10 +378,11 @@ class NetworkMLP():
             Every row represents target for one input vector.
             Target can be one or more values (in case of multiple outputs).
 
-        Returns:
+        **Returns:**
         
         * `e`: output vector (n-dimensional array). Every row represents
             error (or errors) for an input and output.
+            
         """
         # measure the data and check if the dimmension agree
         N = len(x)
@@ -410,14 +415,15 @@ class NetworkMLP():
         """
         This function make forward pass through MLP (no update).
 
-        Args:
+        **Args:**
 
         * `x` : input vector (1-dimensional array)
 
-        Returns:
+        **Returns:**
         
         * `y` : output of MLP (float or 1-diemnsional array).
             Size depends on number of MLP outputs.
+            
         """
         # forward pass to hidden layers
         for l in self.layers:
@@ -435,15 +441,16 @@ class NetworkMLP():
         This function make update according provided target
         and the last used input vector.
 
-        Args:
+        **Args:**
 
         * `d` : target (float or 1-dimensional array).
             Size depends on number of MLP outputs.
 
-        Returns:
+        **Returns:**
         
         * `e` : error used for update (float or 1-diemnsional array).
             Size correspond to size of input `d`.
+            
         """
         # update output layer
         e = d - self.y

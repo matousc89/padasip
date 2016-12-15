@@ -19,6 +19,14 @@ http://matousc89.github.io/padasip/
 Current Features
 ================
 
+********************
+Data Preprocessing
+********************
+
+- Principal Component Analysis (PCA)
+
+- Linear Discriminant Analysis (LDA)
+
 ******************
 Adaptive Filters
 ******************
