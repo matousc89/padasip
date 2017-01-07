@@ -1,0 +1,380 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>padasip.filters &#8212; Padasip 0.7 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Padasip 0.7 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for padasip.filters</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. versionadded:: 0.1</span>
+<span class="sd">.. versionchanged:: 0.7</span>
+
+
+<span class="sd">An adaptive filter is a system that changes its adaptive parameteres</span>
+<span class="sd">- adaptive weights :math:`\\textbf{w}(k)` - according to an optimization algorithm.</span>
+
+<span class="sd">The an adaptive filter can be described as</span>
+
+<span class="sd">:math:`y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)`,</span>
+
+<span class="sd">or in a vector form</span>
+
+<span class="sd">:math:`y(k) = \\textbf{x}^T(k) \\textbf{w}(k)`.</span>
+
+<span class="sd">The adaptation of adaptive parameters (weights) can be done with</span>
+<span class="sd">various algorithms.</span>
+
+<span class="sd">Content of this page:</span>
+
+<span class="sd">.. contents::</span>
+<span class="sd">   :local:</span>
+<span class="sd">   :depth: 1</span>
+
+<span class="sd">Usage instructions</span>
+<span class="sd">================================================</span>
+
+<span class="sd">.. rubric:: Adaptive weights initial selection</span>
+
+<span class="sd">The parameters of all implemented adaptive filters can be initially set:</span>
+
+<span class="sd">* manually and passed to a filter as an array</span>
+
+<span class="sd">* :code:`w=&quot;random&quot;` - set to random - this will produce a vector of</span>
+<span class="sd">  random values (zero mean, 0.5 standard deviation)</span>
+<span class="sd">    </span>
+<span class="sd">* :code:`w=&quot;zeros&quot;` - set to zeros</span>
+
+<span class="sd">.. rubric:: Input data</span>
+
+<span class="sd">The adaptive filters need two inputs</span>
+
+<span class="sd">* input matrix :code:`x` where rows represent the samples. Every row (sample)</span>
+<span class="sd">  should contain multiple values (features). </span>
+
+<span class="sd">* desired value (target) :code:`d` </span>
+
+<span class="sd">If you have only one signal and the historical values of this signal should</span>
+<span class="sd">be input of the filter (data reconstruction/prediction task) you can use helper</span>
+<span class="sd">function :ref:`preprocess-input_from_history` to build input matrix from</span>
+<span class="sd">the historical values.</span>
+
+<span class="sd">.. rubric:: Creation of an adaptive filter</span>
+
+<span class="sd">If you want to create adaptive filter (for example NLMS), with size :code:`n=4`,</span>
+<span class="sd">learning rate :code:`mu=0.1` and random initial parameters (weights), than use</span>
+<span class="sd">following code</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    f = pa.filters.AdaptiveFilter(model=&quot;NLMS&quot;, n=4, mu=0.1, w=&quot;random&quot;)   </span>
+
+<span class="sd">where returned :code:`f` is the instance of class :code:`FilterNLMS`</span>
+<span class="sd">with given parameters.</span>
+
+<span class="sd">.. rubric:: Data filtering</span>
+
+<span class="sd">If you already created an instance of adaptive filter (:code:`f` in previous </span>
+<span class="sd">example) you can use it for filtering of </span>
+<span class="sd">data :code:`x` with desired value :code:`d` as simple as follows</span>
+
+<span class="sd">.. code-block:: python  </span>
+<span class="sd">    </span>
+<span class="sd">    y, e, w = f.run(d, x)</span>
+
+<span class="sd">where :code:`y` is output, :code:`e` is the error and :code:`w` is set</span>
+<span class="sd">of parameters at the end of the simulation.</span>
+
+<span class="sd">In case you want to just simply filter the data without creating and</span>
+<span class="sd">storing filter instance manually, use the following function </span>
+
+<span class="sd">.. code-block:: python  </span>
+<span class="sd">  </span>
+<span class="sd">    y, e, w = pa.filters.filter_data(d, x, model=&quot;NLMS&quot;, mu=0.9, w=&quot;random&quot;)</span>
+
+<span class="sd">    </span>
+<span class="sd">.. rubric:: Search for optimal learning rate</span>
+
+<span class="sd">The search for optimal filter setup (especially learning rate) is a task</span>
+<span class="sd">of critical importance. Therefor an helper function for this task is</span>
+<span class="sd">implemented in the Padasip. To use this function you need to specify</span>
+
+<span class="sd">* number of epochs (for training)</span>
+
+<span class="sd">* part of data used in training epochs - `ntrain` (0.5 stands for 50% of</span>
+<span class="sd">  given data)</span>
+<span class="sd">  </span>
+<span class="sd">* start and end of learning rate range you want to test (and number of</span>
+<span class="sd">  steps in this range) - `mu_start`, `mu_end`, `steps`</span>
+<span class="sd">  </span>
+<span class="sd">* testing criteria (MSE, RMSE, MAE)</span>
+<span class="sd">  </span>
+<span class="sd">Example for `mu` in range of 100 values from `[0.01, ..., 1]` follows.</span>
+<span class="sd">In example is used 50% of data for training and leftoever data for testing</span>
+<span class="sd">with MSE criteria. Returned arrays are list of errors and list of corresponding</span>
+<span class="sd">learning rates, so it is easy to plot and analyze the error as</span>
+<span class="sd">a function of learning rate.</span>
+
+<span class="sd">.. code-block:: python  </span>
+
+<span class="sd">    errors_e, mu_range = f.explore_learning(d, x,</span>
+<span class="sd">                    mu_start=0.01,</span>
+<span class="sd">                    mu_end=1.,</span>
+<span class="sd">                    steps=100, ntrain=0.5, epochs=1,</span>
+<span class="sd">                    criteria=&quot;MSE&quot;)</span>
+<span class="sd">                    </span>
+<span class="sd">Note: optimal learning rate depends on purpose and usage of filter (ammount</span>
+<span class="sd">of training, data characteristics, etc.).</span>
+<span class="sd">    </span>
+
+<span class="sd">Full Working Example</span>
+<span class="sd">===================================================</span>
+
+<span class="sd">Bellow is full working example with visualisation of results - the NLMS</span>
+<span class="sd">adaptive filter used for channel identification.</span>
+
+<span class="sd">.. code-block:: python  </span>
+
+<span class="sd">    import numpy as np</span>
+<span class="sd">    import matplotlib.pylab as plt</span>
+<span class="sd">    import padasip as pa</span>
+
+<span class="sd">    # creation of data</span>
+<span class="sd">    N = 500</span>
+<span class="sd">    x = np.random.normal(0, 1, (N, 4)) # input matrix</span>
+<span class="sd">    v = np.random.normal(0, 0.1, N) # noise</span>
+<span class="sd">    d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target</span>
+
+<span class="sd">    # identification</span>
+<span class="sd">    f = pa.filters.AdaptiveFilter(model=&quot;NLMS&quot;, n=4, mu=0.1, w=&quot;random&quot;)</span>
+<span class="sd">    y, e, w = f.run(d, x)</span>
+
+<span class="sd">    ## show results</span>
+<span class="sd">    plt.figure(figsize=(15,9))</span>
+<span class="sd">    plt.subplot(211);plt.title(&quot;Adaptation&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(d,&quot;b&quot;, label=&quot;d - target&quot;)</span>
+<span class="sd">    plt.plot(y,&quot;g&quot;, label=&quot;y - output&quot;);plt.legend()</span>
+<span class="sd">    plt.subplot(212);plt.title(&quot;Filter error&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
+<span class="sd">    plt.plot(10*np.log10(e**2),&quot;r&quot;, label=&quot;e - error [dB]&quot;);plt.legend()</span>
+<span class="sd">    plt.tight_layout()</span>
+<span class="sd">    plt.show()</span>
+
+
+<span class="sd">Implemented filters</span>
+<span class="sd">========================</span>
+
+<span class="sd">.. toctree::</span>
+<span class="sd">    :glob:</span>
+<span class="sd">    :maxdepth: 1</span>
+
+<span class="sd">    filters/*</span>
+
+<span class="sd">Code explanation</span>
+<span class="sd">==================</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.lms</span> <span class="k">import</span> <span class="n">FilterLMS</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.nlms</span> <span class="k">import</span> <span class="n">FilterNLMS</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.ocnlms</span> <span class="k">import</span> <span class="n">FilterOCNLMS</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.gngd</span> <span class="k">import</span> <span class="n">FilterGNGD</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.rls</span> <span class="k">import</span> <span class="n">FilterRLS</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.ap</span> <span class="k">import</span> <span class="n">FilterAP</span>
+
+<div class="viewcode-block" id="filter_data"><a class="viewcode-back" href="../../sources/filters_mod.html#padasip.filters.filter_data">[docs]</a><span class="k">def</span> <span class="nf">filter_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;lms&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that filter data with selected adaptive filter.</span>
+<span class="sd">    </span>
+<span class="sd">    **Args:**</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
+<span class="sd">      input arrays.</span>
+<span class="sd">        </span>
+<span class="sd">    **Kwargs:**</span>
+<span class="sd">    </span>
+<span class="sd">    * Any key argument that can be accepted with selected filter model. </span>
+<span class="sd">      For more information see documentation of desired adaptive filter.</span>
+
+<span class="sd">    **Returns:**</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">      The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">      The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">      Every row is set of the weights for given sample.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># overwrite n with correct size</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># create filter according model</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;LMS&quot;</span><span class="p">,</span> <span class="s2">&quot;lms&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterLMS</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;NLMS&quot;</span><span class="p">,</span> <span class="s2">&quot;nlms&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterNLMS</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;RLS&quot;</span><span class="p">,</span> <span class="s2">&quot;rls&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterRLS</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;GNGD&quot;</span><span class="p">,</span> <span class="s2">&quot;gngd&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;AP&quot;</span><span class="p">,</span> <span class="s2">&quot;ap&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterAP</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown model of filter </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+    <span class="c1"># calculate and return the values</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span></div>
+
+<div class="viewcode-block" id="AdaptiveFilter"><a class="viewcode-back" href="../../sources/filters_mod.html#padasip.filters.AdaptiveFilter">[docs]</a><span class="k">def</span> <span class="nf">AdaptiveFilter</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;lms&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that filter data with selected adaptive filter.</span>
+<span class="sd">    </span>
+<span class="sd">    **Args:**</span>
+
+<span class="sd">    * `d` : desired value (1 dimensional array)</span>
+
+<span class="sd">    * `x` : input matrix (2-dimensional array). Rows are samples, columns are </span>
+<span class="sd">      input arrays.</span>
+<span class="sd">        </span>
+<span class="sd">    **Kwargs:**</span>
+<span class="sd">    </span>
+<span class="sd">    * Any key argument that can be accepted with selected filter model.</span>
+<span class="sd">      For more information see documentation of desired adaptive filter.</span>
+<span class="sd">    </span>
+<span class="sd">    * It should be at least filter size `n`.  </span>
+
+<span class="sd">    **Returns:**</span>
+
+<span class="sd">    * `y` : output value (1 dimensional array).</span>
+<span class="sd">      The size corresponds with the desired value.</span>
+
+<span class="sd">    * `e` : filter error for every sample (1 dimensional array). </span>
+<span class="sd">      The size corresponds with the desired value.</span>
+
+<span class="sd">    * `w` : history of all weights (2 dimensional array).</span>
+<span class="sd">      Every row is set of the weights for given sample.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if the filter size was specified</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;n&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Filter size is not defined (n=?).&#39;</span><span class="p">)</span>    
+    <span class="c1"># create filter according model</span>
+    <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;LMS&quot;</span><span class="p">,</span> <span class="s2">&quot;lms&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterLMS</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;NLMS&quot;</span><span class="p">,</span> <span class="s2">&quot;nlms&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterNLMS</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;RLS&quot;</span><span class="p">,</span> <span class="s2">&quot;rls&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterRLS</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;GNGD&quot;</span><span class="p">,</span> <span class="s2">&quot;gngd&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterGNGD</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;AP&quot;</span><span class="p">,</span> <span class="s2">&quot;ap&quot;</span><span class="p">]:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">FilterAP</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown model of filter </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+    <span class="c1"># return filter</span>
+    <span class="k">return</span> <span class="n">f</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Padasip</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/preprocess.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/filters_mod.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/misc.html">Miscellaneous</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

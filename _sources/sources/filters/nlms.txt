@@ -1,7 +1,8 @@
-.. _filter-nlms-label:
+.. _filter-nlms:
 
-NLMS Filter
-===================================
+Normalized Least-mean-squares (NLMS)
+======================================
 
 .. automodule:: padasip.filters.nlms
     :members:
+    :show-inheritance:

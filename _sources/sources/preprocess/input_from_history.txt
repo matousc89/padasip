@@ -1,4 +1,4 @@
-.. _preprocess-input_from_history-label:
+.. _preprocess-input_from_history:
 
 Input Matrix Construction
 ===================================

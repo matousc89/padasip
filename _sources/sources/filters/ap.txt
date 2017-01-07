@@ -1,7 +1,8 @@
-.. _filter-ap-label:
+.. _filter-ap:
 
-AP Filter
+Affine Projection (AP)
 ***************************
 
 .. automodule:: padasip.filters.ap
     :members:
+    :show-inheritance:

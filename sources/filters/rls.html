@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>RLS Filter &#8212; Padasip 0.6 documentation</title>
+    <title>Recursive Least Squares (RLS) &#8212; Padasip 0.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.6',
+        VERSION:     '0.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,10 +24,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.6 documentation" href="../../index.html" />
+    <link rel="top" title="Padasip 0.7 documentation" href="../../index.html" />
     <link rel="up" title="Adaptive Filters" href="../filters_mod.html" />
     <link rel="next" title="Artificial Neural Networks (ANN)" href="../ann.html" />
-    <link rel="prev" title="NLMS Filter" href="nlms.html" />
+    <link rel="prev" title="Normalized Least-mean-squares (NLMS)" href="nlms.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -50,11 +50,11 @@
           <div class="body" role="main">
             
   <div class="section" id="module-padasip.filters.rls">
-<span id="rls-filter"></span><span id="filter-rls-label"></span><h1>RLS Filter<a class="headerlink" href="#module-padasip.filters.rls" title="Permalink to this headline">¶</a></h1>
+<span id="recursive-least-squares-rls"></span><span id="filter-rls"></span><h1>Recursive Least Squares (RLS)<a class="headerlink" href="#module-padasip.filters.rls" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.1.</span></p>
 </div>
-<p>The RLS filter <a class="reference internal" href="#sayed1998recursive" id="id1">[1]</a> can be created as follows</p>
+<p>The Recursive Least Squares filter <a class="reference internal" href="#sayed1998recursive" id="id1">[1]</a> can be created as follows</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterRLS</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 </pre></div>
@@ -69,6 +69,10 @@
 <li><a class="reference internal" href="#references" id="id5">References</a></li>
 <li><a class="reference internal" href="#code-explanation" id="id6">Code Explanation</a></li>
 </ul>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../filters_mod.html#filters"><span class="std std-ref">Adaptive Filters</span></a></p>
 </div>
 <div class="section" id="algorithm-explanation">
 <h2><a class="toc-backref" href="#id2">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
@@ -196,29 +200,21 @@ But in a lot of cases it works only with values close to 1
 <dl class="class">
 <dt id="padasip.filters.rls.FilterRLS">
 <em class="property">class </em><code class="descclassname">padasip.filters.rls.</code><code class="descname">FilterRLS</code><span class="sig-paren">(</span><em>n</em>, <em>mu=0.99</em>, <em>eps=0.1</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/rls.html#FilterRLS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.rls.FilterRLS" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>Args:</strong></p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>n</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">length of filter (integer) - how many input is input array</span><dd><p class="first last">(row of input matrix)</p>
-</dd>
-</dl>
-</li>
+<dd><p>Bases: <a class="reference internal" href="base_filter.html#padasip.filters.base_filter.AdaptiveFilter" title="padasip.filters.base_filter.AdaptiveFilter"><code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></a></p>
+<p>Adaptive RLS filter.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><cite>n</cite> : length of filter (integer) - how many input is input array
+(row of input matrix)</li>
 </ul>
 <p><strong>Kwargs:</strong></p>
 <ul>
-<li><dl class="first docutils">
-<dt><cite>mu</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">forgetting factor (float). It is introduced to give exponentially</span><dd><p class="first last">less weight to older error samples. It is usually chosen
+<li><p class="first"><cite>mu</cite> : forgetting factor (float). It is introduced to give exponentially
+less weight to older error samples. It is usually chosen
 between 0.98 and 1.</p>
-</dd>
-</dl>
 </li>
-<li><dl class="first docutils">
-<dt><cite>eps</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">initialisation value (float). It is usually chosen</span><dd><p class="first last">between 0.1 and 1.</p>
-</dd>
-</dl>
+<li><p class="first"><cite>eps</cite> : initialisation value (float). It is usually chosen
+between 0.1 and 1.</p>
 </li>
 <li><p class="first"><cite>w</cite> : initial weights of filter. Possible values are:</p>
 <blockquote>
@@ -244,46 +240,24 @@ between 0.98 and 1.</p>
 <dl class="method">
 <dt id="padasip.filters.rls.FilterRLS.novelty">
 <code class="descname">novelty</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/rls.html#FilterRLS.novelty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.rls.FilterRLS.novelty" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function estimates novelty in data
-according to the learning effort.</p>
+<dd><p>This function estimates novelty in data        according to the learning effort.</p>
 <p><strong>Args:</strong></p>
-<ul>
-<li><p class="first"><cite>d</cite> : desired value (1 dimensional array)</p>
-</li>
-<li><dl class="first docutils">
-<dt><cite>x</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">input matrix (2-dimensional array). Rows are samples,</span><dd><p class="first last">columns are input arrays.</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li><cite>d</cite> : desired value (1 dimensional array)</li>
+<li><cite>x</cite> : input matrix (2-dimensional array). Rows are samples,
+columns are input arrays.</li>
 </ul>
 <p><strong>Returns:</strong></p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>y</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">output value (1 dimensional array).</span><dd><p class="first last">The size corresponds with the desired value.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>e</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">filter error for every sample (1 dimensional array). </span><dd><p class="first last">The size corresponds with the desired value.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>w</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">history of all weights (2 dimensional array).</span><dd><p class="first last">Every row is set of the weights for given sample.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>nd</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">novelty detection coefficients (2 dimensional array).</span><dd><p class="first last">Every row is set of coefficients for given sample.
-One coefficient represents one filter weight.</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li><cite>y</cite> : output value (1 dimensional array).
+The size corresponds with the desired value.</li>
+<li><cite>e</cite> : filter error for every sample (1 dimensional array).
+The size corresponds with the desired value.</li>
+<li><cite>w</cite> : history of all weights (2 dimensional array).
+Every row is set of the weights for given sample.</li>
+<li><cite>nd</cite> : novelty detection coefficients (2 dimensional array).
+Every row is set of coefficients for given sample.
+One coefficient represents one filter weight.</li>
 </ul>
 </dd></dl>
 
@@ -297,31 +271,19 @@ One coefficient represents one filter weight.</p>
 </li>
 <li><dl class="first docutils">
 <dt><cite>x</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">input matrix (2-dimensional array). Rows are samples, columns are</span><dd><p class="first last">input arrays.</p>
+ <span class="classifier-delimiter">:</span> <span class="classifier">input matrix (2-dimensional array). Rows are samples,</span><dd><p class="first last">columns are input arrays.</p>
 </dd>
 </dl>
 </li>
 </ul>
 <p><strong>Returns:</strong></p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>y</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">output value (1 dimensional array).</span><dd><p class="first last">The size corresponds with the desired value.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>e</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">filter error for every sample (1 dimensional array). </span><dd><p class="first last">The size corresponds with the desired value.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>w</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">history of all weights (2 dimensional array).</span><dd><p class="first last">Every row is set of the weights for given sample.</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li><cite>y</cite> : output value (1 dimensional array).
+The size corresponds with the desired value.</li>
+<li><cite>e</cite> : filter error for every sample (1 dimensional array).
+The size corresponds with the desired value.</li>
+<li><cite>w</cite> : history of all weights (2 dimensional array).
+Every row is set of the weights for given sample.</li>
 </ul>
 </dd></dl>
 
@@ -351,6 +313,7 @@ One coefficient represents one filter weight.</p>
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#changelog">Changelog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
@@ -358,21 +321,23 @@ One coefficient represents one filter weight.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ap.html">AP Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gngd.html">GNGD Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lms.html">LMS Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlms.html">NLMS Filter</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">RLS Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ap.html">Affine Projection (AP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_filter.html">Base Filter Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lms.html">Least-mean-squares (LMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Recursive Least Squares (RLS)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../filters_mod.html">Adaptive Filters</a><ul>
-      <li>Previous: <a href="nlms.html" title="previous chapter">NLMS Filter</a></li>
+      <li>Previous: <a href="nlms.html" title="previous chapter">Normalized Least-mean-squares (NLMS)</a></li>
       <li>Next: <a href="../ann.html" title="next chapter">Artificial Neural Networks (ANN)</a></li>
   </ul></li>
   </ul></li>

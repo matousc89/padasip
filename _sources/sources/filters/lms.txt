@@ -1,7 +1,8 @@
-.. _filter-lms-label:
+.. _filter-lms:
 
-LMS Filter
-===================================
+Least-mean-squares (LMS) 
+=====================================
 
 .. automodule:: padasip.filters.lms
     :members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+.. _mics-signals:
+
+Signal Generators
+===================================
+
+.. automodule:: padasip.misc.signals
+    :members:

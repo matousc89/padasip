@@ -1,4 +1,4 @@
-.. _ann-mlp-label:
+.. _ann-mlp:
 
 Multi-layer Perceptron (MLP)
 ===================================

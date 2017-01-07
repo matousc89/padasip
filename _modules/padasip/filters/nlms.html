@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>padasip.filters.nlms &#8212; Padasip 0.6 documentation</title>
+    <title>padasip.filters.nlms &#8212; Padasip 0.7 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6',
+        VERSION:     '0.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.6 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <link rel="top" title="Padasip 0.7 documentation" href="../../../index.html" />
+    <link rel="up" title="padasip.filters" href="../filters.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -51,9 +51,9 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. versionadded:: 0.1</span>
 
-<span class="sd">The normalized lest-mean-squares (NLMS) adaptive filter</span>
+<span class="sd">The normalized least-mean-squares (NLMS) adaptive filter</span>
 <span class="sd">:cite:`mandic2004generalized`</span>
-<span class="sd">is an extension of the popular LMS adaptive filter (:ref:`filter-lms-label`).</span>
+<span class="sd">is an extension of the popular LMS adaptive filter (:ref:`filter-lms`).</span>
 
 <span class="sd">The NLMS filter can be created as follows</span>
 
@@ -68,10 +68,12 @@
 <span class="sd">   :local:</span>
 <span class="sd">   :depth: 1</span>
 
-<span class="sd">Algorithm Explanation</span>
-<span class="sd">*********************** </span>
+<span class="sd">.. seealso:: :ref:`filters`</span>
 
-<span class="sd">The NLMS is extension of LMS filter. See :ref:`filter-lms-label`</span>
+<span class="sd">Algorithm Explanation</span>
+<span class="sd">======================================</span>
+
+<span class="sd">The NLMS is extension of LMS filter. See :ref:`filter-lms`</span>
 <span class="sd">for explanation of the algorithm behind.</span>
 
 <span class="sd">The extension is based on normalization of learning rate.</span>
@@ -86,7 +88,7 @@
 <span class="sd">the input is close to zero.</span>
 
 <span class="sd">Stability and Optimal Performance</span>
-<span class="sd">**********************************</span>
+<span class="sd">======================================</span>
 
 <span class="sd">The stability of the NLMS filter si given as follows</span>
 
@@ -103,7 +105,7 @@
 
 
 <span class="sd">Minimal Working Examples</span>
-<span class="sd">**************************</span>
+<span class="sd">======================================</span>
 
 <span class="sd">If you have measured data you may filter it as follows</span>
 
@@ -178,13 +180,13 @@
 
 
 <span class="sd">References</span>
-<span class="sd">***************</span>
+<span class="sd">======================================</span>
 
 <span class="sd">.. bibliography:: nlms.bib</span>
 <span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
-<span class="sd">***************** </span>
+<span class="sd">======================================</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">padasip.consts</span> <span class="k">as</span> <span class="nn">co</span>
@@ -205,13 +207,13 @@
 <span class="sd">    **Kwargs:**</span>
 
 <span class="sd">    * `mu` : learning rate (float). Also known as step size.</span>
-<span class="sd">        If it is too slow,</span>
-<span class="sd">        the filter may have bad performance. If it is too high,</span>
-<span class="sd">        the filter will be unstable. The default value can be unstable</span>
-<span class="sd">        for ill-conditioned input data.</span>
+<span class="sd">      If it is too slow,</span>
+<span class="sd">      the filter may have bad performance. If it is too high,</span>
+<span class="sd">      the filter will be unstable. The default value can be unstable</span>
+<span class="sd">      for ill-conditioned input data.</span>
 
 <span class="sd">    * `eps` : regularization term (float). It is introduced to preserve</span>
-<span class="sd">        stability for close-to-zero input vectors</span>
+<span class="sd">      stability for close-to-zero input vectors</span>
 
 <span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
 <span class="sd">        </span>
@@ -230,7 +232,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_NLMS_MIN</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_NLMS_MAX</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">EPS_NLMS_MIN</span><span class="p">,</span>
             <span class="n">co</span><span class="o">.</span><span class="n">EPS_NLMS_MAX</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="FilterNLMS.adapt"><a class="viewcode-back" href="../../../sources/filters/nlms.html#padasip.filters.nlms.FilterNLMS.adapt">[docs]</a>    <span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -256,19 +258,19 @@
 
 <span class="sd">        * `d` : desired value (1 dimensional array)</span>
 
-<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples, columns are</span>
-<span class="sd">            input arrays.</span>
+<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
+<span class="sd">          columns are input arrays.</span>
 
 <span class="sd">        **Returns:**</span>
 
 <span class="sd">        * `y` : output value (1 dimensional array).</span>
-<span class="sd">            The size corresponds with the desired value.</span>
+<span class="sd">          The size corresponds with the desired value.</span>
 
-<span class="sd">        * `e` : filter error for every sample (1 dimensional array). </span>
-<span class="sd">            The size corresponds with the desired value.</span>
+<span class="sd">        * `e` : filter error for every sample (1 dimensional array).</span>
+<span class="sd">          The size corresponds with the desired value.</span>
 
 <span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
-<span class="sd">            Every row is set of the weights for given sample.</span>
+<span class="sd">          Every row is set of the weights for given sample.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># measure the data and check if the dimmension agree</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -287,12 +289,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
         <span class="c1"># adaptation loop</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
             <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">nu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
             <span class="n">dw</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
         <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span></div>
         
 <div class="viewcode-block" id="FilterNLMS.novelty"><a class="viewcode-back" href="../../../sources/filters/nlms.html#padasip.filters.nlms.FilterNLMS.novelty">[docs]</a>    <span class="k">def</span> <span class="nf">novelty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -305,22 +307,22 @@
 <span class="sd">        * `d` : desired value (1 dimensional array)</span>
 
 <span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
-<span class="sd">            columns are input arrays.</span>
+<span class="sd">          columns are input arrays.</span>
 
 <span class="sd">        **Returns:**</span>
 
 <span class="sd">        * `y` : output value (1 dimensional array).</span>
-<span class="sd">            The size corresponds with the desired value.</span>
+<span class="sd">          The size corresponds with the desired value.</span>
 
 <span class="sd">        * `e` : filter error for every sample (1 dimensional array). </span>
-<span class="sd">            The size corresponds with the desired value.</span>
+<span class="sd">          The size corresponds with the desired value.</span>
 
 <span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
-<span class="sd">            Every row is set of the weights for given sample.</span>
+<span class="sd">          Every row is set of the weights for given sample.</span>
 
 <span class="sd">        * `nd` : novelty detection coefficients (2 dimensional array).</span>
-<span class="sd">            Every row is set of coefficients for given sample.</span>
-<span class="sd">            One coefficient represents one filter weight.</span>
+<span class="sd">          Every row is set of coefficients for given sample.</span>
+<span class="sd">          One coefficient represents one filter weight.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># measure the data and check if the dimmension agree</span>
         <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -370,12 +372,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/filters_mod.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../sources/misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../filters.html">padasip.filters</a><ul>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

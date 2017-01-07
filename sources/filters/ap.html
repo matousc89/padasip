@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>AP Filter &#8212; Padasip 0.6 documentation</title>
+    <title>Affine Projection (AP) &#8212; Padasip 0.7 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.6',
+        VERSION:     '0.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.6 documentation" href="../../index.html" />
+    <link rel="top" title="Padasip 0.7 documentation" href="../../index.html" />
     <link rel="up" title="Adaptive Filters" href="../filters_mod.html" />
-    <link rel="next" title="GNGD Filter" href="gngd.html" />
+    <link rel="next" title="Base Filter Class" href="base_filter.html" />
     <link rel="prev" title="Adaptive Filters" href="../filters_mod.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -50,7 +50,7 @@
           <div class="body" role="main">
             
   <div class="section" id="module-padasip.filters.ap">
-<span id="ap-filter"></span><span id="filter-ap-label"></span><h1>AP Filter<a class="headerlink" href="#module-padasip.filters.ap" title="Permalink to this headline">¶</a></h1>
+<span id="affine-projection-ap"></span><span id="filter-ap"></span><h1>Affine Projection (AP)<a class="headerlink" href="#module-padasip.filters.ap" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.4.</span></p>
 </div>
@@ -76,6 +76,10 @@ as the additional input vectors in every sample.</p>
 <li><a class="reference internal" href="#references" id="id4">References</a></li>
 <li><a class="reference internal" href="#code-explanation" id="id5">Code Explanation</a></li>
 </ul>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../filters_mod.html#filters"><span class="std std-ref">Adaptive Filters</span></a></p>
 </div>
 <div class="section" id="algorithm-explanation">
 <h2><a class="toc-backref" href="#id2">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
@@ -189,31 +193,23 @@ vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
 <dl class="class">
 <dt id="padasip.filters.ap.FilterAP">
 <em class="property">class </em><code class="descclassname">padasip.filters.ap.</code><code class="descname">FilterAP</code><span class="sig-paren">(</span><em>n</em>, <em>order=5</em>, <em>mu=0.1</em>, <em>eps=0.001</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>Args:</strong></p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>n</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">length of filter (integer) - how many input is input array</span><dd><p class="first last">(row of input matrix)</p>
-</dd>
-</dl>
-</li>
+<dd><p>Bases: <a class="reference internal" href="base_filter.html#padasip.filters.base_filter.AdaptiveFilter" title="padasip.filters.base_filter.AdaptiveFilter"><code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></a></p>
+<p>Adaptive AP filter.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><cite>n</cite> : length of filter (integer) - how many input is input array
+(row of input matrix)</li>
 </ul>
 <p><strong>Kwargs:</strong></p>
 <ul>
-<li><dl class="first docutils">
-<dt><cite>order</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">projection order (integer) - how many input vectors</span><dd><p class="first last">are in one input matrix</p>
-</dd>
-</dl>
+<li><p class="first"><cite>order</cite> : projection order (integer) - how many input vectors
+are in one input matrix</p>
 </li>
-<li><dl class="first docutils">
-<dt><cite>mu</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">learning rate (float). Also known as step size.</span><dd><p class="first last">If it is too slow,
+<li><p class="first"><cite>mu</cite> : learning rate (float). Also known as step size.
+If it is too slow,
 the filter may have bad performance. If it is too high,
 the filter will be unstable. The default value can be unstable
 for ill-conditioned input data.</p>
-</dd>
-</dl>
 </li>
 <li><p class="first"><cite>eps</cite> : initial offset covariance (float)</p>
 </li>
@@ -243,36 +239,19 @@ for ill-conditioned input data.</p>
 <code class="descname">run</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function filters multiple samples in a row.</p>
 <p><strong>Args:</strong></p>
-<ul>
-<li><p class="first"><cite>d</cite> : desired value (1 dimensional array)</p>
-</li>
-<li><dl class="first docutils">
-<dt><cite>x</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">input matrix (2-dimensional array). Rows are samples,</span><dd><p class="first last">columns are input arrays.</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li><cite>d</cite> : desired value (1 dimensional array)</li>
+<li><cite>x</cite> : input matrix (2-dimensional array). Rows are samples,
+columns are input arrays.</li>
 </ul>
 <p><strong>Returns:</strong></p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>y</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">output value (1 dimensional array).</span><dd><p class="first last">The size corresponds with the desired value.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>e</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">filter error for every sample (1 dimensional array). </span><dd><p class="first last">The size corresponds with the desired value.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><cite>w</cite></dt>
- <span class="classifier-delimiter">:</span> <span class="classifier">history of all weights (2 dimensional array).</span><dd><p class="first last">Every row is set of the weights for given sample.</p>
-</dd>
-</dl>
-</li>
+<ul class="simple">
+<li><cite>y</cite> : output value (1 dimensional array).
+The size corresponds with the desired value.</li>
+<li><cite>e</cite> : filter error for every sample (1 dimensional array).
+The size corresponds with the desired value.</li>
+<li><cite>w</cite> : history of all weights (2 dimensional array).
+Every row is set of the weights for given sample.</li>
 </ul>
 </dd></dl>
 
@@ -302,6 +281,7 @@ for ill-conditioned input data.</p>
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#changelog">Changelog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
@@ -309,14 +289,16 @@ for ill-conditioned input data.</p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">AP Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gngd.html">GNGD Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lms.html">LMS Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nlms.html">NLMS Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rls.html">RLS Filter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Affine Projection (AP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_filter.html">Base Filter Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lms.html">Least-mean-squares (LMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rls.html">Recursive Least Squares (RLS)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
@@ -324,7 +306,7 @@ for ill-conditioned input data.</p>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../filters_mod.html">Adaptive Filters</a><ul>
       <li>Previous: <a href="../filters_mod.html" title="previous chapter">Adaptive Filters</a></li>
-      <li>Next: <a href="gngd.html" title="next chapter">GNGD Filter</a></li>
+      <li>Next: <a href="base_filter.html" title="next chapter">Base Filter Class</a></li>
   </ul></li>
   </ul></li>
 </ul>

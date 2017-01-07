@@ -1,10 +1,9 @@
-.. _preprocess:
+.. _mics:
 
-Data Preprocessing
+Miscellaneous
 ===================================
 
-.. automodule:: padasip.preprocess
-
+.. automodule:: padasip.misc
 
 Content
 
@@ -12,12 +11,7 @@ Content
     :glob:
     :maxdepth: 1
 
-    preprocess/*
-
-
-
-
-
+    misc/*
 
 
 

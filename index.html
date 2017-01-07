@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Padasip &#8212; Padasip 0.6 documentation</title>
+    <title>Padasip &#8212; Padasip 0.7 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6',
+        VERSION:     '0.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.6 documentation" href="#" />
+    <link rel="top" title="Padasip 0.7 documentation" href="#" />
     <link rel="next" title="Data Preprocessing" href="sources/preprocess.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -50,7 +50,7 @@
   <div class="section" id="padasip">
 <h1>Padasip<a class="headerlink" href="#padasip" title="Permalink to this headline">¶</a></h1>
 <p><em>Python Adaptive Signal Processing</em></p>
-<span class="target" id="module-padasip"></span><p>Current version: 0.6 (<a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>)</p>
+<span class="target" id="module-padasip"></span><p>Current version: 0.7 (<a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>)</p>
 <p>This library is designed to simplify adaptive signal 
 processing tasks within python
 (filtering, prediction, reconstruction, classification).
@@ -68,6 +68,7 @@ real-time measuring (sample-after-sample feeding).</p>
 <li class="toctree-l2"><a class="reference internal" href="#tutorials">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-user-quide">The User Quide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog">Changelog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
@@ -129,15 +130,19 @@ check the complete documentation here</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sources/filters_mod.html">Adaptive Filters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sources/filters/ap.html">AP Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/filters/gngd.html">GNGD Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/filters/lms.html">LMS Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/filters/nlms.html">NLMS Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sources/filters/rls.html">RLS Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/ap.html">Affine Projection (AP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/lms.html">Least-mean-squares (LMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/rls.html">Recursive Least Squares (RLS)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sources/ann.html">Artificial Neural Networks (ANN)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sources/ann/mlp.html">Multi-layer Perceptron (MLP)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sources/misc.html">Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sources/misc/error_evaluation.html">Error Evaluation</a></li>
 </ul>
 </li>
 </ul>
@@ -146,6 +151,10 @@ check the complete documentation here</p>
 <div class="section" id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
 <p>By email: <a class="reference external" href="mailto:matousc&#37;&#52;&#48;gmail&#46;com">matousc<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
+</div>
+<div class="section" id="changelog">
+<h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
+<p>For informations about versions and updates see <a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>.</p>
 </div>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
@@ -178,6 +187,7 @@ check the complete documentation here</p>
 <li class="toctree-l2"><a class="reference internal" href="#tutorials">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-user-quide">The User Quide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog">Changelog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
@@ -186,6 +196,7 @@ check the complete documentation here</p>
 <li class="toctree-l1"><a class="reference internal" href="sources/preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/filters_mod.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

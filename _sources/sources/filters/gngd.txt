@@ -1,7 +1,8 @@
-.. _filter-gngd-label:
+.. _filter-gngd:
 
-GNGD Filter
-===================================
+Generalized Normalized Gradient Descent (GNGD)
+================================================
 
 .. automodule:: padasip.filters.gngd
     :members:
+    :show-inheritance:

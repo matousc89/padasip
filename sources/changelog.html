@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &#8212; Padasip 0.6 documentation</title>
+    <title>Changelog &#8212; Padasip 0.7 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6',
+        VERSION:     '0.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.6 documentation" href="../index.html" />
+    <link rel="top" title="Padasip 0.7 documentation" href="../index.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -49,22 +49,27 @@
   <div class="section" id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <dl class="docutils">
-<dt><strong>Version 0.6</strong>  <em>Released: 2016-12-15</em></dt>
+<dt><strong>Version 0.7</strong> <em>Released: 2017-01-07</em></dt>
+<dd>Added new helper functions into  <a class="reference internal" href="filters_mod.html#filters"><span class="std std-ref">Adaptive Filters</span></a>. Furthermore, the
+documentation for adaptive filters module was updated.
+Added functions for error evaluation - MSE, MAE, RMSE and logSE
+(<a class="reference internal" href="misc/error_evaluation.html#mics-error-evaluation"><span class="std std-ref">Error Evaluation</span></a>).</dd>
+<dt><strong>Version 0.6</strong> <em>Released: 2016-12-15</em></dt>
 <dd>Added <a class="reference internal" href="preprocess/pca.html#preprocess-pca"><span class="std std-ref">Principal Component Analysis (PCA)</span></a> and <a class="reference internal" href="preprocess/lda.html#preprocess-lda"><span class="std std-ref">Linear Discriminant Analysis (LDA)</span></a>. The whole documentation
 for preprocess module was updated.</dd>
 <dt><strong>Version 0.5</strong> <em>Released: 2016-11-16</em></dt>
 <dd>Bugfix according to issue opened by <a class="reference external" href="https://github.com/lolpenguin">https://github.com/lolpenguin</a></dd>
 <dt><strong>Version 0.4</strong> <em>Released: 2016-09-29</em></dt>
-<dd>Added <a class="reference internal" href="filters/ap.html#filter-ap-label"><span class="std std-ref">AP Filter</span></a>. And also the first unit tests were implemented.</dd>
+<dd>Added <a class="reference internal" href="filters/ap.html#filter-ap"><span class="std std-ref">Affine Projection (AP)</span></a>. And also the first unit tests were implemented.</dd>
 <dt><strong>Version 0.3</strong> <em>Released: 2016-09-22</em></dt>
-<dd>Added <a class="reference internal" href="ann/mlp.html#ann-mlp-label"><span class="std std-ref">Multi-layer Perceptron (MLP)</span></a></dd>
+<dd>Added <a class="reference internal" href="ann/mlp.html#ann-mlp"><span class="std std-ref">Multi-layer Perceptron (MLP)</span></a></dd>
 <dt><strong>Version 0.2</strong> <em>Released: 2016-09-02</em></dt>
-<dd>Added <a class="reference internal" href="filters/gngd.html#filter-gngd-label"><span class="std std-ref">GNGD Filter</span></a></dd>
+<dd>Added <a class="reference internal" href="filters/gngd.html#filter-gngd"><span class="std std-ref">Generalized Normalized Gradient Descent (GNGD)</span></a></dd>
 <dt><strong>Version 0.1</strong> <em>Released: 2016-03-18</em></dt>
 <dd>Created
-<a class="reference internal" href="filters/lms.html#filter-lms-label"><span class="std std-ref">LMS Filter</span></a>, <a class="reference internal" href="filters/nlms.html#filter-nlms-label"><span class="std std-ref">NLMS Filter</span></a>,
-<a class="reference internal" href="filters/rls.html#filter-rls-label"><span class="std std-ref">RLS Filter</span></a>, <a class="reference internal" href="preprocess/input_from_history.html#preprocess-input-from-history-label"><span class="std std-ref">Input Matrix Construction</span></a>,
-<a class="reference internal" href="preprocess/standardize.html#preprocess-standardize-label"><span class="std std-ref">Data Standardization</span></a>, <a class="reference internal" href="preprocess/standardize_back.html#preprocess-standardize-back-label"><span class="std std-ref">Data De-standardization</span></a></dd>
+<a class="reference internal" href="filters/lms.html#filter-lms"><span class="std std-ref">Least-mean-squares (LMS)</span></a>, <a class="reference internal" href="filters/nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-squares (NLMS)</span></a>,
+<a class="reference internal" href="filters/rls.html#filter-rls"><span class="std std-ref">Recursive Least Squares (RLS)</span></a>, <a class="reference internal" href="preprocess/input_from_history.html#preprocess-input-from-history"><span class="std std-ref">Input Matrix Construction</span></a>,
+<a class="reference internal" href="preprocess/standardize.html#preprocess-standardize"><span class="std std-ref">Data Standardization</span></a>, <a class="reference internal" href="preprocess/standardize_back.html#preprocess-standardize-back"><span class="std std-ref">Data De-standardization</span></a></dd>
 </dl>
 </div>
 
@@ -89,6 +94,7 @@ for preprocess module was updated.</dd>
 <li class="toctree-l1"><a class="reference internal" href="preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters_mod.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>

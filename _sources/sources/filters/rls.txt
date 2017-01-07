@@ -1,7 +1,8 @@
-.. _filter-rls-label:
+.. _filter-rls:
 
-RLS Filter
-***************************
+Recursive Least Squares (RLS)
+======================================
 
 .. automodule:: padasip.filters.rls
     :members:
+    :show-inheritance:
