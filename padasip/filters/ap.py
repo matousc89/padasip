@@ -23,8 +23,10 @@ Content of this page:
    :local:
    :depth: 1
 
+.. seealso:: :ref:`filters`
+
 Algorithm Explanation
-************************
+======================================
 
 The input for AP filter is created as follows
 
@@ -61,7 +63,7 @@ vectors: :math:`\\textbf{y}_{AP}(k)` for output and
    
     
 Minimal Working Example
-************************
+======================================
 
 If you have measured data you may filter it as follows
 
@@ -140,13 +142,13 @@ An example how to filter data measured in real-time
 
 
 References
-***************
+======================================
 
 .. bibliography:: ap.bib
     :style: plain
 
 Code Explanation
-***************** 
+======================================
 """
 import numpy as np
 import padasip.consts as co
@@ -157,21 +159,23 @@ from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterAP(AdaptiveFilter):
     """
+    Adaptive AP filter.
+    
     **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
-        (row of input matrix)
+      (row of input matrix)
 
     **Kwargs:**
 
     * `order` : projection order (integer) - how many input vectors
-        are in one input matrix
+      are in one input matrix
 
     * `mu` : learning rate (float). Also known as step size.
-        If it is too slow,
-        the filter may have bad performance. If it is too high,
-        the filter will be unstable. The default value can be unstable
-        for ill-conditioned input data.
+      If it is too slow,
+      the filter may have bad performance. If it is too high,
+      the filter will be unstable. The default value can be unstable
+      for ill-conditioned input data.
 
     * `eps` : initial offset covariance (float)
     
@@ -192,7 +196,7 @@ class FilterAP(AdaptiveFilter):
         self.mu = self.check_float_param(mu, co.MU_AP_MIN, co.MU_AP_MAX, "mu")
         self.eps = self.check_float_param(eps, co.EPS_AP_MIN,
             co.EPS_AP_MAX, "eps")
-        self.w = self.init_weights(w, self.n)
+        self.init_weights(w, self.n)
         self.w_history = False
         self.x_mem = np.zeros((self.n, self.order))
         self.d_mem = np.zeros(order)
@@ -200,7 +204,6 @@ class FilterAP(AdaptiveFilter):
         self.ide = np.identity(self.order)
         self.y_mem = False
         self.e_mem = False
-
 
     def adapt(self, d, x):
         """
@@ -235,18 +238,19 @@ class FilterAP(AdaptiveFilter):
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
-            columns are input arrays.
+          columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
-        * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+        * `e` : filter error for every sample (1 dimensional array).
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
+            
         """
         # measure the data and check if the dimmension agree
         N = len(x)
@@ -265,6 +269,7 @@ class FilterAP(AdaptiveFilter):
         self.w_history = np.zeros((N,self.n))
         # adaptation loop
         for k in range(N):
+            self.w_history[k,:] = self.w
             # create input matrix and target vector
             self.x_mem[:,1:] = self.x_mem[:,:-1]
             self.x_mem[:,0] = x[k]
@@ -280,6 +285,5 @@ class FilterAP(AdaptiveFilter):
             dw_part2 = np.linalg.solve(dw_part1, self.ide)
             dw = np.dot(self.x_mem, np.dot(dw_part2, self.e_mem))
             self.w += self.mu * dw           
-            self.w_history[k,:] = self.w
         return y, e, self.w
         

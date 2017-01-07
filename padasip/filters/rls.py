@@ -1,7 +1,7 @@
 """
 .. versionadded:: 0.1
 
-The RLS filter :cite:`sayed1998recursive` can be created as follows
+The Recursive Least Squares filter :cite:`sayed1998recursive` can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterRLS(n)
@@ -14,8 +14,10 @@ Content of this page:
    :local:
    :depth: 1
 
+.. seealso:: :ref:`filters`
+
 Algorithm Explanation
-*********************** 
+======================================
 
 The RLS adaptive filter may be described as
 
@@ -62,7 +64,7 @@ where :math:`\\textbf{I}` is identity matrix and :math:`\delta`
 is small positive constant.
 
 Stability and Optimal Performance
-*************************************
+======================================
 
 Make the RLS working correctly with a real data can be tricky.
 The forgetting factor :math:`\\mu` should be in range from 0 to 1.
@@ -70,7 +72,7 @@ But in a lot of cases it works only with values close to 1
 (for example something like 0.99).
 
 Minimal Working Examples
-**************************
+======================================
 
 If you have measured data you may filter it as follows
 
@@ -150,14 +152,14 @@ An example how to filter data measured in real-time
 
 
 References
-***************
+======================================
 
 .. bibliography:: rls.bib
     :style: plain
 
 
 Code Explanation
-***************** 
+======================================
 """
 
 import numpy as np
@@ -167,19 +169,21 @@ from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterRLS(AdaptiveFilter):
     """
+    Adaptive RLS filter.
+    
     **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
-        (row of input matrix)
+      (row of input matrix)
 
     **Kwargs:**
 
     * `mu` : forgetting factor (float). It is introduced to give exponentially
-        less weight to older error samples. It is usually chosen
-        between 0.98 and 1.
+      less weight to older error samples. It is usually chosen
+      between 0.98 and 1.
 
     * `eps` : initialisation value (float). It is usually chosen
-        between 0.1 and 1.
+      between 0.1 and 1.
 
     * `w` : initial weights of filter. Possible values are:
         
@@ -198,7 +202,7 @@ class FilterRLS(AdaptiveFilter):
             raise ValueError('The size of filter must be an integer') 
         self.mu = self.check_float_param(mu, co.MU_RLS_MIN, co.MU_RLS_MAX, "mu")
         self.eps = self.check_float_param(eps, co.EPS_RLS_MIN, co.EPS_RLS_MAX, "eps")
-        self.w = self.init_weights(w, self.n)
+        self.init_weights(w, self.n)
         self.R = 1/self.eps * np.identity(n)
         self.w_history = False
 
@@ -228,19 +232,19 @@ class FilterRLS(AdaptiveFilter):
 
         * `d` : desired value (1 dimensional array)
 
-        * `x` : input matrix (2-dimensional array). Rows are samples, columns are
-            input arrays.
+        * `x` : input matrix (2-dimensional array). Rows are samples,
+            columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
-        * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+        * `e` : filter error for every sample (1 dimensional array).
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
         """
         # measure the data and check if the dimmension agree
         N = len(x)
@@ -259,6 +263,7 @@ class FilterRLS(AdaptiveFilter):
         self.w_history = np.zeros((N, self.n))
         # adaptation loop
         for k in range(N):
+            self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
             R1 = np.dot(np.dot(np.dot(self.R,x[k]),x[k].T),self.R)
@@ -266,12 +271,11 @@ class FilterRLS(AdaptiveFilter):
             self.R = 1/self.mu * (self.R - R1/R2)
             dw = np.dot(self.R, x[k].T) * e[k]
             self.w += dw
-            self.w_history[k,:] = self.w
         return y, e, self.w
         
     def novelty(self, d, x):
         """
-        This function estimates novelty in data
+        This function estimates novelty in data\
         according to the learning effort.
 
         **Args:**
@@ -279,22 +283,22 @@ class FilterRLS(AdaptiveFilter):
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
-            columns are input arrays.
+          columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
-        * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+        * `e` : filter error for every sample (1 dimensional array).
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
 
         * `nd` : novelty detection coefficients (2 dimensional array).
-            Every row is set of coefficients for given sample.
-            One coefficient represents one filter weight.
+          Every row is set of coefficients for given sample.
+          One coefficient represents one filter weight.
         """
         # measure the data and check if the dimmension agree
         N = len(x)

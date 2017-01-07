@@ -18,12 +18,12 @@ real-time measuring (sample-after-sample feeding).
     index
 
 License
-************
+===============
 
 This project is under `MIT License <https://en.wikipedia.org/wiki/MIT_License>`_.
 
 Instalation
-************
+====================
 With `pip <https://pypi.python.org/pypi/pip>`_ from terminal: ``$ pip install padasip``
 
 Or download you can download the source codes from Github
@@ -31,7 +31,7 @@ Or download you can download the source codes from Github
 
 
 Tutorials
-***********
+===============
 
 All tutorials are created as Jupyter notebooks.
 You can open the tutorial as html, or you can download it as notebook.
@@ -50,29 +50,35 @@ You can open the tutorial as html, or you can download it as notebook.
 
 
 The User Quide
-***************
+=====================
 
 If you need to know something what is not covered by tutorials,
 check the complete documentation here
 
 
-
 .. toctree::
     :maxdepth: 2
+    :titlesonly:
     
     sources/preprocess
     sources/filters_mod
     sources/ann
+    sources/misc
 
 
 Contact
-**********
+=====================
 
 By email: matousc@gmail.com
 
 
+Changelog
+======================
+
+For informations about versions and updates see :ref:`changelog`.
+
 Indices and tables
-*******************
+===========================
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
@@ -82,8 +88,8 @@ Indices and tables
 from padasip.filters.shortcuts import *
 import padasip.ann
 import padasip.filters
-
 import padasip.preprocess
+import padasip.misc
 
 # back compatibility with v0.5
 from padasip.preprocess.standardize import standardize

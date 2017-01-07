@@ -17,10 +17,12 @@ Content of this page:
 .. contents::
    :local:
    :depth: 1
+
+.. seealso:: :ref:`filters`
    
 
 Minimal Working Examples
-**************************
+======================================
 
 If you have measured data you may filter it as follows
 
@@ -95,13 +97,13 @@ An example how to filter data measured in real-time
 
 
 References
-***************
+======================================
 
 .. bibliography:: gngd.bib
     :style: plain
 
 Code Explanation
-***************** 
+======================================
 """
 import numpy as np
 import padasip.consts as co
@@ -111,24 +113,26 @@ from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterGNGD(AdaptiveFilter):
     """
+    Adaptive GNGD filter.
+    
     **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
-        (row of input matrix)
+      (row of input matrix)
 
     **Kwargs:**
 
     * `mu` : learning rate (float). Also known as step size.
-        If it is too slow,
-        the filter may have bad performance. If it is too high,
-        the filter will be unstable. The default value can be unstable
-        for ill-conditioned input data.
+      If it is too slow,
+      the filter may have bad performance. If it is too high,
+      the filter will be unstable. The default value can be unstable
+      for ill-conditioned input data.
 
     * `eps` : compensation term (float) at the beginning. It is adaptive
-        parameter.
+      parameter.
 
     * `ro` : step size adaptation parameter (float) at the beginning.
-        It is adaptive parameter.
+      It is adaptive parameter.
 
     * `w` : initial weights of filter. Possible values are:
         
@@ -140,7 +144,7 @@ class FilterGNGD(AdaptiveFilter):
     """ 
     def __init__(self, n, mu=co.MU_GNGD, eps=co.EPS_GNGD,
             ro=co.RO_GNGD, w="random",):
-        self.kind = "NLMS filter"
+        self.kind = "GNGD filter"
         if type(n) == int:
             self.n = n
         else:
@@ -152,7 +156,7 @@ class FilterGNGD(AdaptiveFilter):
             co.RO_GNGD_MAX, "ro")
         self.last_e = 0
         self.last_x = np.zeros(n)
-        self.w = self.init_weights(w, self.n)
+        self.init_weights(w, self.n)
         self.w_history = False
 
     def adapt(self, d, x):
@@ -182,19 +186,19 @@ class FilterGNGD(AdaptiveFilter):
 
         * `d` : desired value (1 dimensional array)
 
-        * `x` : input matrix (2-dimensional array). Rows are samples, columns are
-            input arrays.
+        * `x` : input matrix (2-dimensional array). Rows are samples,
+          columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
-        * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+        * `e` : filter error for every sample (1 dimensional array).
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
         """
         # measure the data and check if the dimmension agree
         N = len(x)
@@ -213,6 +217,7 @@ class FilterGNGD(AdaptiveFilter):
         self.w_history = np.zeros((N, self.n))
         # adaptation loop
         for k in range(N):
+            self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
             self.eps = self.eps - self.ro * self.mu * e[k] * e[k-1] * \
@@ -221,7 +226,6 @@ class FilterGNGD(AdaptiveFilter):
             nu = self.mu / (self.eps + np.dot(x[k], x[k]))
             dw = nu * e[k] * x[k]
             self.w += dw
-            self.w_history[k,:] = self.w
         return y, e, self.w
         
     def novelty(self, d, x):
@@ -234,22 +238,22 @@ class FilterGNGD(AdaptiveFilter):
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
-            columns are input arrays.
+          columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
-        * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+        * `e` : filter error for every sample (1 dimensional array).
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
 
         * `nd` : novelty detection coefficients (2 dimensional array).
-            Every row is set of coefficients for given sample.
-            One coefficient represents one filter weight.
+          Every row is set of coefficients for given sample.
+          One coefficient represents one filter weight.
         """
         # measure the data and check if the dimmension agree
         N = len(x)

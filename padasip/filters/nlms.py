@@ -1,9 +1,9 @@
 """
 .. versionadded:: 0.1
 
-The normalized lest-mean-squares (NLMS) adaptive filter
+The normalized least-mean-squares (NLMS) adaptive filter
 :cite:`mandic2004generalized`
-is an extension of the popular LMS adaptive filter (:ref:`filter-lms-label`).
+is an extension of the popular LMS adaptive filter (:ref:`filter-lms`).
 
 The NLMS filter can be created as follows
 
@@ -18,10 +18,12 @@ Content of this page:
    :local:
    :depth: 1
 
-Algorithm Explanation
-*********************** 
+.. seealso:: :ref:`filters`
 
-The NLMS is extension of LMS filter. See :ref:`filter-lms-label`
+Algorithm Explanation
+======================================
+
+The NLMS is extension of LMS filter. See :ref:`filter-lms`
 for explanation of the algorithm behind.
 
 The extension is based on normalization of learning rate.
@@ -36,7 +38,7 @@ This constant is introduced to preserve the stability in cases where
 the input is close to zero.
 
 Stability and Optimal Performance
-**********************************
+======================================
 
 The stability of the NLMS filter si given as follows
 
@@ -53,7 +55,7 @@ the optimal value can be strongly case specific.
 
 
 Minimal Working Examples
-**************************
+======================================
 
 If you have measured data you may filter it as follows
 
@@ -128,13 +130,13 @@ An example how to filter data measured in real-time
 
 
 References
-***************
+======================================
 
 .. bibliography:: nlms.bib
     :style: plain
 
 Code Explanation
-***************** 
+======================================
 """
 import numpy as np
 import padasip.consts as co
@@ -155,13 +157,13 @@ class FilterNLMS(AdaptiveFilter):
     **Kwargs:**
 
     * `mu` : learning rate (float). Also known as step size.
-        If it is too slow,
-        the filter may have bad performance. If it is too high,
-        the filter will be unstable. The default value can be unstable
-        for ill-conditioned input data.
+      If it is too slow,
+      the filter may have bad performance. If it is too high,
+      the filter will be unstable. The default value can be unstable
+      for ill-conditioned input data.
 
     * `eps` : regularization term (float). It is introduced to preserve
-        stability for close-to-zero input vectors
+      stability for close-to-zero input vectors
 
     * `w` : initial weights of filter. Possible values are:
         
@@ -180,7 +182,7 @@ class FilterNLMS(AdaptiveFilter):
         self.mu = self.check_float_param(mu, co.MU_NLMS_MIN, co.MU_NLMS_MAX, "mu")
         self.eps = self.check_float_param(eps, co.EPS_NLMS_MIN,
             co.EPS_NLMS_MAX, "eps")
-        self.w = self.init_weights(w, self.n)
+        self.init_weights(w, self.n)
         self.w_history = False
 
     def adapt(self, d, x):
@@ -206,19 +208,19 @@ class FilterNLMS(AdaptiveFilter):
 
         * `d` : desired value (1 dimensional array)
 
-        * `x` : input matrix (2-dimensional array). Rows are samples, columns are
-            input arrays.
+        * `x` : input matrix (2-dimensional array). Rows are samples,
+          columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
-        * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+        * `e` : filter error for every sample (1 dimensional array).
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
         """
         # measure the data and check if the dimmension agree
         N = len(x)
@@ -237,12 +239,12 @@ class FilterNLMS(AdaptiveFilter):
         self.w_history = np.zeros((N,self.n))
         # adaptation loop
         for k in range(N):
+            self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
             nu = self.mu / (self.eps + np.dot(x[k], x[k]))
             dw = nu * e[k] * x[k]
             self.w += dw
-            self.w_history[k,:] = self.w
         return y, e, self.w
         
     def novelty(self, d, x):
@@ -255,22 +257,22 @@ class FilterNLMS(AdaptiveFilter):
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
-            columns are input arrays.
+          columns are input arrays.
 
         **Returns:**
 
         * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
         * `e` : filter error for every sample (1 dimensional array). 
-            The size corresponds with the desired value.
+          The size corresponds with the desired value.
 
         * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
+          Every row is set of the weights for given sample.
 
         * `nd` : novelty detection coefficients (2 dimensional array).
-            Every row is set of coefficients for given sample.
-            One coefficient represents one filter weight.
+          Every row is set of coefficients for given sample.
+          One coefficient represents one filter weight.
         """
         # measure the data and check if the dimmension agree
         N = len(x)

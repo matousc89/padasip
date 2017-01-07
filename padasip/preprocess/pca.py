@@ -10,7 +10,7 @@ Principal component analysis (PCA) is a statistical method how to convert a set 
 See also: :ref:`preprocess-lda`
 
 Usage Explanation
-********************
+=======================
 
 For reduction of dataset :code:`x` to :code:`n` number of principal components
 
@@ -26,7 +26,7 @@ you can do it as follows:
     eigenvalues = pa.preprocess.PCA_components(x) 
 
 Minimal Working Example
-*****************************
+===========================
 
 In this example is generated random numbers (100 samples, with 3 values each).
 After the PCA application the reduced data-set is produced
@@ -59,7 +59,7 @@ what prints
 >>> [ 8.02948402  7.09335781  5.34116273]
 
 Code Explanation
-***************** 
+====================
 """
 from __future__ import division
 import numpy as np
