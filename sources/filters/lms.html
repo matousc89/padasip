@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -42,6 +43,13 @@
 
   </head>
   <body role="document">
+<div class="support_bar">
+    <center>
+        Do you want to support our effort? <a href="../support.html">Send us a postcard!</a>
+    </center>
+</div>
+
+
   
 
     <div class="document">
@@ -195,7 +203,7 @@ then try the normalized LMS (<span class="xref std std-ref">filter-nlms-label</s
 <dl class="class">
 <dt id="padasip.filters.lms.FilterLMS">
 <em class="property">class </em><code class="descclassname">padasip.filters.lms.</code><code class="descname">FilterLMS</code><span class="sig-paren">(</span><em>n</em>, <em>mu=0.01</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/lms.html#FilterLMS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.lms.FilterLMS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="base_filter.html#padasip.filters.base_filter.AdaptiveFilter" title="padasip.filters.base_filter.AdaptiveFilter"><code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></p>
 <p>This class represents an adaptive LMS filter.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
@@ -310,7 +318,6 @@ The size corresponds with the desired value.</li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ap.html">Affine Projection (AP)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base_filter.html">Base Filter Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Least-mean-squares (LMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>

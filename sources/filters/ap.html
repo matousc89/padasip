@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -26,7 +27,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Padasip 0.7 documentation" href="../../index.html" />
     <link rel="up" title="Adaptive Filters" href="../filters_mod.html" />
-    <link rel="next" title="Base Filter Class" href="base_filter.html" />
+    <link rel="next" title="Generalized Normalized Gradient Descent (GNGD)" href="gngd.html" />
     <link rel="prev" title="Adaptive Filters" href="../filters_mod.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -42,6 +43,13 @@
 
   </head>
   <body role="document">
+<div class="support_bar">
+    <center>
+        Do you want to support our effort? <a href="../support.html">Send us a postcard!</a>
+    </center>
+</div>
+
+
   
 
     <div class="document">
@@ -193,7 +201,7 @@ vectors: <span class="math">\(\textbf{y}_{AP}(k)\)</span> for output and
 <dl class="class">
 <dt id="padasip.filters.ap.FilterAP">
 <em class="property">class </em><code class="descclassname">padasip.filters.ap.</code><code class="descname">FilterAP</code><span class="sig-paren">(</span><em>n</em>, <em>order=5</em>, <em>mu=0.1</em>, <em>eps=0.001</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/ap.html#FilterAP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.ap.FilterAP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="base_filter.html#padasip.filters.base_filter.AdaptiveFilter" title="padasip.filters.base_filter.AdaptiveFilter"><code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></p>
 <p>Adaptive AP filter.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
@@ -290,7 +298,6 @@ Every row is set of the weights for given sample.</li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Affine Projection (AP)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base_filter.html">Base Filter Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lms.html">Least-mean-squares (LMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
@@ -306,7 +313,7 @@ Every row is set of the weights for given sample.</li>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../filters_mod.html">Adaptive Filters</a><ul>
       <li>Previous: <a href="../filters_mod.html" title="previous chapter">Adaptive Filters</a></li>
-      <li>Next: <a href="base_filter.html" title="next chapter">Base Filter Class</a></li>
+      <li>Next: <a href="gngd.html" title="next chapter">Generalized Normalized Gradient Descent (GNGD)</a></li>
   </ul></li>
   </ul></li>
 </ul>

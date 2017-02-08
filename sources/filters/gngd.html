@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -27,7 +28,7 @@
     <link rel="top" title="Padasip 0.7 documentation" href="../../index.html" />
     <link rel="up" title="Adaptive Filters" href="../filters_mod.html" />
     <link rel="next" title="Least-mean-squares (LMS)" href="lms.html" />
-    <link rel="prev" title="Base Filter Class" href="base_filter.html" />
+    <link rel="prev" title="Affine Projection (AP)" href="ap.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -42,6 +43,13 @@
 
   </head>
   <body role="document">
+<div class="support_bar">
+    <center>
+        Do you want to support our effort? <a href="../support.html">Send us a postcard!</a>
+    </center>
+</div>
+
+
   
 
     <div class="document">
@@ -160,7 +168,7 @@ is an extension of the NLMS adaptive filter (<span class="xref std std-ref">filt
 <dl class="class">
 <dt id="padasip.filters.gngd.FilterGNGD">
 <em class="property">class </em><code class="descclassname">padasip.filters.gngd.</code><code class="descname">FilterGNGD</code><span class="sig-paren">(</span><em>n</em>, <em>mu=1.0</em>, <em>eps=1.0</em>, <em>ro=0.1</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/gngd.html#FilterGNGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.gngd.FilterGNGD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="base_filter.html#padasip.filters.base_filter.AdaptiveFilter" title="padasip.filters.base_filter.AdaptiveFilter"><code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></p>
 <p>Adaptive GNGD filter.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
@@ -283,7 +291,6 @@ Every row is set of the weights for given sample.</li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters_mod.html">Adaptive Filters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ap.html">Affine Projection (AP)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base_filter.html">Base Filter Class</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Generalized Normalized Gradient Descent (GNGD)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lms.html">Least-mean-squares (LMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
@@ -298,7 +305,7 @@ Every row is set of the weights for given sample.</li>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../filters_mod.html">Adaptive Filters</a><ul>
-      <li>Previous: <a href="base_filter.html" title="previous chapter">Base Filter Class</a></li>
+      <li>Previous: <a href="ap.html" title="previous chapter">Affine Projection (AP)</a></li>
       <li>Next: <a href="lms.html" title="next chapter">Least-mean-squares (LMS)</a></li>
   </ul></li>
   </ul></li>
