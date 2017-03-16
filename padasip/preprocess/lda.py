@@ -110,12 +110,12 @@ def LDA_base(x, labels):
     * `x` : input matrix (2d array), every row represents new sample
 
     * `labels` : list of labels (iterable), every item should be label for \
-        sample with corresponding index
+      sample with corresponding index
 
     **Returns:**
     
     * `eigenvalues`, `eigenvectors` : eigenvalues and eigenvectors \
-        from LDA analysis 
+      from LDA analysis 
 
     """
     classes = np.array(tuple(set(labels)))
@@ -152,12 +152,12 @@ def LDA(x, labels, n=False):
     * `x` : input matrix (2d array), every row represents new sample
 
     * `labels` : list of labels (iterable), every item should be label for \
-        sample with corresponding index
+      sample with corresponding index
 
     **Kwargs:**
 
     * `n` : number of features returned (integer) - how many columns 
-        should the output keep
+      should the output keep
 
     **Returns:**
     

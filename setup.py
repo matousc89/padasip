@@ -11,7 +11,7 @@ def readme():
 setup(
     name = 'padasip',
     packages = find_packages(exclude=("tests",)),
-    version = '0.7',
+    version = '1.0.0',
     description = 'Python Adaptive Signal Processing',
     long_description = readme(),
     author = 'Matous Cejnek',
@@ -26,7 +26,7 @@ setup(
     ],    
     bugtrack_url = "https://github.com/matousc89/padasip/issues", 
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Topic :: Adaptive Technologies',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',

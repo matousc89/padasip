@@ -57,5 +57,17 @@ This method is based on adaptive parameters and filtering error evaluation (for 
 Neural Networks
 ******************
 
-So far it is imlemented only MLP neural network.
+So far it is implemented only MLP neural network.
+
+******************
+Detection Tools
+******************
+
+The library features two novelty/outlier detection tools
+
+- Error and Learning Based Novelty Detection (ELBND)
+
+- Learning Entropy (LE)
+
+
 

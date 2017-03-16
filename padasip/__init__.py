@@ -33,21 +33,9 @@ Or download you can download the source codes from Github
 Tutorials
 ===============
 
-All tutorials are created as Jupyter notebooks.
-You can open the tutorial as html, or you can download it as notebook.
-
-* Noise Cancelation, Identification and Prediction with Adaptive Filters
-    (`see online <tutorials/tutorial1.html>`_) (`download notebook <notebooks/tutorial1.ipynb>`_)
-
-* Adaptive Novelty Detection
-    (`see online <tutorials/tutorial2.html>`_) (`download notebook <notebooks/tutorial2.ipynb>`_)
-    
-* Adaptive filters in Real-time with PADASIP Module
-    (`see online <tutorials/tutorial3.html>`_) (`download notebook <notebooks/tutorial3.ipynb>`_)
-
-* Multi-layer Perceptron (MLP) Neural Network - Basic Examples
-    (`see online <tutorials/mlp_tutorial.html>`_) (`download notebook <notebooks/mlp_tutorial.ipynb>`_)
-
+All Padasip related tutorials are created as Jupyter notebooks. You can find
+them in `Python Adaptive Signal Processing Handbook
+<https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook>`_.
 
 The User Quide
 =====================
@@ -61,8 +49,9 @@ check the complete documentation here
     :titlesonly:
     
     sources/preprocess
-    sources/filters_mod
+    sources/filters
     sources/ann
+    sources/detection
     sources/misc
 
 
@@ -85,11 +74,11 @@ Indices and tables
 
 """
 #from padasip.preprocess import 
-from padasip.filters.shortcuts import *
 import padasip.ann
 import padasip.filters
 import padasip.preprocess
 import padasip.misc
+import padasip.detection
 
 # back compatibility with v0.5
 from padasip.preprocess.standardize import standardize

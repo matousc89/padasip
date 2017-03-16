@@ -12,7 +12,7 @@ where :math:`\\textbf{x}` is time series to standardize,
    :local:
    :depth: 1
 
-See also: :ref:`preprocess-standardize_back-label`
+See also: :ref:`preprocess-standardize_back`
 
 Usage Explanation
 ********************

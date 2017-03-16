@@ -146,5 +146,16 @@ class TestFilters(unittest.TestCase):
                 f = item(n=4, eps=[1,2]) # eps is array
             with self.assertRaises(ValueError):
                 f = item(n=4, eps=-1) # eps is negative
+                
+    def test_filter_helpers(self):
+        """
+        Test AdaptiveFilter helper, if it is require the n
+        """
+        with self.assertRaises(ValueError):
+            f = pa.filters.AdaptiveFilter() # n is not provided    
+    
+    
+    
+    
 
 

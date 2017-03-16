@@ -1,8 +1,9 @@
 """
 .. versionadded:: 0.1
+.. versionchanged:: 1.0.0
 
 The normalized least-mean-squares (NLMS) adaptive filter
-:cite:`mandic2004generalized`
+:cite:`sayed2003fundamentals`
 is an extension of the popular LMS adaptive filter (:ref:`filter-lms`).
 
 The NLMS filter can be created as follows
@@ -152,7 +153,7 @@ class FilterNLMS(AdaptiveFilter):
     **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
-        (row of input matrix)
+      (row of input matrix)
 
     **Kwargs:**
 
@@ -245,58 +246,5 @@ class FilterNLMS(AdaptiveFilter):
             nu = self.mu / (self.eps + np.dot(x[k], x[k]))
             dw = nu * e[k] * x[k]
             self.w += dw
-        return y, e, self.w
+        return y, e, self.w_history
         
-    def novelty(self, d, x):
-        """
-        This function estimates novelty in data
-        according to the learning effort.
-
-        **Args:**
-
-        * `d` : desired value (1 dimensional array)
-
-        * `x` : input matrix (2-dimensional array). Rows are samples,
-          columns are input arrays.
-
-        **Returns:**
-
-        * `y` : output value (1 dimensional array).
-          The size corresponds with the desired value.
-
-        * `e` : filter error for every sample (1 dimensional array). 
-          The size corresponds with the desired value.
-
-        * `w` : history of all weights (2 dimensional array).
-          Every row is set of the weights for given sample.
-
-        * `nd` : novelty detection coefficients (2 dimensional array).
-          Every row is set of coefficients for given sample.
-          One coefficient represents one filter weight.
-        """
-        # measure the data and check if the dimmension agree
-        N = len(x)
-        if not len(d) == N:
-            raise ValueError('The length of vector d and matrix x must agree.')  
-        self.n = len(x[0])
-        # prepare data
-        try:    
-            x = np.array(x)
-            d = np.array(d)
-        except:
-            raise ValueError('Impossible to convert x or d to a numpy array')
-        # create empty arrays
-        y = np.zeros(N)
-        e = np.zeros(N)
-        nd = np.zeros((N,self.n))
-        self.w_history = np.zeros((N,self.n))
-        # adaptation loop
-        for k in range(N):
-            y[k] = np.dot(self.w, x[k])
-            e[k] = d[k] - y[k]
-            nu = self.mu / (self.eps + np.dot(x[k], x[k]))
-            dw = nu * e[k] * x[k]
-            self.w += dw
-            nd[k,:] = dw * e[k]
-            self.w_history[k,:] = self.w
-        return y, e, self.w_history, nd

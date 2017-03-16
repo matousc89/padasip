@@ -1,5 +1,6 @@
 """
 .. versionadded:: 0.4
+.. versionchanged:: 1.0.0
 
 The Affine Projection (AP) algorithm is implemented according to paper
 :cite:`gonzalez2012affine`. Usage of this filter should be benefical especially
@@ -39,7 +40,7 @@ The output of filter si calculated as follows:
 :math:`\\textbf{y}_{AP}(k) = \\textbf{X}^{T}_{AP}(k) \\textbf{w}(k)`,
 
 where :math:`\\textbf{x}(k)` is the vector of filter adaptive parameters.
-The vector of targets is construced as follows
+The vector of targets is constructed as follows
 
 :math:`\\textbf{d}_{AP}(k) = (d(k), ..., d(k-L))^T`,
 
@@ -285,5 +286,5 @@ class FilterAP(AdaptiveFilter):
             dw_part2 = np.linalg.solve(dw_part1, self.ide)
             dw = np.dot(self.x_mem, np.dot(dw_part2, self.e_mem))
             self.w += self.mu * dw           
-        return y, e, self.w
+        return y, e, self.w_history
         

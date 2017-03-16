@@ -102,7 +102,7 @@ def PCA(x, n=False):
     **Kwargs:**
 
     * `n` : number of features returned (integer) - how many columns 
-        should the output keep
+      should the output keep
 
     **Returns:**
     
