@@ -1,22 +1,14 @@
-.. _filters-label:
+.. _filters:
 
 Adaptive Filters
-===================================
-
-
-
+******************
 
 .. automodule:: padasip.filters
+    :members:
 
 
 
-Filters implemented so far:
 
-.. toctree::
-    :glob:
-    :maxdepth: 1
-
-    filters/*
 
 
 

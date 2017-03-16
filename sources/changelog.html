@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Changelog &#8212; Padasip 0.7 documentation</title>
+    <title>Changelog &#8212; Padasip 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.7 documentation" href="../index.html" />
+    <link rel="top" title="Padasip 1.0.0 documentation" href="../index.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -57,8 +57,15 @@
   <div class="section" id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <dl class="docutils">
+<dt><strong>Version 1.0.0</strong> <em>Released: 2017-03-16</em></dt>
+<dd>Added module <a class="reference internal" href="detection.html#detection"><span class="std std-ref">Detection Tools</span></a> containing <a class="reference internal" href="detection/le.html#detection-le"><span class="std std-ref">Learning Entropy (LE)</span></a> and
+<a class="reference internal" href="detection/elbnd.html#detection-elbnd"><span class="std std-ref">Error and Learning Based Novelty Detection (ELBND)</span></a>.
+All implemented adaptive filters were updated. As a result,
+some obsolete helper functions for the adaptive filters were removed.
+Please use newer helper functions introduced in v0.7.
+Tutorials were updated and moved to <a class="reference external" href="https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook">Python Adaptive Signal Processing Handbook</a>.</dd>
 <dt><strong>Version 0.7</strong> <em>Released: 2017-01-07</em></dt>
-<dd>Added new helper functions into  <a class="reference internal" href="filters_mod.html#filters"><span class="std std-ref">Adaptive Filters</span></a>. Furthermore, the
+<dd>Added new helper functions into  <a class="reference internal" href="filters.html#filters"><span class="std std-ref">Adaptive Filters</span></a>. Furthermore, the
 documentation for adaptive filters module was updated.
 Added functions for error evaluation - MSE, MAE, RMSE and logSE
 (<a class="reference internal" href="misc/error_evaluation.html#mics-error-evaluation"><span class="std std-ref">Error Evaluation</span></a>).</dd>
@@ -100,8 +107,9 @@ for preprocess module was updated.</dd>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="preprocess.html">Data Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="filters_mod.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">

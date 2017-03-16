@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Padasip &#8212; Padasip 0.7 documentation</title>
+    <title>Padasip &#8212; Padasip 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 0.7 documentation" href="#" />
+    <link rel="top" title="Padasip 1.0.0 documentation" href="#" />
     <link rel="next" title="Data Preprocessing" href="sources/preprocess.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -58,7 +58,7 @@
   <div class="section" id="padasip">
 <h1>Padasip<a class="headerlink" href="#padasip" title="Permalink to this headline">¶</a></h1>
 <p><em>Python Adaptive Signal Processing</em></p>
-<span class="target" id="module-padasip"></span><p>Current version: 0.7 (<a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>)</p>
+<span class="target" id="module-padasip"></span><p>Current version: 1.0.0 (<a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>)</p>
 <p>This library is designed to simplify adaptive signal 
 processing tasks within python
 (filtering, prediction, reconstruction, classification).
@@ -94,34 +94,8 @@ real-time measuring (sample-after-sample feeding).</p>
 </div>
 <div class="section" id="tutorials">
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
-<p>All tutorials are created as Jupyter notebooks.
-You can open the tutorial as html, or you can download it as notebook.</p>
-<ul>
-<li><dl class="first docutils">
-<dt>Noise Cancelation, Identification and Prediction with Adaptive Filters</dt>
-<dd><p class="first last">(<a class="reference external" href="tutorials/tutorial1.html">see online</a>) (<a class="reference external" href="notebooks/tutorial1.ipynb">download notebook</a>)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Adaptive Novelty Detection</dt>
-<dd><p class="first last">(<a class="reference external" href="tutorials/tutorial2.html">see online</a>) (<a class="reference external" href="notebooks/tutorial2.ipynb">download notebook</a>)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Adaptive filters in Real-time with PADASIP Module</dt>
-<dd><p class="first last">(<a class="reference external" href="tutorials/tutorial3.html">see online</a>) (<a class="reference external" href="notebooks/tutorial3.ipynb">download notebook</a>)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>Multi-layer Perceptron (MLP) Neural Network - Basic Examples</dt>
-<dd><p class="first last">(<a class="reference external" href="tutorials/mlp_tutorial.html">see online</a>) (<a class="reference external" href="notebooks/mlp_tutorial.ipynb">download notebook</a>)</p>
-</dd>
-</dl>
-</li>
-</ul>
+<p>All Padasip related tutorials are created as Jupyter notebooks. You can find
+them in <a class="reference external" href="https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook">Python Adaptive Signal Processing Handbook</a>.</p>
 </div>
 <div class="section" id="the-user-quide">
 <h2>The User Quide<a class="headerlink" href="#the-user-quide" title="Permalink to this headline">¶</a></h2>
@@ -137,7 +111,7 @@ check the complete documentation here</p>
 <li class="toctree-l2"><a class="reference internal" href="sources/preprocess/standardize_back.html">Data De-standardization</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sources/filters_mod.html">Adaptive Filters</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="sources/filters.html">Adaptive Filters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/ap.html">Affine Projection (AP)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/lms.html">Least-mean-squares (LMS)</a></li>
@@ -147,6 +121,11 @@ check the complete documentation here</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sources/ann.html">Artificial Neural Networks (ANN)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sources/ann/mlp.html">Multi-layer Perceptron (MLP)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sources/detection.html">Detection Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sources/detection/elbnd.html">Error and Learning Based Novelty Detection (ELBND)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/detection/le.html">Learning Entropy (LE)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sources/misc.html">Miscellaneous</a><ul>
@@ -202,8 +181,9 @@ check the complete documentation here</p>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sources/preprocess.html">Data Preprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/filters_mod.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/filters.html">Adaptive Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/ann.html">Artificial Neural Networks (ANN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sources/detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/misc.html">Miscellaneous</a></li>
 </ul>
 <div class="relations">
