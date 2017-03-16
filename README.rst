@@ -46,13 +46,6 @@ So far it is possible to use following filters:
 - AP (affine projection) adaptive filter
 
 
-*************************
-Novelty/Outlier Detection
-*************************
-
-This method is based on adaptive parameters and filtering error evaluation (for LMS, NLMS, GNGD and RLS filters)
-
-
 ******************
 Neural Networks
 ******************
