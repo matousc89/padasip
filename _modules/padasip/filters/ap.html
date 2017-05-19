@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>padasip.filters.ap &#8212; Padasip 1.0.0 documentation</title>
+    <title>padasip.filters.ap &#8212; Padasip 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.0.0 documentation" href="../../../index.html" />
+    <link rel="top" title="Padasip 1.1.0 documentation" href="../../../index.html" />
     <link rel="up" title="padasip.filters" href="../filters.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -210,11 +210,8 @@
 <span class="sd">======================================</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">padasip.consts</span> <span class="k">as</span> <span class="nn">co</span>
 
 <span class="kn">from</span> <span class="nn">padasip.filters.base_filter</span> <span class="k">import</span> <span class="n">AdaptiveFilter</span>
-
-
 
 <div class="viewcode-block" id="FilterAP"><a class="viewcode-back" href="../../../sources/filters/ap.html#padasip.filters.ap.FilterAP">[docs]</a><span class="k">class</span> <span class="nc">FilterAP</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -246,15 +243,14 @@
 <span class="sd">        </span>
 <span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
 <span class="sd">    &quot;&quot;&quot;</span> 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">MU_AP</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">co</span><span class="o">.</span><span class="n">EPS_AP</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;AP filter&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_int</span><span class="p">(</span>
             <span class="n">n</span><span class="p">,</span><span class="s1">&#39;The size of filter must be an integer&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_int</span><span class="p">(</span>
             <span class="n">order</span><span class="p">,</span> <span class="s1">&#39;The order of projection must be an integer&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_AP_MIN</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">MU_AP_MAX</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">co</span><span class="o">.</span><span class="n">EPS_AP_MIN</span><span class="p">,</span>
-            <span class="n">co</span><span class="o">.</span><span class="n">EPS_AP_MAX</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">&quot;eps&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x_mem</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span>

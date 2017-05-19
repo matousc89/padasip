@@ -3,6 +3,10 @@
 Changelog
 ===========
 
+**Version 1.1.0** *Released: 2017-05-19*
+ Added new adaptive filters :ref:`filter-lmf`, :ref:`filter-nlmf`,
+ :ref:`filter-sslms` and :ref:`filter-nsslms`.
+
 **Version 1.0.0** *Released: 2017-03-16*
  Added module :ref:`detection` containing :ref:`detection-le` and
  :ref:`detection-elbnd`.

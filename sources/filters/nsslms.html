@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Generalized Normalized Gradient Descent (GNGD) &#8212; Padasip 1.1.0 documentation</title>
+    <title>Normalized Sign-sign Least-mean-squares (NSSLMS) &#8212; Padasip 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Padasip 1.1.0 documentation" href="../../index.html" />
     <link rel="up" title="Adaptive Filters" href="../filters.html" />
-    <link rel="next" title="Least-mean-fourth (LMF)" href="lmf.html" />
-    <link rel="prev" title="Affine Projection (AP)" href="ap.html" />
+    <link rel="next" title="Recursive Least Squares (RLS)" href="rls.html" />
+    <link rel="prev" title="Normalized Least-mean-squares (NLMS)" href="nlms.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -57,46 +57,61 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-padasip.filters.gngd">
-<span id="generalized-normalized-gradient-descent-gngd"></span><span id="filter-gngd"></span><h1>Generalized Normalized Gradient Descent (GNGD)<a class="headerlink" href="#module-padasip.filters.gngd" title="Permalink to this headline">¶</a></h1>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.2.</span></p>
-</div>
+  <div class="section" id="module-padasip.filters.nsslms">
+<span id="normalized-sign-sign-least-mean-squares-nsslms"></span><span id="filter-nsslms"></span><h1>Normalized Sign-sign Least-mean-squares (NSSLMS)<a class="headerlink" href="#module-padasip.filters.nsslms" title="Permalink to this headline">¶</a></h1>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0.</span></p>
+<p><span class="versionmodified">Changed in version 1.1.0.</span></p>
 </div>
-<p>The generalized normalized gradient descent (GNGD) adaptive filter
-<a class="reference internal" href="#mandic2004generalized" id="id1">[1]</a>
-is an extension of the NLMS adaptive filter (<span class="xref std std-ref">filter-nlms-label</span>).</p>
-<p>The GNGD filter can be created as follows</p>
+<p>The normalized sign-sign least-mean-squares (NSSLMS) adaptive filter
+<a class="reference internal" href="sslms.html#rahman2009noise" id="id1">[1]</a>
+is an extension of the popular SSLMS adaptive filter (<a class="reference internal" href="sslms.html#filter-sslms"><span class="std std-ref">Sign-sign Least-mean-squares (SSLMS)</span></a>).</p>
+<p>The NSSLMS filter can be created as follows</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterNSSLMS</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>where <cite>n</cite> is the size (number of taps) of the filter.</p>
 <p>Content of this page:</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#minimal-working-examples" id="id2">Minimal Working Examples</a></li>
-<li><a class="reference internal" href="#references" id="id3">References</a></li>
-<li><a class="reference internal" href="#code-explanation" id="id4">Code Explanation</a></li>
+<li><a class="reference internal" href="#algorithm-explanation" id="id2">Algorithm Explanation</a></li>
+<li><a class="reference internal" href="#minimal-working-examples" id="id3">Minimal Working Examples</a></li>
+<li><a class="reference internal" href="#references" id="id4">References</a></li>
+<li><a class="reference internal" href="#code-explanation" id="id5">Code Explanation</a></li>
 </ul>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../filters.html#filters"><span class="std std-ref">Adaptive Filters</span></a></p>
 </div>
+<div class="section" id="algorithm-explanation">
+<h2><a class="toc-backref" href="#id2">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<p>The NSSLMS is extension of LMS filter. See <a class="reference internal" href="lms.html#filter-lms"><span class="std std-ref">Least-mean-squares (LMS)</span></a>
+for explanation of the algorithm behind.</p>
+<p>The extension is based on normalization of learning rate.
+The learning rage <span class="math">\(\mu\)</span> is replaced by learning rate <span class="math">\(\eta(k)\)</span>
+normalized with every new sample according to input power as follows</p>
+<p><span class="math">\(\eta (k) = \frac{\mu}{\epsilon + || \textbf{x}(k) ||^2}\)</span>,</p>
+<p>where <span class="math">\(|| \textbf{x}(k) ||^2\)</span> is norm of input vector and 
+<span class="math">\(\epsilon\)</span> is a small positive constant (regularization term).
+This constant is introduced to preserve the stability in cases where
+the input is close to zero.</p>
+</div>
 <div class="section" id="minimal-working-examples">
-<h2><a class="toc-backref" href="#id2">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
 <p>If you have measured data you may filter it as follows</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># creation of data</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
+
+<span class="c1"># creation of data</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span> <span class="c1"># input matrix</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span> <span class="c1"># noise</span>
-<span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span> <span class="c1"># target</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span> <span class="c1"># target</span>
 
 <span class="c1"># identification</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterGNGD</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterNSSLMS</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">)</span>
 <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
 <span class="c1"># show results</span>
@@ -110,69 +125,24 @@ is an extension of the NLMS adaptive filter (<span class="xref std std-ref">filt
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>An example how to filter data measured in real-time</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
-
-<span class="c1"># these two function supplement your online measurment</span>
-<span class="k">def</span> <span class="nf">measure_x</span><span class="p">():</span>
-    <span class="c1"># it produces input vector of size 3</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x</span>
-    
-<span class="k">def</span> <span class="nf">measure_d</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="c1"># meausure system output</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">d</span>
-    
-<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">log_d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">log_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">filt</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterGNGD</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="c1"># measure input</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">measure_x</span><span class="p">()</span>
-    <span class="c1"># predict new value</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="c1"># do the important stuff with prediction output</span>
-    <span class="k">pass</span>    
-    <span class="c1"># measure output</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">measure_d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="c1"># update filter</span>
-    <span class="n">filt</span><span class="o">.</span><span class="n">adapt</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="c1"># log values</span>
-    <span class="n">log_d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
-    <span class="n">log_y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-    
-<span class="c1">### show results</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">9</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">211</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Adaptation&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_d</span><span class="p">,</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;d - target&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">log_y</span><span class="p">,</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y - output&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">212</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Filter error&quot;</span><span class="p">);</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;samples - k&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">((</span><span class="n">log_d</span><span class="o">-</span><span class="n">log_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;e - error [dB]&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
 </div>
 <div class="section" id="references">
-<h2><a class="toc-backref" href="#id3">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p id="bibtex-bibliography-sources/filters/gngd-0"><table class="docutils citation" frame="void" id="mandic2004generalized" rules="none">
+<h2><a class="toc-backref" href="#id4">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p id="bibtex-bibliography-sources/filters/nsslms-0"><table class="docutils citation" frame="void" id="rahman2009noise" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Danilo&nbsp;P Mandic. A generalized normalized gradient descent algorithm. <em>IEEE Signal Processing Letters</em>, 11(2):115–118, 2004.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Mohammad Zia&nbsp;Ur Rahman, Rafi&nbsp;Ahamed Shaik, and DV&nbsp;Rama&nbsp;Koti Reddy. Noise cancellation in ecg signals using normalized sign-sign lms algorithm. In <em>Signal Processing and Information Technology (ISSPIT), 2009 IEEE International Symposium on</em>, 288–292. IEEE, 2009.</td></tr>
 </tbody>
 </table>
 </p>
 </div>
 <div class="section" id="code-explanation">
-<h2><a class="toc-backref" href="#id4">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="padasip.filters.gngd.FilterGNGD">
-<em class="property">class </em><code class="descclassname">padasip.filters.gngd.</code><code class="descname">FilterGNGD</code><span class="sig-paren">(</span><em>n</em>, <em>mu=1.0</em>, <em>eps=1.0</em>, <em>ro=0.1</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/gngd.html#FilterGNGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.gngd.FilterGNGD" title="Permalink to this definition">¶</a></dt>
+<dt id="padasip.filters.nsslms.FilterNSSLMS">
+<em class="property">class </em><code class="descclassname">padasip.filters.nsslms.</code><code class="descname">FilterNSSLMS</code><span class="sig-paren">(</span><em>n</em>, <em>mu=0.1</em>, <em>eps=1.0</em>, <em>w='random'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/nsslms.html#FilterNSSLMS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.nsslms.FilterNSSLMS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">padasip.filters.base_filter.AdaptiveFilter</span></code></p>
-<p>Adaptive GNGD filter.</p>
+<p>Adaptive NSSLMS filter.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
 <li><cite>n</cite> : length of filter (integer) - how many input is input array
@@ -186,11 +156,8 @@ the filter may have bad performance. If it is too high,
 the filter will be unstable. The default value can be unstable
 for ill-conditioned input data.</p>
 </li>
-<li><p class="first"><cite>eps</cite> : compensation term (float) at the beginning. It is adaptive
-parameter.</p>
-</li>
-<li><p class="first"><cite>ro</cite> : step size adaptation parameter (float) at the beginning.
-It is adaptive parameter.</p>
+<li><p class="first"><cite>eps</cite> : regularization term (float). It is introduced to preserve
+stability for close-to-zero input vectors</p>
 </li>
 <li><p class="first"><cite>w</cite> : initial weights of filter. Possible values are:</p>
 <blockquote>
@@ -203,8 +170,8 @@ It is adaptive parameter.</p>
 </li>
 </ul>
 <dl class="method">
-<dt id="padasip.filters.gngd.FilterGNGD.adapt">
-<code class="descname">adapt</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/gngd.html#FilterGNGD.adapt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.gngd.FilterGNGD.adapt" title="Permalink to this definition">¶</a></dt>
+<dt id="padasip.filters.nsslms.FilterNSSLMS.adapt">
+<code class="descname">adapt</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/nsslms.html#FilterNSSLMS.adapt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.nsslms.FilterNSSLMS.adapt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adapt weights according one desired value and its input.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
@@ -214,8 +181,8 @@ It is adaptive parameter.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="padasip.filters.gngd.FilterGNGD.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/gngd.html#FilterGNGD.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.gngd.FilterGNGD.run" title="Permalink to this definition">¶</a></dt>
+<dt id="padasip.filters.nsslms.FilterNSSLMS.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>d</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/filters/nsslms.html#FilterNSSLMS.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.filters.nsslms.FilterNSSLMS.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function filters multiple samples in a row.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
@@ -269,12 +236,12 @@ Every row is set of the weights for given sample.</li>
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters.html">Adaptive Filters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ap.html">Affine Projection (AP)</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Generalized Normalized Gradient Descent (GNGD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lmf.html">Least-mean-fourth (LMF)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lms.html">Least-mean-squares (LMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlmf.html">Normalized Least-mean-fourth (NLMF)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nsslms.html">Normalized Sign-sign Least-mean-squares (NSSLMS)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Normalized Sign-sign Least-mean-squares (NSSLMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rls.html">Recursive Least Squares (RLS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sslms.html">Sign-sign Least-mean-squares (SSLMS)</a></li>
 </ul>
@@ -288,8 +255,8 @@ Every row is set of the weights for given sample.</li>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../filters.html">Adaptive Filters</a><ul>
-      <li>Previous: <a href="ap.html" title="previous chapter">Affine Projection (AP)</a></li>
-      <li>Next: <a href="lmf.html" title="next chapter">Least-mean-fourth (LMF)</a></li>
+      <li>Previous: <a href="nlms.html" title="previous chapter">Normalized Least-mean-squares (NLMS)</a></li>
+      <li>Next: <a href="rls.html" title="next chapter">Recursive Least Squares (RLS)</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -316,7 +283,7 @@ Every row is set of the weights for given sample.</li>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
-      <a href="../../_sources/sources/filters/gngd.txt"
+      <a href="../../_sources/sources/filters/nsslms.txt"
           rel="nofollow">Page source</a>
     </div>
 

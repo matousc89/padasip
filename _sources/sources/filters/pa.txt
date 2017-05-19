@@ -1,7 +1,0 @@
-.. _filter-ap-label:
-
-AP Filter
-***************************
-
-.. automodule:: padasip.filters.ap
-    :members:

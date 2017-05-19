@@ -1,7 +1,0 @@
-.. _filter-base_filter:
-
-Base Filter Class
-=====================================
-
-.. automodule:: padasip.filters.base_filter
-    :members:

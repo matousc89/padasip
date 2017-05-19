@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Least-mean-squares (LMS) &#8212; Padasip 1.0.0 documentation</title>
+    <title>Least-mean-squares (LMS) &#8212; Padasip 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,10 +25,10 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.0.0 documentation" href="../../index.html" />
+    <link rel="top" title="Padasip 1.1.0 documentation" href="../../index.html" />
     <link rel="up" title="Adaptive Filters" href="../filters.html" />
-    <link rel="next" title="Normalized Least-mean-squares (NLMS)" href="nlms.html" />
-    <link rel="prev" title="Generalized Normalized Gradient Descent (GNGD)" href="gngd.html" />
+    <link rel="next" title="Normalized Least-mean-fourth (NLMF)" href="nlmf.html" />
+    <link rel="prev" title="Least-mean-fourth (LMF)" href="lmf.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -115,7 +115,7 @@ is error defined as</p>
 in most of the cases
 (recomended value can be something in range from 0.1 to 0.00001).
 If you have still problems stability or performance of the filter,
-then try the normalized LMS (<span class="xref std std-ref">filter-nlms-label</span>).</p>
+then try the normalized LMS (<a class="reference internal" href="nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-squares (NLMS)</span></a>).</p>
 </div>
 <div class="section" id="minimal-working-examples">
 <h2><a class="toc-backref" href="#id4">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
@@ -298,9 +298,13 @@ Every row is set of the weights for given sample.</li>
 <li class="toctree-l1 current"><a class="reference internal" href="../filters.html">Adaptive Filters</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ap.html">Affine Projection (AP)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lmf.html">Least-mean-fourth (LMF)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Least-mean-squares (LMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nlmf.html">Normalized Least-mean-fourth (NLMF)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nlms.html">Normalized Least-mean-squares (NLMS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nsslms.html">Normalized Sign-sign Least-mean-squares (NSSLMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rls.html">Recursive Least Squares (RLS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sslms.html">Sign-sign Least-mean-squares (SSLMS)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
@@ -312,8 +316,8 @@ Every row is set of the weights for given sample.</li>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../filters.html">Adaptive Filters</a><ul>
-      <li>Previous: <a href="gngd.html" title="previous chapter">Generalized Normalized Gradient Descent (GNGD)</a></li>
-      <li>Next: <a href="nlms.html" title="next chapter">Normalized Least-mean-squares (NLMS)</a></li>
+      <li>Previous: <a href="lmf.html" title="previous chapter">Least-mean-fourth (LMF)</a></li>
+      <li>Next: <a href="nlmf.html" title="next chapter">Normalized Least-mean-fourth (NLMF)</a></li>
   </ul></li>
   </ul></li>
 </ul>

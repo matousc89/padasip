@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>padasip.filters.lms &#8212; Padasip 1.1.0 documentation</title>
+    <title>padasip.filters.lmf &#8212; Padasip 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -55,18 +55,17 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for padasip.filters.lms</h1><div class="highlight"><pre>
+  <h1>Source code for padasip.filters.lmf</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">.. versionadded:: 0.1</span>
-<span class="sd">.. versionchanged:: 1.0.0</span>
+<span class="sd">.. versionadded:: 1.1.0</span>
 
-<span class="sd">The least-mean-squares (LMS) adaptive filter :cite:`sayed2003fundamentals`</span>
-<span class="sd">is the most popular adaptive filter.</span>
+<span class="sd">The least-mean-fourth (LMF) adaptive filter implemented according to the</span>
+<span class="sd">paper :cite:`zerguine2000convergence`.</span>
 
-<span class="sd">The LMS filter can be created as follows</span>
+<span class="sd">The LMF filter can be created as follows</span>
 
 <span class="sd">    &gt;&gt;&gt; import padasip as pa</span>
-<span class="sd">    &gt;&gt;&gt; pa.filters.FilterLMS(n)</span>
+<span class="sd">    &gt;&gt;&gt; pa.filters.FilterLMF(n)</span>
 <span class="sd">    </span>
 <span class="sd">where :code:`n` is the size (number of taps) of the filter.</span>
 
@@ -81,7 +80,7 @@
 <span class="sd">Algorithm Explanation</span>
 <span class="sd">==========================</span>
 
-<span class="sd">The LMS adaptive filter could be described as</span>
+<span class="sd">The LMF adaptive filter could be described as</span>
 
 <span class="sd">:math:`y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)`,</span>
 
@@ -96,33 +95,20 @@
 
 <span class="sd">:math:`\\textbf{x}(k) = [x_1(k), ...,  x_n(k)]`.</span>
 
-<span class="sd">The LMS weights adaptation could be described as follows</span>
+<span class="sd">The LMF weights adaptation could be described as follows</span>
 
 <span class="sd">:math:`\\textbf{w}(k+1) = \\textbf{w}(k) + \Delta \\textbf{w}(k)`,</span>
 
 <span class="sd">where :math:`\Delta \\textbf{w}(k)` is</span>
 
-<span class="sd">:math:`\Delta \\textbf{w}(k) = \\frac{1}{2} \mu \\frac{\partial e^2(k)}</span>
-<span class="sd">{ \partial \\textbf{w}(k)}\ = \mu \cdot e(k) \cdot \\textbf{x}(k)`,</span>
+<span class="sd">:math:`\Delta \\textbf{w}(k) = \\frac{1}{2} \mu \\frac{\partial e^4(k)}</span>
+<span class="sd">{ \partial \\textbf{w}(k)}\ = \mu \cdot e(k)^{3} \cdot \\textbf{x}(k)`,</span>
 
 <span class="sd">where :math:`\mu` is the learning rate (step size) and :math:`e(k)`</span>
 <span class="sd">is error defined as</span>
 
 <span class="sd">:math:`e(k) = d(k) - y(k)`.</span>
 
-
-<span class="sd">Stability and Optimal Performance</span>
-<span class="sd">==================================</span>
-
-<span class="sd">The general stability criteria of LMS stands as follows</span>
-
-<span class="sd">:math:`|1 - \mu \cdot ||\\textbf{x}(k)||^2 | \leq 1`.</span>
-
-<span class="sd">In practice the key argument :code:`mu` should be set to really small number</span>
-<span class="sd">in most of the cases</span>
-<span class="sd">(recomended value can be something in range from 0.1 to 0.00001).</span>
-<span class="sd">If you have still problems stability or performance of the filter,</span>
-<span class="sd">then try the normalized LMS (:ref:`filter-nlms`).</span>
 
 <span class="sd">Minimal Working Examples</span>
 <span class="sd">==============================</span>
@@ -131,10 +117,6 @@
 
 <span class="sd">.. code-block:: python</span>
 
-<span class="sd">    import numpy as np</span>
-<span class="sd">    import matplotlib.pylab as plt</span>
-<span class="sd">    import padasip as pa </span>
-
 <span class="sd">    # creation of data</span>
 <span class="sd">    N = 500</span>
 <span class="sd">    x = np.random.normal(0, 1, (N, 4)) # input matrix</span>
@@ -142,7 +124,7 @@
 <span class="sd">    d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target</span>
 
 <span class="sd">    # identification</span>
-<span class="sd">    f = pa.filters.FilterLMS(n=4, mu=0.1, w=&quot;random&quot;)</span>
+<span class="sd">    f = pa.filters.FilterLMF(n=4, mu=0.01, w=&quot;random&quot;)</span>
 <span class="sd">    y, e, w = f.run(d, x)</span>
 
 <span class="sd">    # show results</span>
@@ -155,57 +137,10 @@
 <span class="sd">    plt.tight_layout()</span>
 <span class="sd">    plt.show()</span>
 
-<span class="sd">An example how to filter data measured in real-time</span>
-
-<span class="sd">.. code-block:: python</span>
-
-<span class="sd">    import numpy as np</span>
-<span class="sd">    import matplotlib.pylab as plt</span>
-<span class="sd">    import padasip as pa </span>
-
-<span class="sd">    # these two function supplement your online measurment</span>
-<span class="sd">    def measure_x():</span>
-<span class="sd">        # it produces input vector of size 3</span>
-<span class="sd">        x = np.random.random(3)</span>
-<span class="sd">        return x</span>
-<span class="sd">        </span>
-<span class="sd">    def measure_d(x):</span>
-<span class="sd">        # meausure system output</span>
-<span class="sd">        d = 2*x[0] + 1*x[1] - 1.5*x[2]</span>
-<span class="sd">        return d</span>
-<span class="sd">        </span>
-<span class="sd">    N = 100</span>
-<span class="sd">    log_d = np.zeros(N)</span>
-<span class="sd">    log_y = np.zeros(N)</span>
-<span class="sd">    filt = pa.filters.FilterLMS(3, mu=1.)</span>
-<span class="sd">    for k in range(N):</span>
-<span class="sd">        # measure input</span>
-<span class="sd">        x = measure_x()</span>
-<span class="sd">        # predict new value</span>
-<span class="sd">        y = filt.predict(x)</span>
-<span class="sd">        # do the important stuff with prediction output</span>
-<span class="sd">        pass    </span>
-<span class="sd">        # measure output</span>
-<span class="sd">        d = measure_d(x)</span>
-<span class="sd">        # update filter</span>
-<span class="sd">        filt.adapt(d, x)</span>
-<span class="sd">        # log values</span>
-<span class="sd">        log_d[k] = d</span>
-<span class="sd">        log_y[k] = y</span>
-<span class="sd">        </span>
-<span class="sd">    ### show results</span>
-<span class="sd">    plt.figure(figsize=(15,9))</span>
-<span class="sd">    plt.subplot(211);plt.title(&quot;Adaptation&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
-<span class="sd">    plt.plot(log_d,&quot;b&quot;, label=&quot;d - target&quot;)</span>
-<span class="sd">    plt.plot(log_y,&quot;g&quot;, label=&quot;y - output&quot;);plt.legend()</span>
-<span class="sd">    plt.subplot(212);plt.title(&quot;Filter error&quot;);plt.xlabel(&quot;samples - k&quot;)</span>
-<span class="sd">    plt.plot(10*np.log10((log_d-log_y)**2),&quot;r&quot;, label=&quot;e - error [dB]&quot;)</span>
-<span class="sd">    plt.legend(); plt.tight_layout(); plt.show()</span>
-
 <span class="sd">References</span>
 <span class="sd">============</span>
 
-<span class="sd">.. bibliography:: lms.bib</span>
+<span class="sd">.. bibliography:: lmf.bib</span>
 <span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
@@ -215,10 +150,9 @@
 
 <span class="kn">from</span> <span class="nn">padasip.filters.base_filter</span> <span class="k">import</span> <span class="n">AdaptiveFilter</span>
 
-
-<div class="viewcode-block" id="FilterLMS"><a class="viewcode-back" href="../../../sources/filters/lms.html#padasip.filters.lms.FilterLMS">[docs]</a><span class="k">class</span> <span class="nc">FilterLMS</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterLMF"><a class="viewcode-back" href="../../../sources/filters/lmf.html#padasip.filters.lmf.FilterLMF">[docs]</a><span class="k">class</span> <span class="nc">FilterLMF</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class represents an adaptive LMS filter.</span>
+<span class="sd">    This class represents an adaptive LMF filter.</span>
 
 <span class="sd">    **Args:**</span>
 
@@ -242,7 +176,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;LMS filter&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;LMF filter&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
         <span class="k">else</span><span class="p">:</span>
@@ -251,7 +185,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span> <span class="o">=</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="FilterLMS.adapt"><a class="viewcode-back" href="../../../sources/filters/lms.html#padasip.filters.lms.FilterLMS.adapt">[docs]</a>    <span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterLMF.adapt"><a class="viewcode-back" href="../../../sources/filters/lmf.html#padasip.filters.lmf.FilterLMF.adapt">[docs]</a>    <span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adapt weights according one desired value and its input.</span>
 
@@ -263,9 +197,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">x</span>        </div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">e</span><span class="o">**</span><span class="mi">3</span>       </div>
 
-<div class="viewcode-block" id="FilterLMS.run"><a class="viewcode-back" href="../../../sources/filters/lms.html#padasip.filters.lms.FilterLMS.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterLMF.run"><a class="viewcode-back" href="../../../sources/filters/lmf.html#padasip.filters.lmf.FilterLMF.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This function filters multiple samples in a row.</span>
 
@@ -307,7 +241,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
             <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">**</span><span class="mi">3</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
         <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span></div></div>
 
