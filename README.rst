@@ -39,6 +39,14 @@ So far it is possible to use following filters:
 
 - NLMS (normalized least-mean-squares) adaptive filter
 
+- LMF (least-mean-fourth) adaptive filter
+
+- LMF (normalized least-mean-fourth) adaptive filter
+
+- SSLMS (sign-sign least-mean-squares) adaptive filter
+
+- NSSLMS (normalized sign-sign least-mean-squares) adaptive filter
+
 - RLS (recursive-least-squares) adaptive filter
 
 - GNGD (generalized normalized gradient descent) adaptive filter

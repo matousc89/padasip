@@ -1,8 +1,6 @@
 import numpy as np
-import padasip.consts as co
 
 from padasip.filters.base_filter import AdaptiveFilter
-
 
 class FilterOCNLMS(AdaptiveFilter):
     """
@@ -36,17 +34,16 @@ class FilterOCNLMS(AdaptiveFilter):
         and input vectors will be used for centering of current input vector
         and target.
     """
-    def __init__(self, n, mu=co.MU_OCNLMS, eps=co.EPS_OCNLMS, 
-            w="random", mem=co.MEM_OCNLMS):
-        self.kind = "NLMS filter"
+    def __init__(self, n, mu=0.1, eps=1., 
+            w="random", mem=100):
+        self.kind = "OC-NLMS filter"
         if type(n) == int:
             self.n = n
         else:
             raise ValueError('The size of filter must be an integer')
-        self.mu = self.check_float_param(mu, co.MU_OCNLMS_MIN, co.MU_OCNLMS_MAX, "mu")
-        self.eps = self.check_float_param(eps, co.EPS_OCNLMS_MIN,
-            co.EPS_OCNLMS_MAX, "eps")
-        self.mem = self.check_int_param(mem, None, None, "mem")
+        self.mu = self.check_float_param(mu, 0, 1000, "mu")
+        self.eps = self.check_float_param(eps, 0, 1000, "eps")
+        self.mem = self.check_int_param(mem, 1, 1000, "mem")
         self.w = self.init_weights(w, self.n)
         self.w_history = False
         self.mem_empty = True

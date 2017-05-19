@@ -4,7 +4,6 @@
 
 """
 import numpy as np
-import padasip.consts as co
 
 from padasip.misc import get_mean_error
 

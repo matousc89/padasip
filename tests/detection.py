@@ -41,7 +41,6 @@ class TestDetection(unittest.TestCase):
         """
         ElBND
         """
-        import matplotlib.pylab as plt
         np.random.seed(100)
         n = 5
         N = 2000

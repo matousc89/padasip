@@ -165,7 +165,11 @@ Code explanation
 ==================
 """
 from padasip.filters.lms import FilterLMS
+from padasip.filters.sslms import FilterSSLMS
+from padasip.filters.lmf import FilterLMF
 from padasip.filters.nlms import FilterNLMS
+from padasip.filters.nsslms import FilterNSSLMS
+from padasip.filters.nlmf import FilterNLMF
 from padasip.filters.ocnlms import FilterOCNLMS
 from padasip.filters.gngd import FilterGNGD
 from padasip.filters.rls import FilterRLS
@@ -212,6 +216,10 @@ def filter_data(d, x, model="lms", **kwargs):
         f = FilterGNGD(**kwargs)
     elif model in ["AP", "ap"]:
         f = FilterAP(**kwargs)
+    elif model in ["LMF", "lmf"]:
+        f = FilterLMF(**kwargs)
+    elif model in ["NLMF", "nlmf"]:
+        f = FilterNLMF(**kwargs)
     else:
         raise ValueError('Unknown model of filter {}'.format(model))
     # calculate and return the values
@@ -262,6 +270,10 @@ def AdaptiveFilter(model="lms", **kwargs):
         f = FilterGNGD(**kwargs)
     elif model in ["AP", "ap"]:
         f = FilterAP(**kwargs)
+    elif model in ["LMF", "lmf"]:
+        f = FilterLMF(**kwargs)
+    elif model in ["NLMF", "nlmf"]:
+        f = FilterNLMF(**kwargs)
     else:
         raise ValueError('Unknown model of filter {}'.format(model))
     # return filter

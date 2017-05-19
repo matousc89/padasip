@@ -92,7 +92,6 @@ Code Explanation
 ******************
 """
 import numpy as np
-import padasip.consts as co
 
 class Layer():
     """

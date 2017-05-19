@@ -1,15 +1,14 @@
 """
-.. versionadded:: 0.1
-.. versionchanged:: 1.0.0
+.. versionchanged:: 1.1.0
 
-The normalized least-mean-squares (NLMS) adaptive filter
-:cite:`sayed2003fundamentals`
-is an extension of the popular LMS adaptive filter (:ref:`filter-lms`).
+The normalized sign-sign least-mean-squares (NSSLMS) adaptive filter
+:cite:`rahman2009noise`
+is an extension of the popular SSLMS adaptive filter (:ref:`filter-sslms`).
 
-The NLMS filter can be created as follows
+The NSSLMS filter can be created as follows
 
     >>> import padasip as pa
-    >>> pa.filters.FilterNLMS(n)
+    >>> pa.filters.FilterNSSLMS(n)
     
 where `n` is the size (number of taps) of the filter.
 
@@ -24,7 +23,7 @@ Content of this page:
 Algorithm Explanation
 ======================================
 
-The NLMS is extension of LMS filter. See :ref:`filter-lms`
+The NSSLMS is extension of LMS filter. See :ref:`filter-lms`
 for explanation of the algorithm behind.
 
 The extension is based on normalization of learning rate.
@@ -37,23 +36,6 @@ where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and
 :math:`\epsilon` is a small positive constant (regularization term).
 This constant is introduced to preserve the stability in cases where
 the input is close to zero.
-
-Stability and Optimal Performance
-======================================
-
-The stability of the NLMS filter si given as follows
-
-:math:`0 \le \mu \le 2 + \\frac{2\epsilon}{||\\textbf{x}(k)||^2}`,
-
-or in case without regularization term :math:`\epsilon`
-
-:math:`\mu \in <0, 2>`.
-
-In other words, if you use the zero or only small key argument `\eps`,
-the key argument `\mu` should be between 0 and 2. Best convergence
-should be produced by `mu=1.` according to theory. However in practice
-the optimal value can be strongly case specific.
-
 
 Minimal Working Examples
 ======================================
@@ -70,10 +52,10 @@ If you have measured data you may filter it as follows
     N = 500
     x = np.random.normal(0, 1, (N, 4)) # input matrix
     v = np.random.normal(0, 0.1, N) # noise
-    d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target
+    d = 2*x[:,0] + 0.1*x[:,1] - 0.3*x[:,2] + 0.5*x[:,3] + v # target
 
     # identification
-    f = pa.filters.FilterNLMS(n=4, mu=0.1, w="random")
+    f = pa.filters.FilterNSSLMS(n=4, mu=0.1, w="random")
     y, e, w = f.run(d, x)
 
     # show results
@@ -86,58 +68,10 @@ If you have measured data you may filter it as follows
     plt.tight_layout()
     plt.show()
 
-An example how to filter data measured in real-time
-
-.. code-block:: python
-
-    import numpy as np
-    import matplotlib.pylab as plt
-    import padasip as pa 
-
-    # these two function supplement your online measurment
-    def measure_x():
-        # it produces input vector of size 3
-        x = np.random.random(3)
-        return x
-        
-    def measure_d(x):
-        # meausure system output
-        d = 2*x[0] + 1*x[1] - 1.5*x[2]
-        return d
-        
-    N = 100
-    log_d = np.zeros(N)
-    log_y = np.zeros(N)
-    filt = pa.filters.FilterNLMS(3, mu=1.)
-    for k in range(N):
-        # measure input
-        x = measure_x()
-        # predict new value
-        y = filt.predict(x)
-        # do the important stuff with prediction output
-        pass    
-        # measure output
-        d = measure_d(x)
-        # update filter
-        filt.adapt(d, x)
-        # log values
-        log_d[k] = d
-        log_y[k] = y
-        
-    ### show results
-    plt.figure(figsize=(15,9))
-    plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
-    plt.plot(log_d,"b", label="d - target")
-    plt.plot(log_y,"g", label="y - output");plt.legend()
-    plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
-    plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
-    plt.legend(); plt.tight_layout(); plt.show()
-
-
 References
 ======================================
 
-.. bibliography:: nlms.bib
+.. bibliography:: sslms.bib
     :style: plain
 
 Code Explanation
@@ -147,9 +81,9 @@ import numpy as np
 
 from padasip.filters.base_filter import AdaptiveFilter
 
-class FilterNLMS(AdaptiveFilter):
+class FilterNSSLMS(AdaptiveFilter):
     """
-    Adaptive NLMS filter.
+    Adaptive NSSLMS filter.
 
     **Args:**
 
@@ -176,7 +110,7 @@ class FilterNLMS(AdaptiveFilter):
         * "zeros" : create zero value weights
     """ 
     def __init__(self, n, mu=0.1, eps=1., w="random"):
-        self.kind = "NLMS filter"
+        self.kind = "NSSLMS filter"
         if type(n) == int:
             self.n = n
         else:
@@ -199,7 +133,7 @@ class FilterNLMS(AdaptiveFilter):
         y = np.dot(self.w, x)
         e = d - y
         nu = self.mu / (self.eps + np.dot(x, x))
-        self.w += nu * e * x        
+        self.w += self.mu * np.sign(e) * np.sign(x)      
 
     def run(self, d, x):
         """
@@ -244,7 +178,7 @@ class FilterNLMS(AdaptiveFilter):
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
             nu = self.mu / (self.eps + np.dot(x[k], x[k]))
-            dw = nu * e[k] * x[k]
+            dw = nu * np.sign(e[k]) * np.sign(x[k])
             self.w += dw
         return y, e, self.w_history
         

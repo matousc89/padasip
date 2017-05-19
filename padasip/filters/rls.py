@@ -162,9 +162,7 @@ References
 Code Explanation
 ======================================
 """
-
 import numpy as np
-import padasip.consts as co
 
 from padasip.filters.base_filter import AdaptiveFilter
 
@@ -195,14 +193,14 @@ class FilterRLS(AdaptiveFilter):
         * "zeros" : create zero value weights
     """ 
 
-    def __init__(self, n, mu=co.MU_RLS, eps=co.EPS_RLS, w="random"):
+    def __init__(self, n, mu=0.99, eps=0.1, w="random"):
         self.kind = "RLS filter"
         if type(n) == int:
             self.n = n
         else:
             raise ValueError('The size of filter must be an integer') 
-        self.mu = self.check_float_param(mu, co.MU_RLS_MIN, co.MU_RLS_MAX, "mu")
-        self.eps = self.check_float_param(eps, co.EPS_RLS_MIN, co.EPS_RLS_MAX, "eps")
+        self.mu = self.check_float_param(mu, 0, 1, "mu")
+        self.eps = self.check_float_param(eps, 0, 1, "eps")
         self.init_weights(w, self.n)
         self.R = 1/self.eps * np.identity(n)
         self.w_history = False

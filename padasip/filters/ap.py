@@ -152,11 +152,8 @@ Code Explanation
 ======================================
 """
 import numpy as np
-import padasip.consts as co
 
 from padasip.filters.base_filter import AdaptiveFilter
-
-
 
 class FilterAP(AdaptiveFilter):
     """
@@ -188,15 +185,14 @@ class FilterAP(AdaptiveFilter):
         
         * "zeros" : create zero value weights
     """ 
-    def __init__(self, n, order=5, mu=co.MU_AP, eps=co.EPS_AP, w="random"):
+    def __init__(self, n, order=5, mu=0.1, eps=0.001, w="random"):
         self.kind = "AP filter"
         self.n = self.check_int(
             n,'The size of filter must be an integer')
         self.order = self.check_int(
             order, 'The order of projection must be an integer')
-        self.mu = self.check_float_param(mu, co.MU_AP_MIN, co.MU_AP_MAX, "mu")
-        self.eps = self.check_float_param(eps, co.EPS_AP_MIN,
-            co.EPS_AP_MAX, "eps")
+        self.mu = self.check_float_param(mu, 0, 1000, "mu")
+        self.eps = self.check_float_param(eps, 0, 1000, "eps")
         self.init_weights(w, self.n)
         self.w_history = False
         self.x_mem = np.zeros((self.n, self.order))

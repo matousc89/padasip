@@ -1,17 +1,15 @@
 """
-.. versionadded:: 0.2
-.. versionchanged:: 1.0.0
+.. versionchanged:: 1.1.0
 
-The generalized normalized gradient descent (GNGD) adaptive filter
-:cite:`mandic2004generalized`
-is an extension of the NLMS adaptive filter (:ref:`filter-nlms-label`).
+The sign-sign least-mean-squares (SSLMS) adaptive filter is implemented
+according paper :cite:`rahman2009noise`.
 
-The GNGD filter can be created as follows
+The SSLMS filter can be created as follows
 
     >>> import padasip as pa
-    >>> pa.filters.FilterGNGD(n)
+    >>> pa.filters.FilterSSLMS(n)
     
-where `n` is the size (number of taps) of the filter.
+where :code:`n` is the size (number of taps) of the filter.
 
 Content of this page:
 
@@ -20,23 +18,59 @@ Content of this page:
    :depth: 1
 
 .. seealso:: :ref:`filters`
-   
+
+Algorithm Explanation
+==========================
+
+The SSLMS adaptive filter could be described as
+
+:math:`y(k) = w_1 \cdot x_{1}(k) + ... + w_n \cdot x_{n}(k)`,
+
+or in a vector form
+
+:math:`y(k) = \\textbf{x}^T(k) \\textbf{w}(k)`,
+
+where :math:`k` is discrete time index, :math:`(.)^T` denotes the transposition,
+:math:`y(k)` is filtered signal,
+:math:`\\textbf{w}` is vector of filter adaptive parameters and
+:math:`\\textbf{x}` is input vector (for a filter of size :math:`n`) as follows
+
+:math:`\\textbf{x}(k) = [x_1(k), ...,  x_n(k)]`.
+
+The SSLMS weights adaptation could be described as follows
+
+:math:`\\textbf{w}(k+1) = \\textbf{w}(k) + \Delta \\textbf{w}(k)`,
+
+where :math:`\Delta \\textbf{w}(k)` is
+
+:math:`\Delta \\textbf{w}(k) =  \mu \cdot \\text{sgn}(e(k)) \cdot
+\\text{sgn}(\\textbf{x}(k))`,
+
+where :math:`\mu` is the learning rate (step size) and :math:`e(k)`
+is error defined as
+
+:math:`e(k) = d(k) - y(k)`.
+
 
 Minimal Working Examples
-======================================
+==============================
 
 If you have measured data you may filter it as follows
 
 .. code-block:: python
 
+    import numpy as np
+    import matplotlib.pylab as plt
+    import padasip as pa 
+
     # creation of data
     N = 500
     x = np.random.normal(0, 1, (N, 4)) # input matrix
     v = np.random.normal(0, 0.1, N) # noise
-    d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target
+    d = 2*x[:,0] + 0.1*x[:,1] - 0.3*x[:,2] + 0.5*x[:,3] + v # target
 
     # identification
-    f = pa.filters.FilterGNGD(n=4, mu=0.1, w="random")
+    f = pa.filters.FilterSSLMS(n=4, mu=0.01, w="random")
     y, e, w = f.run(d, x)
 
     # show results
@@ -49,71 +83,23 @@ If you have measured data you may filter it as follows
     plt.tight_layout()
     plt.show()
 
-An example how to filter data measured in real-time
-
-.. code-block:: python
-
-    import numpy as np
-    import matplotlib.pylab as plt
-    import padasip as pa 
-
-    # these two function supplement your online measurment
-    def measure_x():
-        # it produces input vector of size 3
-        x = np.random.random(3)
-        return x
-        
-    def measure_d(x):
-        # meausure system output
-        d = 2*x[0] + 1*x[1] - 1.5*x[2]
-        return d
-        
-    N = 100
-    log_d = np.zeros(N)
-    log_y = np.zeros(N)
-    filt = pa.filters.FilterGNGD(3, mu=1.)
-    for k in range(N):
-        # measure input
-        x = measure_x()
-        # predict new value
-        y = filt.predict(x)
-        # do the important stuff with prediction output
-        pass    
-        # measure output
-        d = measure_d(x)
-        # update filter
-        filt.adapt(d, x)
-        # log values
-        log_d[k] = d
-        log_y[k] = y
-        
-    ### show results
-    plt.figure(figsize=(15,9))
-    plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
-    plt.plot(log_d,"b", label="d - target")
-    plt.plot(log_y,"g", label="y - output");plt.legend()
-    plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
-    plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
-    plt.legend(); plt.tight_layout(); plt.show()
-
-
 References
-======================================
+============
 
-.. bibliography:: gngd.bib
+.. bibliography:: sslms.bib
     :style: plain
 
 Code Explanation
-======================================
+====================
 """
 import numpy as np
 
 from padasip.filters.base_filter import AdaptiveFilter
 
-class FilterGNGD(AdaptiveFilter):
+class FilterSSLMS(AdaptiveFilter):
     """
-    Adaptive GNGD filter.
-    
+    This class represents an adaptive SSLMS filter.
+
     **Args:**
 
     * `n` : length of filter (integer) - how many input is input array
@@ -121,17 +107,10 @@ class FilterGNGD(AdaptiveFilter):
 
     **Kwargs:**
 
-    * `mu` : learning rate (float). Also known as step size.
-      If it is too slow,
+    * `mu` : learning rate (float). Also known as step size. If it is too slow,
       the filter may have bad performance. If it is too high,
       the filter will be unstable. The default value can be unstable
       for ill-conditioned input data.
-
-    * `eps` : compensation term (float) at the beginning. It is adaptive
-      parameter.
-
-    * `ro` : step size adaptation parameter (float) at the beginning.
-      It is adaptive parameter.
 
     * `w` : initial weights of filter. Possible values are:
         
@@ -140,18 +119,15 @@ class FilterGNGD(AdaptiveFilter):
         * "random" : create random weights
         
         * "zeros" : create zero value weights
-    """ 
-    def __init__(self, n, mu=1., eps=1., ro=0.1, w="random",):
-        self.kind = "GNGD filter"
+    """
+    
+    def __init__(self, n, mu=0.01, w="random"):
+        self.kind = "SSLMS filter"
         if type(n) == int:
             self.n = n
         else:
             raise ValueError('The size of filter must be an integer') 
-        self.mu = self.check_float_param(mu, 0, 1000, "mu")
-        self.eps = self.check_float_param(eps, 0, 10, "eps")
-        self.ro = self.check_float_param(ro, 0, 1, "ro")
-        self.last_e = 0
-        self.last_x = np.zeros(n)
+        self.mu = self.check_float_param(mu, 0, 1, "mu")
         self.init_weights(w, self.n)
         self.w_history = False
 
@@ -167,12 +143,7 @@ class FilterGNGD(AdaptiveFilter):
         """
         y = np.dot(self.w, x)
         e = d - y
-        self.eps = self.eps - self.ro * self.mu * e * self.last_e * \
-            np.dot(x, self.last_x) / \
-            (np.dot(self.last_x, self.last_x) + self.eps)**2
-        nu = self.mu / (self.eps + np.dot(x, x))
-        self.w += nu * e * x        
-        self.last_e = e
+        self.w += self.mu * np.sign(e) * np.sign(x)        
 
     def run(self, d, x):
         """
@@ -210,17 +181,13 @@ class FilterGNGD(AdaptiveFilter):
         # create empty arrays
         y = np.zeros(N)
         e = np.zeros(N)
-        self.w_history = np.zeros((N, self.n))
+        self.w_history = np.zeros((N,self.n))
         # adaptation loop
         for k in range(N):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            self.eps = self.eps - self.ro * self.mu * e[k] * e[k-1] * \
-                np.dot(x[k], x[k-1]) / \
-                (np.dot(x[k-1], x[k-1]) + self.eps)**2
-            nu = self.mu / (self.eps + np.dot(x[k], x[k]))
-            dw = nu * e[k] * x[k]
+            dw = self.mu * np.sign(e[k]) * np.sign(x[k])
             self.w += dw
         return y, e, self.w_history
 

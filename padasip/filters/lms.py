@@ -64,7 +64,7 @@ In practice the key argument :code:`mu` should be set to really small number
 in most of the cases
 (recomended value can be something in range from 0.1 to 0.00001).
 If you have still problems stability or performance of the filter,
-then try the normalized LMS (:ref:`filter-nlms-label`).
+then try the normalized LMS (:ref:`filter-nlms`).
 
 Minimal Working Examples
 ==============================
@@ -154,7 +154,6 @@ Code Explanation
 ====================
 """
 import numpy as np
-import padasip.consts as co
 
 from padasip.filters.base_filter import AdaptiveFilter
 
@@ -184,13 +183,13 @@ class FilterLMS(AdaptiveFilter):
         * "zeros" : create zero value weights
     """
     
-    def __init__(self, n, mu=co.MU_LMS, w="random"):
+    def __init__(self, n, mu=0.01, w="random"):
         self.kind = "LMS filter"
         if type(n) == int:
             self.n = n
         else:
             raise ValueError('The size of filter must be an integer') 
-        self.mu = self.check_float_param(mu, co.MU_LMS_MIN, co.MU_LMS_MAX, "mu")
+        self.mu = self.check_float_param(mu, 0, 1000, "mu")
         self.init_weights(w, self.n)
         self.w_history = False
 
