@@ -170,6 +170,7 @@ from padasip.filters.lmf import FilterLMF
 from padasip.filters.nlms import FilterNLMS
 from padasip.filters.nsslms import FilterNSSLMS
 from padasip.filters.nlmf import FilterNLMF
+from padasip.filters.fxlms import FilterFxLMS
 from padasip.filters.ocnlms import FilterOCNLMS
 from padasip.filters.gngd import FilterGNGD
 from padasip.filters.rls import FilterRLS

@@ -162,7 +162,7 @@ class AdaptiveFilter():
             # run
             y, e, w = self.pretrained_run(d, x, ntrain=ntrain, epochs=epochs)
             if type(target_w) != bool:
-                errors[i] = get_mean_error(w-target_w, function=criteria)
+                errors[i] = get_mean_error(w[-1]-target_w, function=criteria)
             else:
                 errors[i] = get_mean_error(e, function=criteria)
         return errors, mu_range            

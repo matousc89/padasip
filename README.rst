@@ -41,7 +41,7 @@ So far it is possible to use following filters:
 
 - LMF (least-mean-fourth) adaptive filter
 
-- LMF (normalized least-mean-fourth) adaptive filter
+- NLMF (normalized least-mean-fourth) adaptive filter
 
 - SSLMS (sign-sign least-mean-squares) adaptive filter
 
