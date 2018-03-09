@@ -72,7 +72,12 @@ class TestFilters(unittest.TestCase):
         d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
         f = pa.filters.FilterRLS(n=4, mu=0.9, w="random")
         y, e, w = f.run(d, x)        
-        self.assertAlmostEqual(y.sum(), 12.466854176928789)
+        self.assertAlmostEqual(y.sum(), 15.463186820823049)
+        self.assertNotEqual(0, f.R[0, 1])
+
+        f = pa.filters.FilterRLS(n=4, mu=0.9, w="random")
+        f.adapt(d[0], x[0])
+        self.assertNotEqual(0, f.R[0, 1])
 
     def test_filter_LMF(self):
         """
