@@ -217,7 +217,7 @@ class FilterRLS(AdaptiveFilter):
         """
         y = np.dot(self.w, x)
         e = d - y
-        R1 = np.dot(np.dot(np.dot(self.R,x),x.T),self.R)
+        R1 = self.R @ (x[:, None] * x[None, :]) @ self.R
         R2 = self.mu + np.dot(np.dot(x,self.R),x.T)
         self.R = 1/self.mu * (self.R - R1/R2)
         dw = np.dot(self.R, x.T) * e
@@ -265,7 +265,7 @@ class FilterRLS(AdaptiveFilter):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            R1 = np.dot(np.dot(np.dot(self.R,x[k]),x[k].T),self.R)
+            R1 = self.R @ (x[k, :, None] * x[k, None, :]) @ self.R
             R2 = self.mu + np.dot(np.dot(x[k],self.R),x[k].T)
             self.R = 1/self.mu * (self.R - R1/R2)
             dw = np.dot(self.R, x[k].T) * e[k]

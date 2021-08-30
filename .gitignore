@@ -1,3 +1,7 @@
+.idea/
+
+to_ignore.py
+
 *~
 
 # Byte-compiled / optimized / DLL files
