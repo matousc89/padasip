@@ -2,7 +2,7 @@
 .. versionadded:: 1.1.0
 
 The least-mean-fourth (LMF) adaptive filter implemented according to the
-paper :cite:`zerguine2000convergence`.
+paper.
 
 The LMF filter can be created as follows
 
@@ -79,11 +79,6 @@ If you have measured data you may filter it as follows
     plt.tight_layout()
     plt.show()
 
-References
-============
-
-.. bibliography:: lmf.bib
-    :style: plain
 
 Code Explanation
 ====================

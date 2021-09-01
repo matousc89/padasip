@@ -1,7 +1,7 @@
 """
 .. versionadded:: 0.6
 
-Linear discriminant analysis (LDA) :cite:`fisher1936use`
+Linear discriminant analysis (LDA)
 is a method used to determine the features
 that separates some classes of items. The output of LDA may be used as
 a linear classifier, or for dimensionality reduction for purposes of
@@ -89,11 +89,6 @@ Shape of original dataset: (150, 4)
 >>> print "Shape of new dataset: {}".format(new_x.shape)
 Shape of new dataset: (150, 2)
 
-References
-***************
-
-.. bibliography:: lda.bib
-    :style: plain
 
 Code Explanation
 ***************** 

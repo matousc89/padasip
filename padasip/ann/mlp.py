@@ -62,7 +62,7 @@ Learning Rate Selection
 
 If you select the learning rate (:math:`\mu` in equations,
 or `mu` in code) manually, it will be used the same value for all nodes,
-otherwise it is selected automatically :cite:`lecun2012efficient` as follows
+otherwise it is selected automatically as follows
 
 :math:`\mu_{ij} = m^{-0.5}`
 
@@ -73,20 +73,12 @@ The automatic selection is recomended and default option.
 Default Values of Weights
 ****************************
 
-The distribution from what the weights are taken is chosen automatically
-:cite:`lecun2012efficient`, it has zero mean and
-the standard derivation estimated as follows
+The distribution from what the weights are taken is chosen automatically,
+it has zero mean and the standard derivation is estimated as follows
 
 :math:`\sigma_{w} = m^{-0.5}`
 
 where the :math:`m` is the amount of nodes on input of given node.
-
-
-References
-***************
-
-.. bibliography:: mlp.bib
-    :style: plain
 
 Code Explanation
 ******************
@@ -107,7 +99,6 @@ class Layer():
 
     * `mu` : learning rate (float or str), it can be directly the float value,
         or string `auto` for automatic selection of learning rate
-        :cite:`lecun2012efficient`
 
     """
     
@@ -226,8 +217,7 @@ class NetworkMLP():
     * `mu` : learning rate (float or str), it can be:
         * float value - value is directly used as `mu`
 
-        * "auto" - this will trigger automatic selection of learning rate
-        according to :cite:`lecun2012efficient`
+        * "auto" - this will trigger automatic selection of the learning rate
 
     """
 

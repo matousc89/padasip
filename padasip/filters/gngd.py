@@ -3,8 +3,7 @@
 .. versionchanged:: 1.0.0
 
 The generalized normalized gradient descent (GNGD) adaptive filter
-:cite:`mandic2004generalized`
-is an extension of the NLMS adaptive filter (:ref:`filter-nlms-label`).
+is an extension of the NLMS adaptive filter (:ref:`filter-nlms`).
 
 The GNGD filter can be created as follows
 
@@ -96,12 +95,6 @@ An example how to filter data measured in real-time
     plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
     plt.legend(); plt.tight_layout(); plt.show()
 
-
-References
-======================================
-
-.. bibliography:: gngd.bib
-    :style: plain
 
 Code Explanation
 ======================================

@@ -3,9 +3,7 @@
 
 The Learning Entropy (LE) is non-Shannon entropy based on conformity
 of individual data samples to the contemporary learned governing law
-of a leraning system :cite:`bukovsky2013learning`. More information about
-application can be found also in other studies :cite:`bukovsky2016study`
-:cite:`bukovsky2015case` :cite:`bukovsky2014learning`.
+of a learning system.
 
 Content of this page:
 
@@ -128,12 +126,6 @@ in sample with index :math:`k=1000` (the length of data is 2000).
     plt.plot(le)
     plt.show()
 
-
-References
-============
-
-.. bibliography:: le.bib
-    :style: plain
 
 Code Explanation
 ====================

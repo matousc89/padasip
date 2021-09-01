@@ -2,7 +2,6 @@
 .. versionchanged:: 1.1.0
 
 The normalized sign-sign least-mean-squares (NSSLMS) adaptive filter
-:cite:`rahman2009noise`
 is an extension of the popular SSLMS adaptive filter (:ref:`filter-sslms`).
 
 The NSSLMS filter can be created as follows
@@ -68,11 +67,7 @@ If you have measured data you may filter it as follows
     plt.tight_layout()
     plt.show()
 
-References
-======================================
 
-.. bibliography:: sslms.bib
-    :style: plain
 
 Code Explanation
 ======================================

@@ -3,7 +3,6 @@
 .. versionchanged:: 1.0.0
 
 The normalized least-mean-squares (NLMS) adaptive filter
-:cite:`sayed2003fundamentals`
 is an extension of the popular LMS adaptive filter (:ref:`filter-lms`).
 
 The NLMS filter can be created as follows
@@ -134,11 +133,6 @@ An example how to filter data measured in real-time
     plt.legend(); plt.tight_layout(); plt.show()
 
 
-References
-======================================
-
-.. bibliography:: nlms.bib
-    :style: plain
 
 Code Explanation
 ======================================

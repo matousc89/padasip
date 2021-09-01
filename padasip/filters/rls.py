@@ -2,7 +2,7 @@
 .. versionadded:: 0.1
 .. versionchanged:: 1.0.0
 
-The Recursive Least Squares filter :cite:`sayed1998recursive` can be created as follows
+The Recursive Least Squares filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterRLS(n)
@@ -150,13 +150,6 @@ An example how to filter data measured in real-time
     plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
     plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
     plt.legend(); plt.tight_layout(); plt.show()
-
-
-References
-======================================
-
-.. bibliography:: rls.bib
-    :style: plain
 
 
 Code Explanation
