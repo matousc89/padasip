@@ -175,6 +175,7 @@ from padasip.filters.ocnlms import FilterOCNLMS
 from padasip.filters.gngd import FilterGNGD
 from padasip.filters.rls import FilterRLS
 from padasip.filters.ap import FilterAP
+from padasip.filters.gmcc import FilterGMCC
 
 def filter_data(d, x, model="lms", **kwargs):
     """
