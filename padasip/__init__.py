@@ -50,7 +50,6 @@ check the complete documentation here
     
     sources/preprocess
     sources/filters
-    sources/ann
     sources/detection
     sources/misc
 

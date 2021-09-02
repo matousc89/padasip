@@ -84,6 +84,7 @@ Code Explanation
 ******************
 """
 import numpy as np
+import warnings
 
 class Layer():
     """
@@ -222,6 +223,10 @@ class NetworkMLP():
     """
 
     def __init__(self, layers, n_input, outputs=1, activation="sigmoid", mu="auto"):
+        warnings.warn(
+            "MLP is deprecated, use different Python library instead",
+            DeprecationWarning
+        )
         sigma = layers[-1]**(-0.5)
         # set learning rate
         if mu == "auto":
