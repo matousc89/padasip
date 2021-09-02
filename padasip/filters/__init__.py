@@ -208,25 +208,10 @@ def filter_data(d, x, model="lms", **kwargs):
     # overwrite n with correct size
     kwargs["n"] = x.shape[1]
     # create filter according model
-    if model in ["LMS", "lms"]:
-        f = FilterLMS(**kwargs)
-    elif model in ["NLMS", "nlms"]:
-        f = FilterNLMS(**kwargs)
-    elif model in ["RLS", "rls"]:
-        f = FilterRLS(**kwargs)
-    elif model in ["GNGD", "gngd"]:
-        f = FilterGNGD(**kwargs)
-    elif model in ["AP", "ap"]:
-        f = FilterAP(**kwargs)
-    elif model in ["LMF", "lmf"]:
-        f = FilterLMF(**kwargs)
-    elif model in ["NLMF", "nlmf"]:
-        f = FilterNLMF(**kwargs)
-    else:
+    if model.upper() not in FILTERS.keys():
         raise ValueError('Unknown model of filter {}'.format(model))
-    # calculate and return the values
-    y, e, w = f.run(d, x)
-    return y, e, w
+    else:
+        return FILTERS[model.upper()](**kwargs).run(d, x)
 
 def AdaptiveFilter(model="lms", **kwargs):
     """
@@ -262,22 +247,19 @@ def AdaptiveFilter(model="lms", **kwargs):
     if not "n" in kwargs:
         raise ValueError('Filter size is not defined (n=?).')    
     # create filter according model
-    if model in ["LMS", "lms"]:
-        f = FilterLMS(**kwargs)
-    elif model in ["NLMS", "nlms"]:
-        f = FilterNLMS(**kwargs)
-    elif model in ["RLS", "rls"]:
-        f = FilterRLS(**kwargs)
-    elif model in ["GNGD", "gngd"]:
-        f = FilterGNGD(**kwargs)
-    elif model in ["AP", "ap"]:
-        f = FilterAP(**kwargs)
-    elif model in ["LMF", "lmf"]:
-        f = FilterLMF(**kwargs)
-    elif model in ["NLMF", "nlmf"]:
-        f = FilterNLMF(**kwargs)
-    else:
+    if model.upper() not in FILTERS.keys():
         raise ValueError('Unknown model of filter {}'.format(model))
-    # return filter
-    return f
+    else:
+        return FILTERS[model.upper()](**kwargs)
 
+FILTERS = {
+    "NLMF": FilterNLMF,
+    "LMF": FilterLMF,
+    "AP": FilterAP,
+    "GNGD": FilterGNGD,
+    "RLS": FilterRLS,
+    "NLMS": FilterNLMS,
+    "LMS": FilterLMS,
+    "SSLMS": FilterSSLMS,
+    "NSSLMS": FilterNSSLMS,
+}

@@ -1,5 +1,5 @@
 """
-.. versionadded:: 1.1.2
+.. versionadded:: 1.2.0
 
 The generalized maximum correntropy criterion (GMCC) adaptive filter can be created as follows
 

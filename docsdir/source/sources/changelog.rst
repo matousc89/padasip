@@ -3,7 +3,11 @@
 Changelog
 ===========
 
-**Version 1.1.0**
+**Version 1.1.1** *Released: 2017-08-06*
+ Bugfix of adaptive filter helper function according to comments of
+ `Patrick Bartels <https://github.com/pckbls>`_.
+
+**Version 1.1.0** *Released: 2017-05-19*
  Added new adaptive filters :ref:`filter-lmf`, :ref:`filter-nlmf`,
  :ref:`filter-sslms` and :ref:`filter-nsslms`.
 

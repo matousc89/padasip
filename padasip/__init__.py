@@ -72,16 +72,10 @@ Indices and tables
 * :ref:`search`
 
 """
-#from padasip.preprocess import 
 import padasip.ann
 import padasip.filters
 import padasip.preprocess
 import padasip.misc
 import padasip.detection
-
-# back compatibility with v0.5
-from padasip.preprocess.standardize import standardize
-from padasip.preprocess.standardize_back import standardize_back
-from padasip.preprocess.input_from_history import input_from_history
 
 
