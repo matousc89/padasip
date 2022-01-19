@@ -209,6 +209,8 @@ def filter_data(d, x, model="lms", **kwargs):
     # create filter according model
     if model in ["LMS", "lms"]:
         f = FilterLMS(**kwargs)
+    elif model in ['SSLMS','sslms']:
+        f = FilterSSLMS(**kwargs)
     elif model in ["NLMS", "nlms"]:
         f = FilterNLMS(**kwargs)
     elif model in ["RLS", "rls"]:
@@ -263,6 +265,8 @@ def AdaptiveFilter(model="lms", **kwargs):
     # create filter according model
     if model in ["LMS", "lms"]:
         f = FilterLMS(**kwargs)
+    elif model in ['SSLMS','sslms']:
+        f = FilterSSLMS(**kwargs)
     elif model in ["NLMS", "nlms"]:
         f = FilterNLMS(**kwargs)
     elif model in ["RLS", "rls"]:
