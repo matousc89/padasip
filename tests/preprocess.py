@@ -13,7 +13,7 @@ class TestPreprocess(unittest.TestCase):
         """
         u = range(1000)
         x = pa.preprocess.standardize(u)
-        self.assertEqual(x.std(), 1.0)
+        self.assertAlmostEqual(x.std(), 1.0, 10)
         self.assertEqual(np.round(x.mean(), 3), -0.0)
         
     def test_standardize_back(self):

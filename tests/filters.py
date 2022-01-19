@@ -61,6 +61,19 @@ class TestFilters(unittest.TestCase):
         y, e, w = f.run(d, x)    
         self.assertAlmostEqual(y.sum(), 17.075790883173546)
 
+    def test_filter_ocnlms(self):
+        """
+        Test of OCNLMS filter.
+        """
+        np.random.seed(100)
+        N = 100
+        x = np.random.normal(0, 1, (N, 4))
+        v = np.random.normal(0, 0.1, N)
+        d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
+        f = pa.filters.FilterOCNLMS(n=4, mu=1., eps=1., w="random")
+        y, e, w = f.run(d, x)
+        self.assertAlmostEqual(y.sum(), 6.962870033482984)
+
     def test_filter_rls(self):
         """
         Test of RLS filter.
@@ -72,7 +85,7 @@ class TestFilters(unittest.TestCase):
         d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
         f = pa.filters.FilterRLS(n=4, mu=0.9, w="random")
         y, e, w = f.run(d, x)        
-        self.assertAlmostEqual(y.sum(), 12.466854176928789)
+        self.assertAlmostEqual(y.sum(), 15.463186820823053)
 
     def test_filter_LMF(self):
         """

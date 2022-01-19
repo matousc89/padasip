@@ -1,3 +1,74 @@
+"""
+.. versionadded::
+.. versionchanged:: 
+
+The online-centered normalized least-mean-squares (OCNLMS) adaptive filter
+(proposed in https://doi.org/10.14311/nnw.2021.31.019)
+is an extension of the popular NLMS adaptive filter (:ref:`filter-nlms`).
+
+The OCNLMS filter can be created as follows
+
+    >>> import padasip as pa
+    >>> pa.filters.FilterOCNLMS(n, mem=100)
+
+where `n` is the size (number of taps) of the filter.
+
+Content of this page:
+
+.. contents::
+   :local:
+   :depth: 1
+
+.. seealso:: :ref:`filters`
+
+Algorithm Explanation
+======================================
+
+The OCNLMS is extension of NLMS filter. See :ref:`filter-nlms`
+for explanation of the algorithm behind.  As an extension of the
+normalized least mean squares (NLMS), the OC-NLMS algorithm
+features an approach of online input centering according to
+the introduced filter memory. This key feature can compensate
+the effect of concept drift in data streams, because
+such a centering makes the filter independent
+from the nonzero mean value of signal.
+
+Minimal Working Examples
+======================================
+
+Exampleof an unknown system identification from mesaured data follows.
+The memory size `mem` is defined during the construction of the filter.
+
+.. code-block:: python
+
+    import numpy as np
+    import matplotlib.pylab as plt
+    import padasip as pa
+
+    # creation of data
+    N = 500
+    x = np.random.normal(0, 1, (N, 4)) + 121 # input matrix with offset
+    v = np.random.normal(0, 0.1, N) # noise
+    d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target
+
+    # identification, memory is set to 100 samples
+    f = pa.filters.FilterOCNLMS(n=4, mu=0.1, w="random", mem=100)
+    y, e, w = f.run(d, x)
+
+    # show results
+    plt.figure(figsize=(15,9))
+    plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
+    plt.plot(d,"b", label="d - target")
+    plt.plot(y,"g", label="y - output");plt.legend()
+    plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
+    plt.plot(10*np.log10(e**2),"r", label="e - error [dB]");plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+Code Explanation
+======================================
+"""
 import numpy as np
 
 from padasip.filters.base_filter import AdaptiveFilter
@@ -43,12 +114,15 @@ class FilterOCNLMS(AdaptiveFilter):
             raise ValueError('The size of filter must be an integer')
         self.mu = self.check_float_param(mu, 0, 1000, "mu")
         self.eps = self.check_float_param(eps, 0, 1000, "eps")
-        self.mem = self.check_int_param(mem, 1, 1000, "mem")
-        self.w = self.init_weights(w, self.n)
+        self.mem = self.check_int_param(mem, 1, 10000, "mem")
+        self.init_weights(w, self.n)
         self.w_history = False
+        self.clear_memory()
+
+    def clear_memory(self):
         self.mem_empty = True
-        self.mem_x = np.zeros((mem,n))
-        self.mem_d = np.zeros(mem)
+        self.mem_x = np.zeros((self.mem, self.n))
+        self.mem_d = np.zeros(self.mem)
         self.mem_idx = 0
 
     def adapt(self, d, x):
@@ -141,6 +215,7 @@ class FilterOCNLMS(AdaptiveFilter):
         y = np.zeros(N)
         e = np.zeros(N)
         self.w_history = np.zeros((N,self.n))
+        self.clear_memory()
         # adaptation loop
         for k in range(N):
             self.update_memory_x(x[k])
@@ -153,63 +228,4 @@ class FilterOCNLMS(AdaptiveFilter):
             self.w += dw
             self.w_history[k,:] = self.w
             self.update_memory_d(d[k])
-        return y, e, self.w
-
-    def novelty(self, d, x):
-        """
-        This function estimates novelty in data
-        according to the learning effort.
-
-        Args:
-
-        * `d` : desired value (1 dimensional array)
-
-        * `x` : input matrix (2-dimensional array). Rows are samples,
-            columns are input arrays.
-
-        Returns:
-
-        * `y` : output value (1 dimensional array).
-            The size corresponds with the desired value.
-
-        * `e` : filter error for every sample (1 dimensional array).
-            The size corresponds with the desired value.
-
-        * `w` : history of all weights (2 dimensional array).
-            Every row is set of the weights for given sample.
-
-        * `nd` : novelty detection coefficients (2 dimensional array).
-            Every row is set of coefficients for given sample.
-            One coefficient represents one filter weight.
-        """
-        # measure the data and check if the dimmension agree
-        N = len(x)
-        if not len(d) == N:
-            raise ValueError('The length of vector d and matrix x must agree.')
-        self.n = len(x[0])
-        # prepare data
-        try:
-            x = np.array(x)
-            d = np.array(d)
-        except:
-            raise ValueError('Impossible to convert x or d to a numpy array')
-        # create empty arrays
-        y = np.zeros(N)
-        e = np.zeros(N)
-        nd = np.zeros((N,self.n))
-        self.w_history = np.zeros((N,self.n))
-        # adaptation loop
-        for k in range(N):
-            self.update_memory_x(x[k])
-            m_d, m_x = self.read_memory()
-            # estimate
-            y[k] = np.dot(self.w, x[k]-m_x) + m_d
-            e[k] = d[k] - y[k]
-            nu = self.mu / (self.eps + np.dot(x[k]-m_x, x[k]-m_x))
-            dw = nu * e[k] * (x[k]-m_x)
-            self.w += dw
-            self.w_history[k,:] = self.w
-            nd[k,:] = dw * e[k]
-            self.update_memory_d(d[k])
-        return y, e, self.w_history, nd
-
+        return y, e, self.w_history
