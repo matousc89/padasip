@@ -184,9 +184,10 @@ class FilterAP(AdaptiveFilter):
         * "random" : create random weights
         
         * "zeros" : create zero value weights
-    """ 
+    """
+    kind = "AP"
+
     def __init__(self, n, order=5, mu=0.1, eps=0.001, w="random"):
-        self.kind = "AP filter"
         self.n = self.check_int(
             n,'The size of filter must be an integer')
         self.order = self.check_int(

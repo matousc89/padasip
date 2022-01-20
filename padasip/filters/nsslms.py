@@ -108,9 +108,10 @@ class FilterNSSLMS(AdaptiveFilter):
         * "random" : create random weights
         
         * "zeros" : create zero value weights
-    """ 
+    """
+    kind = "NSSLMS"
+
     def __init__(self, n, mu=0.1, eps=1., w="random"):
-        self.kind = "NSSLMS filter"
         if type(n) == int:
             self.n = n
         else:

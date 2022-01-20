@@ -116,9 +116,9 @@ class FilterLMF(AdaptiveFilter):
         
         * "zeros" : create zero value weights
     """
-    
+    kind = "LMF"
+
     def __init__(self, n, mu=0.01, w="random"):
-        self.kind = "LMF filter"
         if type(n) == int:
             self.n = n
         else:

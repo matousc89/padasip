@@ -1,6 +1,6 @@
 """
 .. versionadded::
-.. versionchanged:: 
+.. versionchanged::
 
 The online-centered normalized least-mean-squares (OCNLMS) adaptive filter
 (proposed in https://doi.org/10.14311/nnw.2021.31.019)
@@ -105,9 +105,10 @@ class FilterOCNLMS(AdaptiveFilter):
         and input vectors will be used for centering of current input vector
         and target.
     """
+    kind = "OCNLMS"
+
     def __init__(self, n, mu=0.1, eps=1., 
             w="random", mem=100):
-        self.kind = "OC-NLMS filter"
         if type(n) == int:
             self.n = n
         else:

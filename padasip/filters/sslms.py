@@ -120,9 +120,9 @@ class FilterSSLMS(AdaptiveFilter):
         
         * "zeros" : create zero value weights
     """
-    
+    kind = "SSLMS"
+
     def __init__(self, n, mu=0.01, w="random"):
-        self.kind = "SSLMS filter"
         if type(n) == int:
             self.n = n
         else:

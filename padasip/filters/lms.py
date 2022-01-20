@@ -182,9 +182,9 @@ class FilterLMS(AdaptiveFilter):
         
         * "zeros" : create zero value weights
     """
-    
+    kind = "LMS"
+
     def __init__(self, n, mu=0.01, w="random"):
-        self.kind = "LMS filter"
         if type(n) == int:
             self.n = n
         else:

@@ -126,8 +126,6 @@ def ELBND(w, e, function="max"):
     dw = np.zeros(w.shape)
     dw[:-1] = np.abs(np.diff(w, axis=0))
     # absolute values of product of increments and error
-    a = np.random.random((5,2))
-    b = a.T*np.array([1,2,3,4,5])
     elbnd = np.abs((dw.T*e).T)
     # apply output function
     if function == "max":

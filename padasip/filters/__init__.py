@@ -164,17 +164,17 @@ Implemented filters
 Code explanation
 ==================
 """
-from padasip.filters.lms import FilterLMS
-from padasip.filters.sslms import FilterSSLMS
+from padasip.filters.ap import FilterAP
+from padasip.filters.gngd import FilterGNGD
 from padasip.filters.lmf import FilterLMF
+from padasip.filters.lms import FilterLMS
+from padasip.filters.nlmf import FilterNLMF
 from padasip.filters.nlms import FilterNLMS
 from padasip.filters.nsslms import FilterNSSLMS
-from padasip.filters.nlmf import FilterNLMF
-from padasip.filters.fxlms import FilterFxLMS
 from padasip.filters.ocnlms import FilterOCNLMS
-from padasip.filters.gngd import FilterGNGD
 from padasip.filters.rls import FilterRLS
-from padasip.filters.ap import FilterAP
+from padasip.filters.sslms import FilterSSLMS
+
 
 def filter_data(d, x, model="lms", **kwargs):
     """
@@ -206,26 +206,8 @@ def filter_data(d, x, model="lms", **kwargs):
     """
     # overwrite n with correct size
     kwargs["n"] = x.shape[1]
-    # create filter according model
-    if model in ["LMS", "lms"]:
-        f = FilterLMS(**kwargs)
-    elif model in ['SSLMS','sslms']:
-        f = FilterSSLMS(**kwargs)
-    elif model in ["NLMS", "nlms"]:
-        f = FilterNLMS(**kwargs)
-    elif model in ["RLS", "rls"]:
-        f = FilterRLS(**kwargs)
-    elif model in ["GNGD", "gngd"]:
-        f = FilterGNGD(**kwargs)
-    elif model in ["AP", "ap"]:
-        f = FilterAP(**kwargs)
-    elif model in ["LMF", "lmf"]:
-        f = FilterLMF(**kwargs)
-    elif model in ["NLMF", "nlmf"]:
-        f = FilterNLMF(**kwargs)
-    else:
-        raise ValueError('Unknown model of filter {}'.format(model))
-    # calculate and return the values
+    # init filter, calculate and return the values
+    f = get_filter(model)(**kwargs)
     y, e, w = f.run(d, x)
     return y, e, w
 
@@ -261,26 +243,27 @@ def AdaptiveFilter(model="lms", **kwargs):
     """
     # check if the filter size was specified
     if not "n" in kwargs:
-        raise ValueError('Filter size is not defined (n=?).')    
-    # create filter according model
-    if model in ["LMS", "lms"]:
-        f = FilterLMS(**kwargs)
-    elif model in ['SSLMS','sslms']:
-        f = FilterSSLMS(**kwargs)
-    elif model in ["NLMS", "nlms"]:
-        f = FilterNLMS(**kwargs)
-    elif model in ["RLS", "rls"]:
-        f = FilterRLS(**kwargs)
-    elif model in ["GNGD", "gngd"]:
-        f = FilterGNGD(**kwargs)
-    elif model in ["AP", "ap"]:
-        f = FilterAP(**kwargs)
-    elif model in ["LMF", "lmf"]:
-        f = FilterLMF(**kwargs)
-    elif model in ["NLMF", "nlmf"]:
-        f = FilterNLMF(**kwargs)
-    else:
-        raise ValueError('Unknown model of filter {}'.format(model))
-    # return filter
-    return f
+        raise ValueError('Filter size is not defined (n=?).')
+    return get_filter(model)(**kwargs)
 
+def get_filter(name):
+    try:
+        return FILTERS[name.upper()]
+    except:
+        raise ValueError('Unknown model of filter {}, options are {}'.format(name, list(FILTERS.keys())))
+
+
+
+FILTER_CLASSES = [
+    FilterAP,
+    FilterGNGD,
+    FilterLMF,
+    FilterLMS,
+    FilterNLMF,
+    FilterNLMS,
+    FilterNSSLMS,
+    FilterRLS,
+    FilterSSLMS,
+]
+
+FILTERS = {f.kind.upper(): f for f in FILTER_CLASSES}

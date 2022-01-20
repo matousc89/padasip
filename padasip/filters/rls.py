@@ -191,10 +191,10 @@ class FilterRLS(AdaptiveFilter):
         * "random" : create random weights
         
         * "zeros" : create zero value weights
-    """ 
+    """
+    kind = "RLS"
 
     def __init__(self, n, mu=0.99, eps=0.1, w="random"):
-        self.kind = "RLS filter"
         if type(n) == int:
             self.n = n
         else:

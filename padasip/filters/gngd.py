@@ -140,9 +140,10 @@ class FilterGNGD(AdaptiveFilter):
         * "random" : create random weights
         
         * "zeros" : create zero value weights
-    """ 
+    """
+    kind = "GNGD"
+
     def __init__(self, n, mu=1., eps=1., ro=0.1, w="random",):
-        self.kind = "GNGD filter"
         if type(n) == int:
             self.n = n
         else:

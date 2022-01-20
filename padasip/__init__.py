@@ -50,7 +50,6 @@ check the complete documentation here
     
     sources/preprocess
     sources/filters
-    sources/ann
     sources/detection
     sources/misc
 
@@ -73,11 +72,13 @@ Indices and tables
 * :ref:`search`
 
 """
-import padasip.ann
 import padasip.filters
 import padasip.preprocess
 import padasip.misc
 import padasip.detection
+
+# will obsolete after 1.1.1
+import padasip.ann
 
 # back compatibility with v0.5
 from padasip.preprocess.standardize import standardize
