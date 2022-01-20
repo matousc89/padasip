@@ -32,4 +32,5 @@ Implemented tools
 """
 from padasip.detection.le import learning_entropy
 from padasip.detection.elbnd import ELBND
+from padasip.detection.ese import ESE
 

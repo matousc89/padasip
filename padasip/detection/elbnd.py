@@ -73,7 +73,7 @@ in sample with index :math:`k=1000` (the length of data is 2000).
     # estimation of LE with weights from learning model
     elbnd = pa.detection.ELBND(w, e, function="max")
 
-    # LE plot
+    # ELBND plot
     plt.plot(elbnd)
     plt.show()
 
