@@ -74,7 +74,6 @@ Code Explanation
 """
 import numpy as np
 from scipy.stats import genpareto
-import math
 
 def pot(data, method):
     """

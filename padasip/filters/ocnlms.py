@@ -1,6 +1,5 @@
 """
-.. versionadded::
-.. versionchanged::
+.. versionadded:: 1.2.0
 
 The online-centered normalized least-mean-squares (OCNLMS) adaptive filter
 (proposed in https://doi.org/10.14311/nnw.2021.31.019)
