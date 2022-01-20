@@ -70,9 +70,19 @@ class TestFilters(unittest.TestCase):
         x = np.random.normal(0, 1, (N, 4))
         v = np.random.normal(0, 0.1, N)
         d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
-        f = pa.filters.FilterOCNLMS(n=4, mu=1., eps=1., w="random")
+        f = pa.filters.FilterOCNLMS(n=4, mu=1., mem=100, w="random")
         y, e, w = f.run(d, x)
         self.assertAlmostEqual(y.sum(), 6.962870033482984)
+
+    def test_filter_Llncosh(self):
+        np.random.seed(100)
+        N = 100
+        x = np.random.normal(0, 1, (N, 4))
+        v = np.random.normal(0, 0.1, N)
+        d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
+        f = pa.filters.FilterLlncosh(n=4, mu=1., l=3, w="random")
+        y, e, w = f.run(d, x)
+        self.assertAlmostEqual(y.sum(), 18.74164638623726)
 
     def test_filter_rls(self):
         """
