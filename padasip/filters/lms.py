@@ -2,8 +2,7 @@
 .. versionadded:: 0.1
 .. versionchanged:: 1.0.0
 
-The least-mean-squares (LMS) adaptive filter :cite:`sayed2003fundamentals`
-is the most popular adaptive filter.
+The least-mean-squares (LMS) adaptive filter is the most popular adaptive filter.
 
 The LMS filter can be created as follows
 
@@ -144,11 +143,7 @@ An example how to filter data measured in real-time
     plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
     plt.legend(); plt.tight_layout(); plt.show()
 
-References
-============
 
-.. bibliography:: lms.bib
-    :style: plain
 
 Code Explanation
 ====================

@@ -2,8 +2,8 @@
 .. versionadded:: 0.4
 .. versionchanged:: 1.0.0
 
-The Affine Projection (AP) algorithm is implemented according to paper
-:cite:`gonzalez2012affine`. Usage of this filter should be benefical especially
+The Affine Projection (AP) algorithm is implemented according to paper.
+Usage of this filter should be benefical especially
 when input data is highly correlated.
 This filter is based on LMS. The difference is,
 that AP uses multiple input vectors in every sample.
@@ -140,13 +140,6 @@ An example how to filter data measured in real-time
     plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
     plt.plot(10*np.log10((log_d-log_y)**2),"r", label="e - error [dB]")
     plt.legend(); plt.tight_layout(); plt.show()
-
-
-References
-======================================
-
-.. bibliography:: ap.bib
-    :style: plain
 
 Code Explanation
 ======================================

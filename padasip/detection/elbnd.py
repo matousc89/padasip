@@ -1,9 +1,8 @@
 """
 .. versionadded:: 1.0.0
 
-The Error and Learning Based Novelty Detection (ELBND)is based on the
-evaluation of an adaptive model error and the change of its parameters
-:cite:`cejnek2015adaptive`, :cite:`cejnek2014another`.
+The Error and Learning Based Novelty Detection (ELBND) is based on the
+evaluation of an adaptive model error and the change of its parameters.
 
 Content of this page:
 
@@ -77,12 +76,6 @@ in sample with index :math:`k=1000` (the length of data is 2000).
     plt.plot(elbnd)
     plt.show()
 
-
-References
-============
-
-.. bibliography:: elbnd.bib
-    :style: plain
 
 Code Explanation
 ====================

@@ -149,6 +149,19 @@ class TestFilters(unittest.TestCase):
         y, e, w = f.run(d, x)   
         self.assertAlmostEqual(y.sum(), 21.982245163799284)
 
+    def test_filter_GMCC(self):
+        """
+        Test of GMCC filter.
+        """
+        np.random.seed(100)
+        N = 100
+        x = np.random.normal(0, 1, (N, 4))
+        v = np.random.normal(0, 0.1, N)
+        d = 2*x[:,0] + 0.1*x[:,1] - 1*x[:,2] + 0.5*x[:,3] + v
+        f = pa.filters.FilterGMCC(n=4, mu=0.3, lambd=0.03, alpha=2, w="random")
+        y, e, w = f.run(d, x)
+        self.assertAlmostEqual(y.sum(), 7.002285017142926)
+
     def test_filters_length(self):
         """
         Test if filters does not accept incorrect length of filter
@@ -164,6 +177,7 @@ class TestFilters(unittest.TestCase):
                 pa.filters.FilterNLMF,
                 pa.filters.FilterSSLMS,
                 pa.filters.FilterNSSLMS,
+                pa.filters.FilterGMCC,
                 ]
         # test if works
         for item in filters:

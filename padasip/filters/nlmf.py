@@ -1,8 +1,7 @@
 """
 .. versionadded:: 1.1.0
 
-The least-mean-fourth (LMF) adaptive filter implemented according to the
-paper :cite:`zerguine2000convergence`. The NLMF is an extension of the LMF
+The normalized least-mean-fourth (NLMF) adaptive filter is an extension of the LMF
 adaptive filter (:ref:`filter-lmf`).
 
 The NLMF filter can be created as follows
@@ -68,11 +67,7 @@ If you have measured data you may filter it as follows
     plt.tight_layout()
     plt.show()
 
-References
-======================================
 
-.. bibliography:: lmf.bib
-    :style: plain
 
 Code Explanation
 ======================================

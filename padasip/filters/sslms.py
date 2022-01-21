@@ -1,10 +1,7 @@
 """
 .. versionchanged:: 1.1.0
 
-The sign-sign least-mean-squares (SSLMS) adaptive filter is implemented
-according paper :cite:`rahman2009noise`.
-
-The SSLMS filter can be created as follows
+The sign-sign least-mean-squares (SSLMS) adaptive filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterSSLMS(n)
@@ -83,11 +80,6 @@ If you have measured data you may filter it as follows
     plt.tight_layout()
     plt.show()
 
-References
-============
-
-.. bibliography:: sslms.bib
-    :style: plain
 
 Code Explanation
 ====================

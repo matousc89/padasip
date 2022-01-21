@@ -165,6 +165,7 @@ Code explanation
 ==================
 """
 from padasip.filters.ap import FilterAP
+from padasip.filters.gmcc import FilterGMCC
 from padasip.filters.gngd import FilterGNGD
 from padasip.filters.llncosh import FilterLlncosh
 from padasip.filters.lmf import FilterLMF
@@ -175,6 +176,8 @@ from padasip.filters.nsslms import FilterNSSLMS
 from padasip.filters.ocnlms import FilterOCNLMS
 from padasip.filters.rls import FilterRLS
 from padasip.filters.sslms import FilterSSLMS
+
+
 
 def filter_data(d, x, model="lms", **kwargs):
     """
@@ -206,10 +209,11 @@ def filter_data(d, x, model="lms", **kwargs):
     """
     # overwrite n with correct size
     kwargs["n"] = x.shape[1]
-    # init filter, calculate and return the values
-    f = get_filter(model)(**kwargs)
-    y, e, w = f.run(d, x)
-    return y, e, w
+    # create filter according model
+    if model.upper() not in FILTERS.keys():
+        raise ValueError('Unknown model of filter {}'.format(model))
+    else:
+        return FILTERS[model.upper()](**kwargs).run(d, x)
 
 def AdaptiveFilter(model="lms", **kwargs):
     """
@@ -244,7 +248,11 @@ def AdaptiveFilter(model="lms", **kwargs):
     # check if the filter size was specified
     if not "n" in kwargs:
         raise ValueError('Filter size is not defined (n=?).')
-    return get_filter(model)(**kwargs)
+    # create filter according model
+    if model.upper() not in FILTERS.keys():
+        raise ValueError('Unknown model of filter {}'.format(model))
+    else:
+        return FILTERS[model.upper()](**kwargs)
 
 def get_filter(name):
     try:
@@ -266,3 +274,5 @@ FILTER_CLASSES = [
 ]
 
 FILTERS = {f.kind.upper(): f for f in FILTER_CLASSES}
+
+

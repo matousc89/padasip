@@ -1,15 +1,14 @@
 """
-.. versionchanged:: 1.1.0
+.. versionadded:: 1.2.0
 
-The normalized sign-sign least-mean-squares (NSSLMS) adaptive filter
-is an extension of the popular SSLMS adaptive filter (:ref:`filter-sslms`).
-
-The NSSLMS filter can be created as follows
+The generalized maximum correntropy criterion (GMCC)
+is implemented according https://doi.org/10.1109/TSP.2016.2539127.
+The GMCC adaptive filter can be created as follows
 
     >>> import padasip as pa
-    >>> pa.filters.FilterNSSLMS(n)
+    >>> pa.filters.FilterGMCC(n)
     
-where `n` is the size (number of taps) of the filter.
+where :code:`n` is the size (number of taps) of the filter.
 
 Content of this page:
 
@@ -19,66 +18,17 @@ Content of this page:
 
 .. seealso:: :ref:`filters`
 
-Algorithm Explanation
-======================================
-
-The NSSLMS is extension of LMS filter. See :ref:`filter-lms`
-for explanation of the algorithm behind.
-
-The extension is based on normalization of learning rate.
-The learning rage :math:`\mu` is replaced by learning rate :math:`\eta(k)`
-normalized with every new sample according to input power as follows
-
-:math:`\eta (k) = \\frac{\mu}{\epsilon + || \\textbf{x}(k) ||^2}`,
-
-where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and 
-:math:`\epsilon` is a small positive constant (regularization term).
-This constant is introduced to preserve the stability in cases where
-the input is close to zero.
-
-Minimal Working Examples
-======================================
-
-If you have measured data you may filter it as follows
-
-.. code-block:: python
-
-    import numpy as np
-    import matplotlib.pylab as plt
-    import padasip as pa 
-
-    # creation of data
-    N = 500
-    x = np.random.normal(0, 1, (N, 4)) # input matrix
-    v = np.random.normal(0, 0.1, N) # noise
-    d = 2*x[:,0] + 0.1*x[:,1] - 0.3*x[:,2] + 0.5*x[:,3] + v # target
-
-    # identification
-    f = pa.filters.FilterNSSLMS(n=4, mu=0.1, w="random")
-    y, e, w = f.run(d, x)
-
-    # show results
-    plt.figure(figsize=(15,9))
-    plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
-    plt.plot(d,"b", label="d - target")
-    plt.plot(y,"g", label="y - output");plt.legend()
-    plt.subplot(212);plt.title("Filter error");plt.xlabel("samples - k")
-    plt.plot(10*np.log10(e**2),"r", label="e - error [dB]");plt.legend()
-    plt.tight_layout()
-    plt.show()
-
-
-
 Code Explanation
-======================================
+====================
 """
 import numpy as np
 
 from padasip.filters.base_filter import AdaptiveFilter
 
-class FilterNSSLMS(AdaptiveFilter):
+
+class FilterGMCC(AdaptiveFilter):
     """
-    Adaptive NSSLMS filter.
+    This class represents an adaptive GMCC filter.
 
     **Args:**
 
@@ -87,14 +37,14 @@ class FilterNSSLMS(AdaptiveFilter):
 
     **Kwargs:**
 
-    * `mu` : learning rate (float). Also known as step size.
-      If it is too slow,
+    * `mu` : learning rate (float). Also known as step size. If it is too slow,
       the filter may have bad performance. If it is too high,
       the filter will be unstable. The default value can be unstable
       for ill-conditioned input data.
 
-    * `eps` : regularization term (float). It is introduced to preserve
-      stability for close-to-zero input vectors
+    * `lambd` : kernel parameter (float) commonly known as lambda.
+
+    * `alpha` : shape parameter (float). `alpha = 2` make the filter LMS
 
     * `w` : initial weights of filter. Possible values are:
         
@@ -104,15 +54,17 @@ class FilterNSSLMS(AdaptiveFilter):
         
         * "zeros" : create zero value weights
     """
-    kind = "NSSLMS"
+    kind = "GMCC"
 
-    def __init__(self, n, mu=0.1, eps=1., w="random"):
+    def __init__(self, n, mu=0.01, lambd=0.03, alpha=2, w="random"):
         if type(n) == int:
             self.n = n
         else:
             raise ValueError('The size of filter must be an integer') 
         self.mu = self.check_float_param(mu, 0, 1000, "mu")
-        self.eps = self.check_float_param(eps, 0, 1000, "eps")
+        self.lambd = lambd
+        self.alpha = alpha
+        self.nu = self.mu * self.lambd * self.alpha
         self.init_weights(w, self.n)
         self.w_history = False
 
@@ -128,8 +80,8 @@ class FilterNSSLMS(AdaptiveFilter):
         """
         y = np.dot(self.w, x)
         e = d - y
-        nu = self.mu / (self.eps + np.dot(x, x))
-        self.w += self.mu * np.sign(e) * np.sign(x)      
+        self.w += self.nu * np.exp(-self.lambd * (np.abs(e) ** self.alpha)) * (
+                    np.abs(e) ** (self.alpha - 1)) * np.sign(e) * x
 
     def run(self, d, x):
         """
@@ -173,8 +125,8 @@ class FilterNSSLMS(AdaptiveFilter):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            nu = self.mu / (self.eps + np.dot(x[k], x[k]))
-            dw = nu * np.sign(e[k]) * np.sign(x[k])
+            dw = self.nu * np.exp(-self.lambd * (np.abs(e[k]) ** self.alpha)) * (
+                    np.abs(e[k]) ** (self.alpha - 1)) * np.sign(e[k]) * x[k]
             self.w += dw
         return y, e, self.w_history
-        
+
