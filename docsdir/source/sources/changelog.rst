@@ -3,6 +3,12 @@
 Changelog
 ===========
 
+**Version 1.2.0** *Released: not yet*
+ Added new adaptive filters :ref:`filter-gmcc`, :ref:`filter-llncosh`.
+ Added new detection tool :ref:`detection-ese`.
+ ANN module is removed from docs, and will be removed totally in future -
+ there are much better Python libraries for ANN utilization.
+
 **Version 1.1.1** *Released: 2017-08-06*
  Bugfix of adaptive filter helper function according to comments of
  `Patrick Bartels <https://github.com/pckbls>`_.
@@ -37,7 +43,7 @@ Changelog
  Added :ref:`filter-ap`. And also the first unit tests were implemented.
 
 **Version 0.3** *Released: 2016-09-22*
- Added :ref:`ann-mlp`
+ Added MLP into ANN module.
 
 **Version 0.2** *Released: 2016-09-02*
  Added :ref:`filter-gngd`
