@@ -1,6 +1,6 @@
 """
 .. versionadded:: 0.1
-.. versionchanged:: 0.7
+.. versionchanged:: 1.2.0
 
 
 An adaptive filter is a system that changes its adaptive parameteres
@@ -166,6 +166,7 @@ Code explanation
 """
 from padasip.filters.ap import FilterAP
 from padasip.filters.gngd import FilterGNGD
+from padasip.filters.llncosh import FilterLlncosh
 from padasip.filters.lmf import FilterLMF
 from padasip.filters.lms import FilterLMS
 from padasip.filters.nlmf import FilterNLMF
@@ -174,7 +175,6 @@ from padasip.filters.nsslms import FilterNSSLMS
 from padasip.filters.ocnlms import FilterOCNLMS
 from padasip.filters.rls import FilterRLS
 from padasip.filters.sslms import FilterSSLMS
-
 
 def filter_data(d, x, model="lms", **kwargs):
     """
@@ -252,11 +252,10 @@ def get_filter(name):
     except:
         raise ValueError('Unknown model of filter {}, options are {}'.format(name, list(FILTERS.keys())))
 
-
-
 FILTER_CLASSES = [
     FilterAP,
     FilterGNGD,
+    FilterLlncosh,
     FilterLMF,
     FilterLMS,
     FilterNLMF,
