@@ -178,7 +178,6 @@ class FilterLMF(AdaptiveFilter):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            dw = self.mu * x[k] * e[k]**3
-            self.w += dw
+            self.w += self.mu * x[k] * e[k]**3
         return y, e, self.w_history
 

@@ -244,7 +244,6 @@ class FilterLMS(AdaptiveFilter):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            dw = self.mu * e[k] * x[k]
-            self.w += dw
+            self.w += self.mu * e[k] * x[k]
         return y, e, self.w_history
 

@@ -64,7 +64,6 @@ class FilterGMCC(AdaptiveFilter):
         self.mu = self.check_float_param(mu, 0, 1000, "mu")
         self.lambd = lambd
         self.alpha = alpha
-        self.nu = self.mu * self.lambd * self.alpha
         self.init_weights(w, self.n)
         self.w_history = False
 
@@ -125,8 +124,8 @@ class FilterGMCC(AdaptiveFilter):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            dw = self.nu * np.exp(-self.lambd * (np.abs(e[k]) ** self.alpha)) * (
-                    np.abs(e[k]) ** (self.alpha - 1)) * np.sign(e[k]) * x[k]
-            self.w += dw
+            self.w += self.mu * self.lambd * self.alpha *\
+                np.exp(-self.lambd * (np.abs(e[k]) ** self.alpha)) * \
+                (np.abs(e[k]) ** (self.alpha - 1)) * np.sign(e[k]) * x[k]
         return y, e, self.w_history
 

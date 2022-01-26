@@ -173,8 +173,6 @@ class FilterNLMF(AdaptiveFilter):
             self.w_history[k,:] = self.w
             y[k] = np.dot(self.w, x[k])
             e[k] = d[k] - y[k]
-            nu = self.mu / (self.eps + np.dot(x[k], x[k]))
-            dw = nu * x[k] * e[k]**3
-            self.w += dw
+            self.w += self.mu / (self.eps + np.dot(x[k], x[k])) * x[k] * e[k]**3
         return y, e, self.w_history
         
