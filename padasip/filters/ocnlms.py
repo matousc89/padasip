@@ -73,13 +73,13 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterOCNLMS(AdaptiveFilter):
-
+    """
+    Adaptive OCNLMS filter.
+    """
     kind = "OCNLMS"
 
     def __init__(self, n, mu=0.1, eps=1., mem=100, **kwargs):
         """
-        Adaptive OCNLMS filter.
-
         Kwargs:
 
         * `eps` : regularization term (float). It is introduced to preserve
@@ -89,12 +89,15 @@ class FilterOCNLMS(AdaptiveFilter):
             and input vectors will be used for centering of current input vector
             and target.
         """
-        super().__init__(mu, n, **kwargs)
+        super().__init__(n, mu, **kwargs)
         self.eps = eps
         self.mem = mem
         self.clear_memory()
 
     def learning_rule(self, e, x):
+        """
+        Override the parent class.
+        """
         self.update_memory_x(x)
         m_d, m_x = self.read_memory()
         y = np.dot(self.w, x-m_x) + m_d
@@ -120,6 +123,9 @@ class FilterOCNLMS(AdaptiveFilter):
         return np.dot(self.w, x - m_x) + m_d
 
     def clear_memory(self):
+        """
+        Clear of data from memory and reset memory index.
+        """
         self.mem_empty = True
         self.mem_x = np.zeros((self.mem, self.n))
         self.mem_d = np.zeros(self.mem)

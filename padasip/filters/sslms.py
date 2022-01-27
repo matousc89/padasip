@@ -6,7 +6,7 @@ The sign-sign least-mean-squares (SSLMS) adaptive filter can be created as follo
 
     >>> import padasip as pa
     >>> pa.filters.FilterSSLMS(n)
-    
+
 where :code:`n` is the size (number of taps) of the filter.
 
 Content of this page:
@@ -59,7 +59,7 @@ If you have measured data you may filter it as follows
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # creation of data
     N = 500
@@ -89,15 +89,15 @@ import numpy as np
 
 from padasip.filters.base_filter import AdaptiveFilter
 
-class FilterSSLMS(AdaptiveFilter):
 
+class FilterSSLMS(AdaptiveFilter):
+    """
+    This class represents an adaptive SSLMS filter.
+    """
     kind = "SSLMS"
 
-    def __init__(self, n, mu=0.01, **kwargs):
-        """
-        This class represents an adaptive SSLMS filter.
-        """
-        super().__init__(mu, n, **kwargs)
-
     def learning_rule(self, e, x):
+        """
+        Override the parent class.
+        """
         return self.mu * np.sign(x) * np.sign(e)

@@ -6,7 +6,7 @@ The Recursive Least Squares filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterRLS(n)
-    
+
 where the n is amount of filter inputs (size of input vector).
 
 Content of this page:
@@ -81,7 +81,7 @@ If you have measured data you may filter it as follows
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # creation of data
     N = 500
@@ -110,19 +110,19 @@ An example how to filter data measured in real-time
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # these two function supplement your online measurment
     def measure_x():
         # it produces input vector of size 3
         x = np.random.random(3)
         return x
-        
+
     def measure_d(x):
         # meausure system output
         d = 2*x[0] + 1*x[1] - 1.5*x[2]
         return d
-        
+
     N = 100
     log_d = np.zeros(N)
     log_y = np.zeros(N)
@@ -133,7 +133,7 @@ An example how to filter data measured in real-time
         # predict new value
         y = filt.predict(x)
         # do the important stuff with prediction output
-        pass    
+        pass
         # measure output
         d = measure_d(x)
         # update filter
@@ -141,7 +141,7 @@ An example how to filter data measured in real-time
         # log values
         log_d[k] = d
         log_y[k] = y
-        
+
     ### show results
     plt.figure(figsize=(15,9))
     plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
@@ -160,28 +160,26 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterRLS(AdaptiveFilter):
-
+    """
+    Adaptive RLS filter.
+    """
     kind = "RLS"
 
     def __init__(self, n, mu=0.1, eps=0.001, **kwargs):
         """
-        Adaptive RLS filter.
-
         **Kwargs:**
-
-        * `mu` : forgetting factor (float). It is introduced to give exponentially
-          less weight to older error samples. It is usually chosen
-          between 0.98 and 1.
 
         * `eps` : initialisation value (float). It is usually chosen
           between 0.1 and 1.
-
         """
-        super().__init__(mu, n, **kwargs)
+        super().__init__(n, mu, **kwargs)
         self.eps = eps
         self.R = 1 / self.eps * np.identity(n)
 
     def learning_rule(self, e, x):
+        """
+        Override the parent class.
+        """
         R1 = self.R @ (x[:, None] * x[None, :]) @ self.R
         R2 = self.mu + np.dot(np.dot(x, self.R), x.T)
         self.R = 1 / self.mu * (self.R - R1/R2)

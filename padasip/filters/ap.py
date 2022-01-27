@@ -15,7 +15,7 @@ The AP filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterAP(n)
-    
+
 where `n` is the size of the filter.
 
 Content of this page:
@@ -34,7 +34,7 @@ The input for AP filter is created as follows
 :math:`\\textbf{X}_{AP}(k) = (\\textbf{x}(k), ..., \\textbf{x}(k-L))`,
 
 where :math:`\\textbf{X}_{AP}` is filter input, :math:`L` is projection order,
-:math:`k` is discrete time index and \textbf{x}_{k} is input vector.
+:math:`k` is discrete time index and :math:`\\textbf{x}_{k}` is input vector.
 The output of filter si calculated as follows:
 
 :math:`\\textbf{y}_{AP}(k) = \\textbf{X}^{T}_{AP}(k) \\textbf{w}(k)`,
@@ -52,7 +52,7 @@ The error of the filter is estimated as
 
 And the adaptation of adaptive parameters is calculated according to equation
 
-:math:`\\textbf{w}_{AP}(k+1) = 
+:math:`\\textbf{w}_{AP}(k+1) =
 \\textbf{w}_{AP}(k+1) + \mu \\textbf{X}_{AP}(k) (\\textbf{X}_{AP}^{T}(k)
 \\textbf{X}_{AP}(k) + \epsilon \\textbf{I})^{-1} \\textbf{e}_{AP}(k)`.
 
@@ -61,18 +61,18 @@ and the error :math:`e(k)`. These two values are the first elements in
 vectors: :math:`\\textbf{y}_{AP}(k)` for output and
 :math:`\\textbf{e}_{AP}(k)` for error.
 
-   
-    
+
+
 Minimal Working Example
 ======================================
 
 If you have measured data you may filter it as follows
 
 .. code-block:: python
-    
+
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # creation of data
     N = 500
@@ -100,19 +100,19 @@ An example how to filter data measured in real-time
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # these two function supplement your online measurment
     def measure_x():
         # it produces input vector of size 3
         x = np.random.random(3)
         return x
-        
+
     def measure_d(x):
         # meausure system output
         d = 2*x[0] + 1*x[1] - 1.5*x[2]
         return d
-        
+
     N = 100
     log_d = np.zeros(N)
     log_y = np.zeros(N)
@@ -123,7 +123,7 @@ An example how to filter data measured in real-time
         # predict new value
         y = filt.predict(x)
         # do the important stuff with prediction output
-        pass    
+        pass
         # measure output
         d = measure_d(x)
         # update filter
@@ -131,7 +131,7 @@ An example how to filter data measured in real-time
         # log values
         log_d[k] = d
         log_y[k] = y
-        
+
     ### show results
     plt.figure(figsize=(15,9))
     plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
@@ -149,16 +149,15 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilterAP
 
 class FilterAP(AdaptiveFilterAP):
-
+    """
+    This class represents an adaptive AP filter.
+    """
     kind = "AP"
 
-    def __init__(self, n, mu=0.01, **kwargs):
-        """
-        This class represents an adaptive AP filter.
-        """
-        super().__init__(mu, n, **kwargs,)
-
     def learning_rule(self, e_mem, x_mem):
+        """
+        Override the parent class.
+        """
         dw_part1 = np.dot(x_mem.T, x_mem) + self.ide_eps
         dw_part2 = np.linalg.solve(dw_part1, self.ide)
         return self.mu * np.dot(x_mem, np.dot(dw_part2, e_mem))

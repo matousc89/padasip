@@ -9,7 +9,7 @@ The NLMS filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterNLMS(n)
-    
+
 where `n` is the size (number of taps) of the filter.
 
 Content of this page:
@@ -32,7 +32,7 @@ normalized with every new sample according to input power as follows
 
 :math:`\eta (k) = \\frac{\mu}{\epsilon + || \\textbf{x}(k) ||^2}`,
 
-where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and 
+where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and
 :math:`\epsilon` is a small positive constant (regularization term).
 This constant is introduced to preserve the stability in cases where
 the input is close to zero.
@@ -63,7 +63,7 @@ If you have measured data you may filter it as follows
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # creation of data
     N = 500
@@ -91,19 +91,19 @@ An example how to filter data measured in real-time
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # these two function supplement your online measurment
     def measure_x():
         # it produces input vector of size 3
         x = np.random.random(3)
         return x
-        
+
     def measure_d(x):
         # meausure system output
         d = 2*x[0] + 1*x[1] - 1.5*x[2]
         return d
-        
+
     N = 100
     log_d = np.zeros(N)
     log_y = np.zeros(N)
@@ -114,7 +114,7 @@ An example how to filter data measured in real-time
         # predict new value
         y = filt.predict(x)
         # do the important stuff with prediction output
-        pass    
+        pass
         # measure output
         d = measure_d(x)
         # update filter
@@ -122,7 +122,7 @@ An example how to filter data measured in real-time
         # log values
         log_d[k] = d
         log_y[k] = y
-        
+
     ### show results
     plt.figure(figsize=(15,9))
     plt.subplot(211);plt.title("Adaptation");plt.xlabel("samples - k")
@@ -142,22 +142,23 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterNLMS(AdaptiveFilter):
-
+    """
+    Adaptive NLMS filter.
+    """
     kind = "NLMS"
 
     def __init__(self, n, mu=0.1, eps=0.001, **kwargs):
         """
-        Adaptive NLMS filter.
-
         **Kwargs:**
 
         * `eps` : regularization term (float). It is introduced to preserve
           stability for close-to-zero input vectors
-
         """
-        super().__init__(mu, n, **kwargs)
+        super().__init__(n, mu, **kwargs)
         self.eps = eps
 
     def learning_rule(self, e, x):
+        """
+        Override the parent class.
+        """
         return self.mu / (self.eps + np.dot(x, x)) * x * e
-

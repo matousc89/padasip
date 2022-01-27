@@ -9,7 +9,7 @@ The NSSLMS filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterNSSLMS(n)
-    
+
 where `n` is the size (number of taps) of the filter.
 
 Content of this page:
@@ -32,7 +32,7 @@ normalized with every new sample according to input power as follows
 
 :math:`\eta (k) = \\frac{\mu}{\epsilon + || \\textbf{x}(k) ||^2}`,
 
-where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and 
+where :math:`|| \\textbf{x}(k) ||^2` is norm of input vector and
 :math:`\epsilon` is a small positive constant (regularization term).
 This constant is introduced to preserve the stability in cases where
 the input is close to zero.
@@ -46,7 +46,7 @@ If you have measured data you may filter it as follows
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # creation of data
     N = 500
@@ -78,21 +78,23 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilter
 
 class FilterNSSLMS(AdaptiveFilter):
+    """
+    Adaptive NSSLMS filter.
+    """
+    kind = "NSSLMS"
 
-        kind = "NSSLMS"
+    def __init__(self, n, mu=0.1, eps=0.001, **kwargs):
+        """
+        **Kwargs:**
 
-        def __init__(self, *args, mu=0.1, eps=0.001, **kwargs):
-            """
-            Adaptive NSSLMS filter.
+        * `eps` : regularization term (float). It is introduced to preserve
+          stability for close-to-zero input vectors
+        """
+        super().__init__(n, mu, **kwargs)
+        self.eps = eps
 
-            **Kwargs:**
-
-            * `eps` : regularization term (float). It is introduced to preserve
-              stability for close-to-zero input vectors
-
-            """
-            super().__init__(mu, *args, **kwargs)
-            self.eps = eps
-
-        def learning_rule(self, e, x):
-            return self.mu / (self.eps + np.dot(x, x)) * np.sign(x) * np.sign(e)
+    def learning_rule(self, e, x):
+        """
+        Override the parent class.
+        """
+        return self.mu / (self.eps + np.dot(x, x)) * np.sign(x) * np.sign(e)

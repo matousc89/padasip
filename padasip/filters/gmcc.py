@@ -7,7 +7,7 @@ The GMCC adaptive filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterGMCC(n)
-    
+
 where :code:`n` is the size (number of taps) of the filter.
 
 Content of this page:
@@ -27,25 +27,27 @@ from padasip.filters.base_filter import AdaptiveFilter
 
 
 class FilterGMCC(AdaptiveFilter):
-
+    """
+    This class represents an adaptive GMCC filter.
+    """
     kind = "GMCC"
 
     def __init__(self, n, mu=0.01, lambd=0.03, alpha=2, **kwargs):
         """
-        This class represents an adaptive GMCC filter.
-
         **Kwargs:**
 
         * `lambd` : kernel parameter (float) commonly known as lambda.
 
         * `alpha` : shape parameter (float). `alpha = 2` make the filter LMS
-
         """
-        super().__init__(mu, n, **kwargs)
+        super().__init__(n, mu, **kwargs)
         self.lambd = lambd
         self.alpha = alpha
 
     def learning_rule(self, e, x):
-         return self.mu * self.lambd * self.alpha * \
-                  np.exp(-self.lambd * (np.abs(e) ** self.alpha)) * \
-                  (np.abs(e) ** (self.alpha - 1)) * np.sign(e) * x
+        """
+        Override the parent class.
+        """
+        return self.mu * self.lambd * self.alpha * \
+            np.exp(-self.lambd * (np.abs(e) ** self.alpha)) * \
+            (np.abs(e) ** (self.alpha - 1)) * np.sign(e) * x

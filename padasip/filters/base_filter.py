@@ -5,14 +5,13 @@
 """
 import numpy as np
 
-from padasip.misc import get_mean_error
 
 class AdaptiveFilter():
     """
     Base class for adaptive filter classes. It puts together some functions
     used by all adaptive filters.
     """
-    def __init__(self, mu, n, w="random"):
+    def __init__(self, n, mu, w="random"):
         """
         This class represents an generic adaptive filter.
 
@@ -41,6 +40,22 @@ class AdaptiveFilter():
         self.w_history = False
         self.mu = mu
 
+    def learning_rule(self, e, x):
+        """
+        This functions computes the increment of adaptive weights.
+
+        **Args:**
+
+        * `e` : error of the adaptive filter (1d array)
+
+        * `x` : input matrix (2d array)
+
+        **Returns**
+
+        * increments of adaptive weights - result of adaptation
+        """
+        return np.zeros(len(x))
+
     def init_weights(self, w, n=-1):
         """
         This function initialises the adaptive weights of the filter.
@@ -48,11 +63,11 @@ class AdaptiveFilter():
         **Args:**
 
         * `w` : initial weights of filter. Possible values are:
-        
+
             * array with initial weights (1 dimensional array) of filter size
-        
+
             * "random" : create random weights
-            
+
             * "zeros" : create zero value weights
 
 
@@ -67,7 +82,7 @@ class AdaptiveFilter():
         """
         if n == -1:
             n = self.n
-        if type(w) == str:
+        if isinstance(w, str):
             if w == "random":
                 w = np.random.normal(0, 0.5, n)
             elif w == "zeros":
@@ -101,36 +116,36 @@ class AdaptiveFilter():
     def pretrained_run(self, d, x, ntrain=0.5, epochs=1):
         """
         This function sacrifices part of the data for few epochs of learning.
-        
+
         **Args:**
 
         * `d` : desired value (1 dimensional array)
 
         * `x` : input matrix (2-dimensional array). Rows are samples,
           columns are input arrays.
-       
+
         **Kwargs:**
 
         * `ntrain` : train to test ratio (float), default value is 0.5
           (that means 50% of data is used for training)
-          
+
         * `epochs` : number of training epochs (int), default value is 1.
           This number describes how many times the training will be repeated
           on dedicated part of data.
 
         **Returns:**
-        
+
         * `y` : output value (1 dimensional array).
           The size corresponds with the desired value.
 
         * `e` : filter error for every sample (1 dimensional array).
           The size corresponds with the desired value.
 
-        * `w` : vector of final weights (1 dimensional array).    
+        * `w` : vector of final weights (1 dimensional array).
         """
         Ntrain = int(len(d)*ntrain)
         # train
-        for epoch in range(epochs):
+        for _ in range(epochs):
             self.run(d[:Ntrain], x[:Ntrain])
         # test
         y, e, w = self.run(d[Ntrain:], x[Ntrain:])
@@ -148,7 +163,7 @@ class AdaptiveFilter():
         """
         y = self.predict(x)
         e = d - y
-        self.w += learning_rule(self, e, x)
+        self.w += self.learning_rule(self, e, x)
 
     def run(self, d, x):
         """
@@ -186,10 +201,10 @@ class AdaptiveFilter():
         # create empty arrays
         y = np.zeros(N)
         e = np.zeros(N)
-        self.w_history = np.zeros((N,self.n))
+        self.w_history = np.zeros((N, self.n))
         # adaptation loop
         for k in range(N):
-            self.w_history[k,:] = self.w
+            self.w_history[k, :] = self.w
             y[k] = self.predict(x[k])
             e[k] = d[k] - y[k]
             self.w += self.learning_rule(e[k], x[k])
@@ -211,13 +226,28 @@ class AdaptiveFilterAP(AdaptiveFilter):
     def __init__(self, *args, order=5, eps=0.001, **kwargs):
         super().__init__(*args, **kwargs)
         self.order = order
-        self.eps = eps
         self.x_mem = np.zeros((self.n, self.order))
         self.d_mem = np.zeros(order)
-        self.ide_eps = self.eps * np.identity(self.order)
+        self.ide_eps = eps * np.identity(self.order)
         self.ide = np.identity(self.order)
         self.y_mem = False
         self.e_mem = False
+
+    def learning_rule(self, e_mem, x_mem):
+        """
+        This functions computes the increment of adaptive weights.
+
+        **Args:**
+
+        * `e_mem` : error of the adaptive filter (1d array)
+
+        * `x_mem` : input matrix (2d array)
+
+        **Returns**
+
+        * increments of adaptive weights - result of adaptation
+        """
+        return np.zeros(len(x_mem))
 
     def adapt(self, d, x):
         """

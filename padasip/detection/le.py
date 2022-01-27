@@ -21,7 +21,8 @@ multiscale approach.
 
 With direct approach the LE is evaluated for every sample as follows
 
-:math:`\\textrm{LE}_d(k) = \\frac{ (\\Delta \\textbf{w}(k) - \\overline{| \\Delta \\textbf{w}_M(k) |}) }
+:math:`\\textrm{LE}_d(k) = \\frac{ (\\Delta \\textbf{w}(k) -
+\\overline{| \\Delta \\textbf{w}_M(k) |}) }
 { (\\sigma({| \\Delta \\textbf{w}_M(k) |})+\\epsilon) }`
 
 where
@@ -31,13 +32,12 @@ where
 
 * :math:`\overline{| \\Delta \\textbf{w}_M(k) |}` are averages of absolute
   values of window used for LE evaluation.
-  
+
 * :math:`\\sigma (| \\Delta \\textbf{w}_M(k) |)` are standard deviatons of
   absolute values of window used for LE evaluation.
 
 * :math:`\\epsilon` is regularization term to preserve stability for small
   values of standard deviation.
-
 
 .. rubric:: Multiscale approach
 
@@ -60,8 +60,6 @@ The function :math:`f(\Delta w_{i}(k), \\alpha)` is defined as follows
 \\rm{then} \, 1, \\rm{else  }\,0 \}.`
 
 
-
-
 Usage Instructions and Optimal Performance
 ==============================================
 
@@ -70,7 +68,7 @@ The LE algorithm can be used as follows
 .. code-block:: python
 
     le = pa.detection.learning_entropy(w, m=30, order=1)
-    
+
 in case of direct approach. For multiscale approach an example follows
 
 .. code-block:: python
@@ -90,13 +88,16 @@ one parameter in whole adaptation history.
 
 .. rubric:: Selection of sensitivities
 
-The optimal number of detection sensitivities and their values depends on task and data. The sensitivities should be chosen in range where the function :math:`LE(k)` returns a value lower than 1 for at least one sample in data, and for at maximally one sample returns value of 0.
+The optimal number of detection sensitivities and their values
+depends on task and data. The sensitivities should be chosen in range
+where the function :math:`LE(k)` returns a value lower than 1 for at
+least one sample in data, and for at maximally one sample returns value of 0.
 
 Minimal Working Example
 ============================
 
 In this example is demonstrated how can the multiscale approach LE highligh
-the position of a perturbation inserted in a data. As the adaptive model is used 
+the position of a perturbation inserted in a data. As the adaptive model is used
 :ref:`filter-nlms` adaptive filter. The perturbation is manually inserted
 in sample with index :math:`k=1000` (the length of data is 2000).
 
@@ -104,7 +105,7 @@ in sample with index :math:`k=1000` (the length of data is 2000).
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # data creation
     n = 5
@@ -146,11 +147,11 @@ def learning_entropy(w, m=10, order=1, alpha=False):
     **Kwargs:**
 
     * `m` : window size (1d array) - how many last samples are used for
-      evaluation of every sample.   
-      
+      evaluation of every sample.
+
     * `order` : order of the LE (int) - order of weights differention
 
-    * `alpha` : list of senstitivites (1d array). If not provided, the LE 
+    * `alpha` : list of senstitivites (1d array). If not provided, the LE
       direct approach is used.
 
     **Returns:**
@@ -160,8 +161,7 @@ def learning_entropy(w, m=10, order=1, alpha=False):
     """
     w = np.array(w)
     # get length of data and number of parameters
-    N = w.shape[0]
-    n = w.shape[1]
+    N, n = w.shape
     # get abs dw from w
     dw = np.copy(w)
     dw[order:] = np.abs(np.diff(dw, n=order, axis=0))
@@ -175,7 +175,7 @@ def learning_entropy(w, m=10, order=1, alpha=False):
             swd[k] = np.std(dw[k-m:k], axis=0)
         # estimate the points of entropy
         eps = 1e-10 # regularization term
-        le  = (dw - awd) / (swd+eps)
+        le = (dw - awd) / (swd+eps)
     else:
         # estimate the ALPHA with direct approach
         for k in range(m, N):
@@ -190,8 +190,3 @@ def learning_entropy(w, m=10, order=1, alpha=False):
     le[:m] = 0
     # return output
     return le
-
-
-
-
-

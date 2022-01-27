@@ -1,5 +1,6 @@
 """
 .. versionadded:: 1.0.0
+.. versionchanged:: 1.2.0
 
 The Error and Learning Based Novelty Detection (ELBND) is based on the
 evaluation of an adaptive model error and the change of its parameters.
@@ -39,14 +40,14 @@ The ELBND algorithm can be used as follows
 
 where `w` is matrix of the adaptive parameters (changing in time, every row
 should represent one time index), `e` is error of adaptive model and
-`function` is input function, in this case maximum. 
+`function` is input function, in this case maximum.
 
 
 Minimal Working Example
 ============================
 
 In this example is demonstrated how can the LE highligh the position of
-a perturbation inserted in a data. As the adaptive model is used 
+a perturbation inserted in a data. As the adaptive model is used
 :ref:`filter-nlms` adaptive filter. The perturbation is manually inserted
 in sample with index :math:`k=1000` (the length of data is 2000).
 
@@ -54,7 +55,7 @@ in sample with index :math:`k=1000` (the length of data is 2000).
 
     import numpy as np
     import matplotlib.pylab as plt
-    import padasip as pa 
+    import padasip as pa
 
     # data creation
     n = 5
@@ -99,9 +100,9 @@ def ELBND(w, e, function="max"):
 
     * `functions` : output function (str). The way how to produce single
       value for every sample (from all parameters)
-      
+
         * `max` - maximal value
-      
+
         * `sum` - sum of values
 
     **Returns:**
@@ -110,11 +111,8 @@ def ELBND(w, e, function="max"):
 
     """
     # check if the function is known
-    if not function in ["max", "sum"]:
+    if function not in ["max", "sum"]:
         raise ValueError('Unknown output function')
-    # get length of data and number of parameters
-    N = w.shape[0]
-    n = w.shape[1]
     # get abs dw from w
     dw = np.zeros(w.shape)
     dw[:-1] = np.abs(np.diff(w, axis=0))
@@ -124,10 +122,6 @@ def ELBND(w, e, function="max"):
     if function == "max":
         elbnd = np.max(elbnd, axis=1)
     elif function == "sum":
-        elbnd = np.sum(elbnd, axis=1) 
+        elbnd = np.sum(elbnd, axis=1)
     # return output
     return elbnd
-
-
-
-

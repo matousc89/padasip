@@ -25,10 +25,10 @@ Minimal Working Example
     n = 4
 
     # creation of neural network
-    nn = pa.ann.NetworkMLP([5,6], n, outputs=1, activation="tanh", mu="auto")    
+    nn = pa.ann.NetworkMLP([5,6], n, outputs=1, activation="tanh", mu="auto")
 
     # training
-    e, mse = nn.train(x, d, epochs=200, shuffle=True)    
+    e, mse = nn.train(x, d, epochs=200, shuffle=True)
 
     # get results
     y = nn.run(x)
@@ -36,7 +36,7 @@ Minimal Working Example
 And the result (pairs: target, output) can look like
 
 >>> for i in zip(d, y): print i
-... 
+...
 (0, 0.0032477183193071906)
 (1, 1.0058082383308447)
 (1, 1.0047503447788306)
@@ -53,7 +53,7 @@ And the result (pairs: target, output) can look like
 (1, 1.0071488717506856)
 (1, 1.0067500768423701)
 (0, -0.0045962250501771244)
->>> 
+>>>
 
 
 
@@ -102,7 +102,7 @@ class Layer():
         or string `auto` for automatic selection of learning rate
 
     """
-    
+
     def __init__(self, n_layer, n_input, activation_f, mu):
         sigma = n_input**(-0.5)
         if mu == "auto":
@@ -121,7 +121,7 @@ class Layer():
 
         **Args:**
 
-        * `x` : array to process (1-dimensional array) 
+        * `x` : array to process (1-dimensional array)
 
         **Kwargs:**
 
@@ -132,17 +132,17 @@ class Layer():
         **Returns:**
 
         * values processed with activation function (1-dimensional array)
-        
+
         """
         if f == "sigmoid":
             if der:
                 return x * (1 - x)
             return 1. / (1 + np.exp(-x))
-        elif f == "tanh":
+        if f == "tanh":
             if der:
-                return 1 - x**2 
-            return (2. / (1 + np.exp(-2*x))) - 1       
-                
+                return 1 - x**2
+            return (2. / (1 + np.exp(-2*x))) - 1
+
     def predict(self, x):
         """
         This function make forward pass through this layer (no update).
@@ -152,15 +152,15 @@ class Layer():
         * `x` : input vector (1-dimensional array)
 
         **Returns:**
-        
+
         * `y` : output of MLP (float or 1-diemnsional array).
             Size depends on number of nodes in this layer.
-            
+
         """
         self.x[1:] = x
         self.y = self.activation(np.sum(self.w*self.x, axis=1), f=self.f)
         return self.y
-    
+
     def update(self, w, e):
         """
         This function make update according provided target
@@ -175,7 +175,7 @@ class Layer():
 
         * `w` : weights of the layers (2-dimensional layer).
             Every row represents one node.
-        
+
         * `e` : error used for update (float or 1-diemnsional array).
             Size correspond to size of input `d`.
         """
@@ -185,11 +185,11 @@ class Layer():
         else:
             e = self.activation(self.y, f=self.f, der=True) * (1 - self.y) * np.dot(e, w)
             dw = self.mu * np.outer(e, self.x)
-        w = self.w[:,1:]
+        w = self.w[:, 1:]
         self.w += dw
         return w, e
-        
-        
+
+
 class NetworkMLP():
     """
     This class represents a Multi-layer Perceptron neural network.
@@ -203,7 +203,7 @@ class NetworkMLP():
         second layer will have 6 nodes and the last hidden layer
         will have 2 nodes.
 
-    * `n_input` : number of network inputs (int). 
+    * `n_input` : number of network inputs (int).
 
     **Kwargs:**
 
@@ -212,7 +212,7 @@ class NetworkMLP():
     * `activation` : activation function (str)
 
         * "sigmoid" - sigmoid
-    
+
         * "tanh" : hyperbolic tangens
 
     * `mu` : learning rate (float or str), it can be:
@@ -221,7 +221,6 @@ class NetworkMLP():
         * "auto" - this will trigger automatic selection of the learning rate
 
     """
-
     def __init__(self, layers, n_input, outputs=1, activation="sigmoid", mu="auto"):
         warnings.warn(
             "MLP is deprecated, use different Python library instead",
@@ -233,7 +232,7 @@ class NetworkMLP():
             self.mu = sigma
         else:
             try:
-                param = float(mu)            
+                param = float(mu)
             except:
                 raise ValueError(
                     'Parameter mu is not float or similar'
@@ -258,7 +257,7 @@ class NetworkMLP():
             else:
                 l = Layer(layers[n], layers[n-1], activation, mu)
                 self.layers.append(l)
- 
+
     def train(self, x, d, epochs=10, shuffle=False):
         """
         Function for batch training of MLP.
@@ -273,7 +272,7 @@ class NetworkMLP():
             Target can be one or more values (in case of multiple outputs).
 
         **Kwargs:**
-        
+
         * `epochs` : amount of epochs (int). That means how many times
             the MLP will iterate over the passed set of data (`x`, `d`).
 
@@ -281,7 +280,7 @@ class NetworkMLP():
             That means the pairs input-output are in different order in every epoch.
 
         **Returns:**
-        
+
         * `e`: output vector (m-dimensional array). Every row represents
             error (or errors) for an input and output in given epoch.
             The size of this array is length of provided data times
@@ -289,12 +288,12 @@ class NetworkMLP():
 
         * `MSE` : mean squared error (1-dimensional array). Every value
             stands for MSE of one epoch.
-            
+
         """
         # measure the data and check if the dimmension agree
         N = len(x)
         if not len(d) == N:
-            raise ValueError('The length of vector d and matrix x must agree.')  
+            raise ValueError('The length of vector d and matrix x must agree.')
         if not len(x[0]) == self.n_input:
             raise ValueError('The number of network inputs is not correct.')
         if self.outputs == 1:
@@ -303,7 +302,7 @@ class NetworkMLP():
         else:
             if not d.shape[1] == self.outputs:
                 raise ValueError('The number of outputs must agree with number of columns in d')
-        try:    
+        try:
             x = np.array(x)
             d = np.array(d)
         except:
@@ -338,23 +337,23 @@ class NetworkMLP():
             Every row represents one input vector (features).
 
         **Returns:**
-        
+
         * `y`: output vector (n-dimensional array). Every row represents
             output (outputs) for an input vector.
-            
+
         """
         # measure the data and check if the dimmension agree
-        try:    
+        try:
             x = np.array(x)
         except:
             raise ValueError('Impossible to convert x to a numpy array')
-        N = len(x)   
-        # create empty arrays     
+        N = len(x)
+        # create empty arrays
         if self.outputs == 1:
             y = np.zeros(N)
         else:
             y = np.zeros((N, self.outputs))
-        # predict data in loop        
+        # predict data in loop
         for k in range(N):
             y[k] = self.predict(x[k])
         return y
@@ -373,15 +372,15 @@ class NetworkMLP():
             Target can be one or more values (in case of multiple outputs).
 
         **Returns:**
-        
+
         * `e`: output vector (n-dimensional array). Every row represents
             error (or errors) for an input and output.
-            
+
         """
         # measure the data and check if the dimmension agree
         N = len(x)
         if not len(d) == N:
-            raise ValueError('The length of vector d and matrix x must agree.')  
+            raise ValueError('The length of vector d and matrix x must agree.')
         if not len(x[0]) == self.n_input:
             raise ValueError('The number of network inputs is not correct.')
         if self.outputs == 1:
@@ -390,7 +389,7 @@ class NetworkMLP():
         else:
             if not d.shape[1] == self.outputs:
                 raise ValueError('The number of outputs must agree with number of columns in d')
-        try:    
+        try:
             x = np.array(x)
             d = np.array(d)
         except:
@@ -400,10 +399,10 @@ class NetworkMLP():
             y = np.zeros(N)
         else:
             y = np.zeros((N, self.outputs))
-        # measure in loop        
+        # measure in loop
         for k in range(N):
             y[k] = self.predict(x[k])
-        return d - y    
+        return d - y
 
     def predict(self, x):
         """
@@ -414,10 +413,10 @@ class NetworkMLP():
         * `x` : input vector (1-dimensional array)
 
         **Returns:**
-        
+
         * `y` : output of MLP (float or 1-diemnsional array).
             Size depends on number of MLP outputs.
-            
+
         """
         # forward pass to hidden layers
         for l in self.layers:
@@ -426,10 +425,10 @@ class NetworkMLP():
         # forward pass to output layer
         if self.outputs == 1:
             self.y = np.dot(self.w, self.x)
-        else: 
+        else:
             self.y = np.sum(self.w*self.x, axis=1)
         return self.y
-    
+
     def update(self, d):
         """
         This function make update according provided target
@@ -441,24 +440,22 @@ class NetworkMLP():
             Size depends on number of MLP outputs.
 
         **Returns:**
-        
+
         * `e` : error used for update (float or 1-diemnsional array).
             Size correspond to size of input `d`.
-            
+
         """
         # update output layer
         e = d - self.y
         error = np.copy(e)
         if self.outputs == 1:
-            dw = self.mu * e * self.x   
+            dw = self.mu * e * self.x
             w = np.copy(self.w)[1:]
         else:
             dw = self.mu * np.outer(e, self.x)
-            w = np.copy(self.w)[:,1:]
+            w = np.copy(self.w)[:, 1:]
         self.w += dw
         # update hidden layers
         for l in reversed(self.layers):
-            w, e = l.update(w, e) 
+            w, e = l.update(w, e)
         return error
-
-

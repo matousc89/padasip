@@ -34,7 +34,7 @@ The parameters of all implemented adaptive filters can be initially set:
 
 * :code:`w="random"` - set to random - this will produce a vector of
   random values (zero mean, 0.5 standard deviation)
-    
+
 * :code:`w="zeros"` - set to zeros
 
 .. rubric:: Input data
@@ -42,9 +42,9 @@ The parameters of all implemented adaptive filters can be initially set:
 The adaptive filters need two inputs
 
 * input matrix :code:`x` where rows represent the samples. Every row (sample)
-  should contain multiple values (features). 
+  should contain multiple values (features).
 
-* desired value (target) :code:`d` 
+* desired value (target) :code:`d`
 
 If you have only one signal and the historical values of this signal should
 be input of the filter (data reconstruction/prediction task) you can use helper
@@ -59,32 +59,32 @@ following code
 
 .. code-block:: python
 
-    f = pa.filters.AdaptiveFilter(model="NLMS", n=4, mu=0.1, w="random")   
+    f = pa.filters.AdaptiveFilter(model="NLMS", n=4, mu=0.1, w="random")
 
 where returned :code:`f` is the instance of class :code:`FilterNLMS`
 with given parameters.
 
 .. rubric:: Data filtering
 
-If you already created an instance of adaptive filter (:code:`f` in previous 
-example) you can use it for filtering of 
+If you already created an instance of adaptive filter (:code:`f` in previous
+example) you can use it for filtering of
 data :code:`x` with desired value :code:`d` as simple as follows
 
-.. code-block:: python  
-    
+.. code-block:: python
+
     y, e, w = f.run(d, x)
 
 where :code:`y` is output, :code:`e` is the error and :code:`w` is set
 of parameters at the end of the simulation.
 
 In case you want to just simply filter the data without creating and
-storing filter instance manually, use the following function 
+storing filter instance manually, use the following function
 
-.. code-block:: python  
-  
+.. code-block:: python
+
     y, e, w = pa.filters.filter_data(d, x, model="NLMS", mu=0.9, w="random")
 
-    
+
 .. rubric:: Search for optimal learning rate
 
 The search for optimal filter setup (especially learning rate) is a task
@@ -95,29 +95,29 @@ implemented in the Padasip. To use this function you need to specify
 
 * part of data used in training epochs - `ntrain` (0.5 stands for 50% of
   given data)
-  
+
 * start and end of learning rate range you want to test (and number of
   steps in this range) - `mu_start`, `mu_end`, `steps`
-  
+
 * testing criteria (MSE, RMSE, MAE)
-  
+
 Example for `mu` in range of 100 values from `[0.01, ..., 1]` follows.
 In example is used 50% of data for training and leftoever data for testing
 with MSE criteria. Returned arrays are list of errors and list of corresponding
 learning rates, so it is easy to plot and analyze the error as
 a function of learning rate.
 
-.. code-block:: python  
+.. code-block:: python
 
     errors_e, mu_range = f.explore_learning(d, x,
                     mu_start=0.01,
                     mu_end=1.,
                     steps=100, ntrain=0.5, epochs=1,
                     criteria="MSE")
-                    
+
 Note: optimal learning rate depends on purpose and usage of filter (ammount
 of training, data characteristics, etc.).
-    
+
 
 Full Working Example
 ===================================================
@@ -125,7 +125,7 @@ Full Working Example
 Bellow is full working example with visualisation of results - the NLMS
 adaptive filter used for channel identification.
 
-.. code-block:: python  
+.. code-block:: python
 
     import numpy as np
     import matplotlib.pylab as plt
@@ -178,21 +178,20 @@ from padasip.filters.rls import FilterRLS
 from padasip.filters.sslms import FilterSSLMS
 
 
-
 def filter_data(d, x, model="lms", **kwargs):
     """
     Function that filter data with selected adaptive filter.
-    
+
     **Args:**
 
     * `d` : desired value (1 dimensional array)
 
     * `x` : input matrix (2-dimensional array). Rows are samples, columns are
       input arrays.
-        
+
     **Kwargs:**
-    
-    * Any key argument that can be accepted with selected filter model. 
+
+    * Any key argument that can be accepted with selected filter model.
       For more information see documentation of desired adaptive filter.
 
     **Returns:**
@@ -200,65 +199,67 @@ def filter_data(d, x, model="lms", **kwargs):
     * `y` : output value (1 dimensional array).
       The size corresponds with the desired value.
 
-    * `e` : filter error for every sample (1 dimensional array). 
+    * `e` : filter error for every sample (1 dimensional array).
       The size corresponds with the desired value.
 
     * `w` : history of all weights (2 dimensional array).
       Every row is set of the weights for given sample.
-    
+
     """
     # overwrite n with correct size
     kwargs["n"] = x.shape[1]
     # create filter according model
     if model.upper() not in FILTERS.keys():
         raise ValueError('Unknown model of filter {}'.format(model))
-    else:
-        return FILTERS[model.upper()](**kwargs).run(d, x)
+    return FILTERS[model.upper()](**kwargs).run(d, x)
 
 def AdaptiveFilter(model="lms", **kwargs):
     """
     Function that filter data with selected adaptive filter.
-    
+
     **Args:**
 
     * `d` : desired value (1 dimensional array)
 
-    * `x` : input matrix (2-dimensional array). Rows are samples, columns are 
+    * `x` : input matrix (2-dimensional array). Rows are samples, columns are
       input arrays.
-        
+
     **Kwargs:**
-    
+
     * Any key argument that can be accepted with selected filter model.
       For more information see documentation of desired adaptive filter.
-    
-    * It should be at least filter size `n`.  
+
+    * It should be at least filter size `n`.
 
     **Returns:**
 
     * `y` : output value (1 dimensional array).
       The size corresponds with the desired value.
 
-    * `e` : filter error for every sample (1 dimensional array). 
+    * `e` : filter error for every sample (1 dimensional array).
       The size corresponds with the desired value.
 
     * `w` : history of all weights (2 dimensional array).
       Every row is set of the weights for given sample.
-    
+
     """
     # check if the filter size was specified
-    if not "n" in kwargs:
+    if "n" not in kwargs:
         raise ValueError('Filter size is not defined (n=?).')
     # create filter according model
     if model.upper() not in FILTERS.keys():
         raise ValueError('Unknown model of filter {}'.format(model))
-    else:
-        return FILTERS[model.upper()](**kwargs)
+    return FILTERS[model.upper()](**kwargs)
 
 def get_filter(name):
+    """
+    This function returns class of a filter according to the provide name.
+    """
     try:
         return FILTERS[name.upper()]
     except:
-        raise ValueError('Unknown model of filter {}, options are {}'.format(name, list(FILTERS.keys())))
+        msg = 'Unknown model of filter {}, options are {}'
+        raise ValueError(msg.format(name, list(FILTERS.keys())))
 
 FILTER_CLASSES = [
     FilterAP,
@@ -274,5 +275,3 @@ FILTER_CLASSES = [
 ]
 
 FILTERS = {f.kind.upper(): f for f in FILTER_CLASSES}
-
-
