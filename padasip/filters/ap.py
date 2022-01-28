@@ -1,6 +1,6 @@
 """
 .. versionadded:: 0.4
-.. versionchanged:: 1.0.0
+.. versionchanged:: 1.2.0
 
 The Affine Projection (AP) algorithm is implemented according to paper.
 Usage of this filter should be benefical especially
@@ -81,7 +81,7 @@ If you have measured data you may filter it as follows
     d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v # target
 
     # identification
-    f = pa.filters.FilterAP(n=4, order=5, mu=0.5, eps=0.001, w="random")
+    f = pa.filters.FilterAP(n=4, order=5, mu=0.5, ifc=0.001, w="random")
     y, e, w = f.run(d, x)
 
     # show results
@@ -158,6 +158,6 @@ class FilterAP(AdaptiveFilterAP):
         """
         Override the parent class.
         """
-        dw_part1 = np.dot(x_mem.T, x_mem) + self.ide_eps
+        dw_part1 = np.dot(x_mem.T, x_mem) + self.ide_ifc
         dw_part2 = np.linalg.solve(dw_part1, self.ide)
         return self.mu * np.dot(x_mem, np.dot(dw_part2, e_mem))

@@ -30,7 +30,7 @@ features an approach of online input centering according to
 the introduced filter memory. This key feature can compensate
 the effect of concept drift in data streams, because
 such a centering makes the filter independent
-from the nonzero mean value of signal.
+of the nonzero mean value of signal.
 
 Minimal Working Examples
 ======================================

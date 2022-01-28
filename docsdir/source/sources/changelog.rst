@@ -4,6 +4,7 @@ Changelog
 ===========
 
 **Version 1.2.0** *Released: not yet*
+ All adaptive filters were significantly refactored.
  Added new adaptive filters :ref:`filter-gmcc`, :ref:`filter-llncosh`.
  Added new detection tool :ref:`detection-ese`.
  ANN module is removed from docs, and will be removed totally in future -
@@ -26,9 +27,9 @@ Changelog
  Tutorials were updated and moved to `Python Adaptive Signal Processing Handbook
  <https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook>`_.
 
-**Version 0.7** *Released: 2017-01-07*  
+**Version 0.7** *Released: 2017-01-07*
  Added new helper functions into  :ref:`filters`. Furthermore, the
- documentation for adaptive filters module was updated. 
+ documentation for adaptive filters module was updated.
  Added functions for error evaluation - MSE, MAE, RMSE and logSE
  (:ref:`mics-error_evaluation`).
 
@@ -49,8 +50,7 @@ Changelog
  Added :ref:`filter-gngd`
 
 **Version 0.1** *Released: 2016-03-18*
- Created 
+ Created
  :ref:`filter-lms`, :ref:`filter-nlms`,
  :ref:`filter-rls`, :ref:`preprocess-input_from_history`,
- :ref:`preprocess-standardize`, :ref:`preprocess-standardize_back` 
-
+ :ref:`preprocess-standardize`, :ref:`preprocess-standardize_back`

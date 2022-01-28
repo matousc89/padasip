@@ -213,22 +213,25 @@ class AdaptiveFilter():
 
 class AdaptiveFilterAP(AdaptiveFilter):
     """
-    Adaptive AP filter.
-
-    **Kwargs:**
-
-    * `order` : projection order (integer) - how many input vectors
-      are in one input matrix
-
-    * `eps` : initial offset covariance (float)
-
+    This class modifies the AdaptiveFilter class
+    to allow AP filtering.
     """
-    def __init__(self, *args, order=5, eps=0.001, **kwargs):
+    def __init__(self, *args, order=5, ifc=0.001, **kwargs):
+        """
+        **Kwargs:**
+
+        * `order` : projection order (integer) - how many input vectors
+          are in one input matrix
+
+        * `ifc` : initial offset covariance (float) - regularization term
+          to prevent problems with inverse matrix
+
+        """
         super().__init__(*args, **kwargs)
         self.order = order
         self.x_mem = np.zeros((self.n, self.order))
         self.d_mem = np.zeros(order)
-        self.ide_eps = eps * np.identity(self.order)
+        self.ide_ifc = ifc * np.identity(self.order)
         self.ide = np.identity(self.order)
         self.y_mem = False
         self.e_mem = False
@@ -268,7 +271,7 @@ class AdaptiveFilterAP(AdaptiveFilter):
         self.y_mem = np.dot(self.x_mem.T, self.w)
         self.e_mem = self.d_mem - self.y_mem
         # update
-        dw_part1 = np.dot(self.x_mem.T, self.x_mem) + self.ide_eps
+        dw_part1 = np.dot(self.x_mem.T, self.x_mem) + self.ide_ifc
         dw_part2 = np.linalg.solve(dw_part1, self.ide)
         dw = np.dot(self.x_mem, np.dot(dw_part2, self.e_mem))
         self.w += self.mu * dw

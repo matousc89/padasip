@@ -1,6 +1,6 @@
 This library is designed to simplify adaptive signal
 processing tasks within python
-(filtering, prediction, reconstruction, classification).
+(filtering, prediction, reconstruction).
 For code optimisation, this library uses numpy for array operations.
 
 Also in this library is presented some new methods for adaptive signal processing.
@@ -53,6 +53,11 @@ So far it is possible to use following filters:
 
 - AP (affine projection) adaptive filter
 
+- GMCC (generalized maximum correntropy criterion) adaptive filter
+
+- OCNLMS (online centered normalized least-mean-squares) adaptive filter
+
+- Llncosh (least lncosh) adaptive filter
 
 ******************
 Detection Tools

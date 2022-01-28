@@ -31,7 +31,7 @@ class TestFilters(unittest.TestCase):
         x = np.random.normal(0, 1, (N, 4))
         v = np.random.normal(0, 0.1, N)
         d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
-        f = pa.filters.FilterAP(n=4, order=5, mu=0.5, eps=0.001, w="random")
+        f = pa.filters.FilterAP(n=4, order=5, mu=0.5, ifc=0.001, w="random")
         y, e, w = f.run(d, x)
         self.assertAlmostEqual(y.sum(), 15.105550229065491)
 
@@ -161,4 +161,3 @@ class TestFilters(unittest.TestCase):
         f = pa.filters.FilterGMCC(n=4, mu=0.3, lambd=0.03, alpha=2, w="random")
         y, e, w = f.run(d, x)
         self.assertAlmostEqual(y.sum(), 7.002285017142926)
-
