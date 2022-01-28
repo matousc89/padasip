@@ -3,7 +3,7 @@
 Changelog
 ===========
 
-**Version 1.2.0** *Released: not yet*
+**Version 1.2.0** *2022-01-28*
  All adaptive filters were significantly refactored.
  Added new adaptive filters :ref:`filter-gmcc`, :ref:`filter-llncosh`.
  Added new detection tool :ref:`detection-ese`.
