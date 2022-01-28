@@ -25,7 +25,7 @@ As simple as
     x = pa.standardize(xs, offset=a, scale=b)
 
 Code Explanation
-***************** 
+*****************
 """
 from __future__ import division
 import numpy as np
@@ -41,7 +41,7 @@ def standardize_back(xs, offset, scale):
     * `offset` : offset to add (float).
 
     * `scale` : scale (float).
-        
+
     **Returns:**
 
     * `x` : original (destandardised) series
@@ -50,7 +50,7 @@ def standardize_back(xs, offset, scale):
     try:
         offset = float(offset)
     except:
-        raise ValueError('The argument offset is not None or float.') 
+        raise ValueError('The argument offset is not None or float.')
     try:
         scale = float(scale)
     except:
@@ -60,4 +60,3 @@ def standardize_back(xs, offset, scale):
     except:
         raise ValueError('The argument xs is not numpy array or similar.')
     return xs*scale + offset
-

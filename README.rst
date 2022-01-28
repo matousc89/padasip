@@ -1,10 +1,10 @@
-This library is designed to simplify adaptive signal 
+This library is designed to simplify adaptive signal
 processing tasks within python
-(filtering, prediction, reconstruction, classification).
+(filtering, prediction, reconstruction).
 For code optimisation, this library uses numpy for array operations.
 
 Also in this library is presented some new methods for adaptive signal processing.
-The library is designed to be used with datasets and also with 
+The library is designed to be used with datasets and also with
 real-time measuring (sample-after-sample feeding).
 
 ============================
@@ -53,12 +53,11 @@ So far it is possible to use following filters:
 
 - AP (affine projection) adaptive filter
 
+- GMCC (generalized maximum correntropy criterion) adaptive filter
 
-******************
-Neural Networks
-******************
+- OCNLMS (online centered normalized least-mean-squares) adaptive filter
 
-So far it is implemented only MLP neural network.
+- Llncosh (least lncosh) adaptive filter
 
 ******************
 Detection Tools
@@ -70,5 +69,4 @@ The library features two novelty/outlier detection tools
 
 - Learning Entropy (LE)
 
-
-
+- Extreme Seeking Entropy (ESE)

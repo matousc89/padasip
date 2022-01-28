@@ -1,5 +1,6 @@
 """
 .. versionadded:: 0.1
+.. versionchanged:: 1.2.0
 
 This function standardizes (z-score) the series according to equation
 
@@ -24,14 +25,12 @@ As simple as
     xs = pa.standardize(x, offset=a , scale=b)
 
 If the key arguments :code:`offset` and :code:`scale` are not provided
-(example below) the mean value and standard deviation of `x` is used. 
+(example below) the mean value and standard deviation of `x` is used.
 
 .. code-block:: python
 
     xs = pa.standardize(x)
 
-
- 
 Minimal Working Example
 **************************
 
@@ -54,13 +53,13 @@ An example how to standarize (z-score) data:
 
 
 Code Explanation
-***************** 
+*****************
 """
 from __future__ import division
 import numpy as np
 
 def standardize(x, offset=None, scale=None):
-    """   
+    """
     This is function for standarization of input series.
 
     **Args:**
@@ -74,27 +73,27 @@ def standardize(x, offset=None, scale=None):
 
     * `scale` : scale (float). If not given, \
         the standard deviation of `x` is used.
-        
+
     **Returns:**
 
     * `xs` : standardized series
     """
-    if offset == None:
+    if offset is None:
         offset = np.array(x).mean()
     else:
         try:
             offset = float(offset)
         except:
-            raise ValueError('The argument offset is not None or float') 
-    if scale == None:
+            raise ValueError('The argument offset is not None or float')
+    if scale is None:
         scale = np.array(x).std()
     else:
         try:
             scale = float(scale)
         except:
-            raise ValueError('The argument scale is not None or float')    
+            raise ValueError('The argument scale is not None or float')
     try:
         x = np.array(x, dtype="float64")
     except:
-        raise ValueError('The argument x is not numpy array or similar.')         
+        raise ValueError('The argument x is not numpy array or similar.')
     return (x - offset) / scale

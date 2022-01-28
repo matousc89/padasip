@@ -1,7 +1,7 @@
 """
 .. versionadded:: 0.6
 
-Linear discriminant analysis (LDA) :cite:`fisher1936use`
+Linear discriminant analysis (LDA)
 is a method used to determine the features
 that separates some classes of items. The output of LDA may be used as
 a linear classifier, or for dimensionality reduction for purposes of
@@ -10,7 +10,7 @@ classification.
 .. contents::
    :local:
    :depth: 1
-   
+
 See also: :ref:`preprocess-pca`
 
 Usage Explanation
@@ -22,25 +22,25 @@ columns
 
 .. code-block:: python
 
-    new_x = pa.preprocess.LDA(x, labels, n) 
-    
+    new_x = pa.preprocess.LDA(x, labels, n)
+
 The sorted array of scattermatrix eigenvalues for dataset :code:`x` described
 with variable :code:`labels` can be obtained as follows
-    
+
 .. code-block:: python
 
-    eigenvalues = pa.preprocess.LDA_discriminants(x, labels) 
-    
+    eigenvalues = pa.preprocess.LDA_discriminants(x, labels)
+
 
 Minimal Working Examples
 *****************************
 
 In this example we create data-set :code:`x` of 150 random samples. Every sample
-is described by 4 values and label. The labels are stored in 
+is described by 4 values and label. The labels are stored in
 array :code:`labels`.
 
 Firstly, it is good to see the eigenvalues of scatter matrix to determine
-how many rows is reasonable to reduce 
+how many rows is reasonable to reduce
 
 .. code-block:: python
 
@@ -69,7 +69,7 @@ The following code reduce the number of features to 2.
 
     import numpy as np
     import padasip as pa
-    
+
     np.random.seed(100) # constant seed to keep the results consistent
 
     N = 150 # number of samples
@@ -82,21 +82,16 @@ The following code reduce the number of features to 2.
     new_x = pa.preprocess.LDA(x, labels, n=2)
 
 to check if the size of new data-set is really correct we can print the shapes
-as follows      
+as follows
 
->>> print "Shape of original dataset: {}".format(x.shape) 
+>>> print "Shape of original dataset: {}".format(x.shape)
 Shape of original dataset: (150, 4)
 >>> print "Shape of new dataset: {}".format(new_x.shape)
 Shape of new dataset: (150, 2)
 
-References
-***************
-
-.. bibliography:: lda.bib
-    :style: plain
 
 Code Explanation
-***************** 
+*****************
 """
 from __future__ import division
 import numpy as np
@@ -113,9 +108,9 @@ def LDA_base(x, labels):
       sample with corresponding index
 
     **Returns:**
-    
+
     * `eigenvalues`, `eigenvectors` : eigenvalues and eigenvectors \
-      from LDA analysis 
+      from LDA analysis
 
     """
     classes = np.array(tuple(set(labels)))
@@ -123,7 +118,7 @@ def LDA_base(x, labels):
     # mean values for every class
     means = np.zeros((len(classes), cols))
     for i, cl in enumerate(classes):
-        means[i] = np.mean(x[labels==cl], axis=0)
+        means[i] = np.mean(x[labels == cl], axis=0)
     # scatter matrices
     scatter_within = np.zeros((cols, cols))
     for cl, mean in zip(classes, means):
@@ -156,22 +151,14 @@ def LDA(x, labels, n=False):
 
     **Kwargs:**
 
-    * `n` : number of features returned (integer) - how many columns 
+    * `n` : number of features returned (integer) - how many columns
       should the output keep
 
     **Returns:**
-    
+
     * new_x : matrix with reduced size (number of columns are equal `n`)
     """
-    # select n if not provided
-    if not n:
-        n = x.shape[1] - 1 
-    # validate inputs
-    try:    
-        x = np.array(x)
-    except:
-        raise ValueError('Impossible to convert x to a numpy array.')
-    assert type(n) == int, "Provided n is not an integer."
+    n = n if n else x.shape[1] - 1
     assert x.shape[1] > n, "The requested n is bigger than \
         number of features in x."
     # make the LDA
@@ -194,16 +181,15 @@ def LDA_discriminants(x, labels):
         sample with corresponding index
 
     **Returns:**
-    
+
     * `discriminants` : array of eigenvalues sorted in descending order
 
     """
     # validate inputs
-    try:    
+    try:
         x = np.array(x)
     except:
         raise ValueError('Impossible to convert x to a numpy array.')
     # make the LDA
     eigen_values, eigen_vectors = LDA_base(x, labels)
     return eigen_values[(-eigen_values).argsort()]
-

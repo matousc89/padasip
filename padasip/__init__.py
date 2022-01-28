@@ -1,7 +1,7 @@
 """
 Current version: |version| (:ref:`changelog`)
 
-This library is designed to simplify adaptive signal 
+This library is designed to simplify adaptive signal
 processing tasks within python
 (filtering, prediction, reconstruction, classification).
 For code optimisation,
@@ -9,12 +9,12 @@ this library uses `Numpy <http://www.numpy.org/>`_ for array operations.
 
 Also in this library is presented some new methods
 for adaptive signal processing.
-The library is designed to be used with datasets and also with 
+The library is designed to be used with datasets and also with
 real-time measuring (sample-after-sample feeding).
 
 .. toctree::
     :maxdepth: 2
-    
+
     index
 
 License
@@ -47,23 +47,21 @@ check the complete documentation here
 .. toctree::
     :maxdepth: 2
     :titlesonly:
-    
+
     sources/preprocess
     sources/filters
     sources/detection
     sources/misc
-
 
 Contact
 =====================
 
 By email: matousc@gmail.com
 
-
 Changelog
 ======================
 
-For informations about versions and updates see :ref:`changelog`.
+For information about versions and updates see :ref:`changelog`.
 
 Indices and tables
 ===========================
@@ -84,5 +82,3 @@ import padasip.ann
 from padasip.preprocess.standardize import standardize
 from padasip.preprocess.standardize_back import standardize_back
 from padasip.preprocess.input_from_history import input_from_history
-
-

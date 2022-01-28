@@ -28,7 +28,7 @@ Usage instructions
 For MAE evaluation from two time series use
 
 .. code-block:: python
-    
+
     mse = pa.misc.MAE(x1, x2)
 
 If you have the error already calculated, then just
@@ -40,7 +40,7 @@ If you have the error already calculated, then just
 The same instructions apply for the MSE, RMSE a logarithmic squared error
 
 .. code-block:: python
-    
+
     mse = pa.misc.MSE(x1, x2)
     rmse = pa.misc.RMSE(x1, x2)
     logse = pa.misc.logSE(x1, x2)
@@ -63,7 +63,7 @@ In the following example is estimated MSE for two series
 .. code-block:: python
 
     import numpy as np
-    import padasip as pa 
+    import padasip as pa
 
     x1 = np.array([1, 2, 3, 4, 5])
     x2 = np.array([5, 4, 3, 2, 1])
@@ -79,7 +79,7 @@ The following example displays, that you can use directly the error series
 .. code-block:: python
 
     import numpy as np
-    import padasip as pa 
+    import padasip as pa
 
     # somewhere else in your project
     x1 = np.array([1, 2, 3, 4, 5])
@@ -107,11 +107,11 @@ def get_valid_error(x1, x2=-1):
     * x1 and x2 have the same length (if both exist)
     """
     # just error
-    if type(x2) == int and x2 == -1:
-        try:    
+    if isinstance(x2, int) and x2 == -1:
+        try:
             e = np.array(x1)
         except:
-            raise ValueError('Impossible to convert series to a numpy array')        
+            raise ValueError('Impossible to convert series to a numpy array')
     # two series
     else:
         try:
@@ -126,7 +126,7 @@ def get_valid_error(x1, x2=-1):
 
 def logSE(x1, x2=-1):
     """
-    10 * log10(e**2)    
+    10 * log10(e**2)
     This function accepts two series of data or directly
     one series with error.
 
@@ -136,18 +136,18 @@ def logSE(x1, x2=-1):
 
     **Kwargs:**
 
-    * `x2` - second series (1d array) if first series was not error directly,\\
-        then this should be the second series
+    * `x2` - second series (1d array) if first series was not error directly,
+      then this should be the second series
 
     **Returns:**
 
-    * `e` - logSE of error (1d array) obtained directly from `x1`, \\
-        or as a difference of `x1` and `x2`. The values are in dB!
+    * `e` - logSE of error (1d array) obtained directly from `x1`,
+      or as a difference of `x1` and `x2`. The values are in dB!
 
     """
     e = get_valid_error(x1, x2)
     return 10*np.log10(e**2)
-    
+
 
 def MAE(x1, x2=-1):
     """
@@ -160,13 +160,13 @@ def MAE(x1, x2=-1):
 
     **Kwargs:**
 
-    * `x2` - second series (1d array) if first series was not error directly,\\
-        then this should be the second series
+    * `x2` - second series (1d array) if first series was not error directly,
+      then this should be the second series
 
     **Returns:**
 
-    * `e` - MAE of error (float) obtained directly from `x1`, \\
-        or as a difference of `x1` and `x2`
+    * `e` - MAE of error (float) obtained directly from `x1`,
+      or as a difference of `x1` and `x2`
 
     """
     e = get_valid_error(x1, x2)
@@ -183,13 +183,13 @@ def MSE(x1, x2=-1):
 
     **Kwargs:**
 
-    * `x2` - second series (1d array) if first series was not error directly,\\
-        then this should be the second series
+    * `x2` - second series (1d array) if first series was not error directly,
+      then this should be the second series
 
     **Returns:**
 
-    * `e` - MSE of error (float) obtained directly from `x1`, \\
-        or as a difference of `x1` and `x2`
+    * `e` - MSE of error (float) obtained directly from `x1`,
+      or as a difference of `x1` and `x2`
 
     """
     e = get_valid_error(x1, x2)
@@ -206,13 +206,13 @@ def RMSE(x1, x2=-1):
 
     **Kwargs:**
 
-    * `x2` - second series (1d array) if first series was not error directly,\\
-        then this should be the second series
+    * `x2` - second series (1d array) if first series was not error directly,
+      then this should be the second series
 
     **Returns:**
 
-    * `e` - RMSE of error (float) obtained directly from `x1`, \\
-        or as a difference of `x1` and `x2`
+    * `e` - RMSE of error (float) obtained directly from `x1`,
+      or as a difference of `x1` and `x2`
 
     """
     e = get_valid_error(x1, x2)
@@ -221,27 +221,25 @@ def RMSE(x1, x2=-1):
 def get_mean_error(x1, x2=-1, function="MSE"):
     """
     This function returns desired mean error. Options are: MSE, MAE, RMSE
-    
+
     **Args:**
 
     * `x1` - first data series or error (1d array)
 
     **Kwargs:**
 
-    * `x2` - second series (1d array) if first series was not error directly,\\
-        then this should be the second series
+    * `x2` - second series (1d array) if first series was not error directly,
+      then this should be the second series
 
     **Returns:**
 
-    * `e` - mean error value (float) obtained directly from `x1`, \\
-        or as a difference of `x1` and `x2`
+    * `e` - mean error value (float) obtained directly from `x1`,
+      or as a difference of `x1` and `x2`
     """
     if function == "MSE":
         return MSE(x1, x2)
-    elif function == "MAE":
+    if function == "MAE":
         return MAE(x1, x2)
-    elif function == "RMSE":
+    if function == "RMSE":
         return RMSE(x1, x2)
-    else:
-        raise ValueError('The provided error function is not known')
-
+    raise ValueError('The provided error function is not known')

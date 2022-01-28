@@ -1,5 +1,6 @@
 """
 .. versionadded:: 0.1
+.. versionchanged:: 1.2.0
 
 This function creates input matrix from historical values.
 
@@ -26,7 +27,7 @@ An example how to create input matrix from historical values
            [4, 5, 6]])
 
 Code Explanation
-***************** 
+*****************
 """
 from __future__ import division
 import numpy as np
@@ -58,7 +59,7 @@ def input_from_history(a, n, bias=False):
         amount of columns is `n`+1).
 
     """
-    if not type(n) == int:
+    if not isinstance(n, int):
         raise ValueError('The argument n must be int.')
     if not n > 0:
         raise ValueError('The argument n must be greater than 0')
@@ -66,7 +67,7 @@ def input_from_history(a, n, bias=False):
         a = np.array(a, dtype="float64")
     except:
         raise ValueError('The argument a is not numpy array or similar.')
-    x = np.array([a[i:i+n] for i in range(len(a)-n+1)]) 
+    x = np.array([a[i:i+n] for i in range(len(a)-n+1)])
     if bias:
         x = np.vstack((x.T, np.ones(len(x)))).T
     return x

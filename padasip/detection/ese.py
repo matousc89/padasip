@@ -4,7 +4,7 @@
 The Extreme Seeking Entropy (ESE) introduced
 in https://doi.org/10.3390/e22010093 is based on the
 evaluation of a change of adaptive model parameters.
-This function requires `scipy`.
+This function requires `SciPy <https://pypi.org/project/scipy/>`_.
 
 Content of this page:
 
@@ -15,8 +15,11 @@ Content of this page:
 Algorithm Explanation
 ==========================
 
-
-
+The ESE can describe every sample with a value,
+that is proportional impropability value of adaptive increments.
+The probability of value of adaptive increment that is higher
+than some threshold value is estimated from Generalized Pareto distribution.
+Value of ESE.
 
 Usage Instructions
 ========================

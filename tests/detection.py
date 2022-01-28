@@ -11,7 +11,7 @@ class TestDetection(unittest.TestCase):
         """
         Learning entropy direct approach.
         """
-        np.random.seed(100) 
+        np.random.seed(100)
         n = 5
         N = 2000
         x = np.random.normal(0, 1, (N, n))
@@ -20,13 +20,13 @@ class TestDetection(unittest.TestCase):
         f = pa.filters.FilterNLMS(n, mu=1., w=np.ones(n))
         y, e, w = f.run(d, x)
         le = pa.detection.learning_entropy(w, m=30, order=2)
-        self.assertEqual(np.round(le.sum(), 3), 489.192)
+        self.assertEqual(np.round(le.sum(), 3), 594.697)
 
     def test_le_multiscale(self):
         """
         Learning entropy multiscale approach.
         """
-        np.random.seed(100) 
+        np.random.seed(100)
         n = 5
         N = 2000
         x = np.random.normal(0, 1, (N, n))
@@ -35,8 +35,8 @@ class TestDetection(unittest.TestCase):
         f = pa.filters.FilterNLMS(n, mu=1., w=np.ones(n))
         y, e, w = f.run(d, x)
         le = pa.detection.learning_entropy(w, m=30, order=2, alpha=[8., 9.])
-        self.assertEqual(np.round(le.sum(), 3), 1.100)
-        
+        self.assertEqual(np.round(le.sum(), 3), 1.8)
+
     def test_elbnd(self):
         """
         ElBND
@@ -50,4 +50,4 @@ class TestDetection(unittest.TestCase):
         f = pa.filters.FilterNLMS(n, mu=1., w=np.ones(n))
         y, e, w = f.run(d, x)
         elbnd = pa.detection.ELBND(w, e, function="max")
-        self.assertEqual(np.round(elbnd.sum(), 3), 10.832)
+        self.assertEqual(np.round(elbnd.sum(), 3), 18.539)
