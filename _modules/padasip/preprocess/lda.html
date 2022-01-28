@@ -1,32 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>padasip.preprocess.lda &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>padasip.preprocess.lda &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -39,13 +27,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="../../../sources/support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -53,13 +35,15 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for padasip.preprocess.lda</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. versionadded:: 0.6</span>
 
-<span class="sd">Linear discriminant analysis (LDA) :cite:`fisher1936use`</span>
+<span class="sd">Linear discriminant analysis (LDA)</span>
 <span class="sd">is a method used to determine the features</span>
 <span class="sd">that separates some classes of items. The output of LDA may be used as</span>
 <span class="sd">a linear classifier, or for dimensionality reduction for purposes of</span>
@@ -68,7 +52,7 @@
 <span class="sd">.. contents::</span>
 <span class="sd">   :local:</span>
 <span class="sd">   :depth: 1</span>
-<span class="sd">   </span>
+
 <span class="sd">See also: :ref:`preprocess-pca`</span>
 
 <span class="sd">Usage Explanation</span>
@@ -80,25 +64,25 @@
 
 <span class="sd">.. code-block:: python</span>
 
-<span class="sd">    new_x = pa.preprocess.LDA(x, labels, n) </span>
-<span class="sd">    </span>
+<span class="sd">    new_x = pa.preprocess.LDA(x, labels, n)</span>
+
 <span class="sd">The sorted array of scattermatrix eigenvalues for dataset :code:`x` described</span>
 <span class="sd">with variable :code:`labels` can be obtained as follows</span>
-<span class="sd">    </span>
+
 <span class="sd">.. code-block:: python</span>
 
-<span class="sd">    eigenvalues = pa.preprocess.LDA_discriminants(x, labels) </span>
-<span class="sd">    </span>
+<span class="sd">    eigenvalues = pa.preprocess.LDA_discriminants(x, labels)</span>
+
 
 <span class="sd">Minimal Working Examples</span>
 <span class="sd">*****************************</span>
 
 <span class="sd">In this example we create data-set :code:`x` of 150 random samples. Every sample</span>
-<span class="sd">is described by 4 values and label. The labels are stored in </span>
+<span class="sd">is described by 4 values and label. The labels are stored in</span>
 <span class="sd">array :code:`labels`.</span>
 
 <span class="sd">Firstly, it is good to see the eigenvalues of scatter matrix to determine</span>
-<span class="sd">how many rows is reasonable to reduce </span>
+<span class="sd">how many rows is reasonable to reduce</span>
 
 <span class="sd">.. code-block:: python</span>
 
@@ -127,7 +111,7 @@
 
 <span class="sd">    import numpy as np</span>
 <span class="sd">    import padasip as pa</span>
-<span class="sd">    </span>
+
 <span class="sd">    np.random.seed(100) # constant seed to keep the results consistent</span>
 
 <span class="sd">    N = 150 # number of samples</span>
@@ -140,23 +124,18 @@
 <span class="sd">    new_x = pa.preprocess.LDA(x, labels, n=2)</span>
 
 <span class="sd">to check if the size of new data-set is really correct we can print the shapes</span>
-<span class="sd">as follows      </span>
+<span class="sd">as follows</span>
 
-<span class="sd">&gt;&gt;&gt; print &quot;Shape of original dataset: {}&quot;.format(x.shape) </span>
+<span class="sd">&gt;&gt;&gt; print &quot;Shape of original dataset: {}&quot;.format(x.shape)</span>
 <span class="sd">Shape of original dataset: (150, 4)</span>
 <span class="sd">&gt;&gt;&gt; print &quot;Shape of new dataset: {}&quot;.format(new_x.shape)</span>
 <span class="sd">Shape of new dataset: (150, 2)</span>
 
-<span class="sd">References</span>
-<span class="sd">***************</span>
-
-<span class="sd">.. bibliography:: lda.bib</span>
-<span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
-<span class="sd">***************** </span>
+<span class="sd">*****************</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="LDA_base"><a class="viewcode-back" href="../../../sources/preprocess/lda.html#padasip.preprocess.lda.LDA_base">[docs]</a><span class="k">def</span> <span class="nf">LDA_base</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
@@ -171,9 +150,9 @@
 <span class="sd">      sample with corresponding index</span>
 
 <span class="sd">    **Returns:**</span>
-<span class="sd">    </span>
+
 <span class="sd">    * `eigenvalues`, `eigenvectors` : eigenvalues and eigenvectors \</span>
-<span class="sd">      from LDA analysis </span>
+<span class="sd">      from LDA analysis</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span>
@@ -181,7 +160,7 @@
     <span class="c1"># mean values for every class</span>
     <span class="n">means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">),</span> <span class="n">cols</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">classes</span><span class="p">):</span>
-        <span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">labels</span><span class="o">==</span><span class="n">cl</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">means</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">labels</span> <span class="o">==</span> <span class="n">cl</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="c1"># scatter matrices</span>
     <span class="n">scatter_within</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">cols</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">cl</span><span class="p">,</span> <span class="n">mean</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">means</span><span class="p">):</span>
@@ -214,22 +193,14 @@
 
 <span class="sd">    **Kwargs:**</span>
 
-<span class="sd">    * `n` : number of features returned (integer) - how many columns </span>
+<span class="sd">    * `n` : number of features returned (integer) - how many columns</span>
 <span class="sd">      should the output keep</span>
 
 <span class="sd">    **Returns:**</span>
-<span class="sd">    </span>
+
 <span class="sd">    * new_x : matrix with reduced size (number of columns are equal `n`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># select n if not provided</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">n</span><span class="p">:</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> 
-    <span class="c1"># validate inputs</span>
-    <span class="k">try</span><span class="p">:</span>    
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x to a numpy array.&#39;</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">,</span> <span class="s2">&quot;Provided n is not an integer.&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="k">if</span> <span class="n">n</span> <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">,</span> <span class="s2">&quot;The requested n is bigger than </span><span class="se">\</span>
 <span class="s2">        number of features in x.&quot;</span>
     <span class="c1"># make the LDA</span>
@@ -252,22 +223,22 @@
 <span class="sd">        sample with corresponding index</span>
 
 <span class="sd">    **Returns:**</span>
-<span class="sd">    </span>
+
 <span class="sd">    * `discriminants` : array of eigenvalues sorted in descending order</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># validate inputs</span>
-    <span class="k">try</span><span class="p">:</span>    
+    <span class="k">try</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x to a numpy array.&#39;</span><span class="p">)</span>
     <span class="c1"># make the LDA</span>
     <span class="n">eigen_values</span><span class="p">,</span> <span class="n">eigen_vectors</span> <span class="o">=</span> <span class="n">LDA_base</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">eigen_values</span><span class="p">[(</span><span class="o">-</span><span class="n">eigen_values</span><span class="p">)</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span></div>
-
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -279,14 +250,13 @@
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Padasip</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/misc.html">Miscellaneous</a></li>
 </ul>
@@ -300,15 +270,15 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -317,8 +287,8 @@
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

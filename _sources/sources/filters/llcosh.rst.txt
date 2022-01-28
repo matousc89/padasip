@@ -1,0 +1,8 @@
+.. _filter-lms:
+
+Least lncosh (Llncosh)
+=====================================
+
+.. automodule:: padasip.filters.llncosh
+    :members:
+    :show-inheritance:

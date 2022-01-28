@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Extreme Seeking Entropy (ESE) &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Learning Entropy (LE)" href="le.html" />
+    <link rel="prev" title="Error and Learning Based Novelty Detection (ELBND)" href="elbnd.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head><body>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-padasip.detection.ese">
+<span id="extreme-seeking-entropy-ese"></span><span id="detection-ese"></span><h1>Extreme Seeking Entropy (ESE)<a class="headerlink" href="#module-padasip.detection.ese" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.2.0.</span></p>
+</div>
+<p>The Extreme Seeking Entropy (ESE) introduced
+in <a class="reference external" href="https://doi.org/10.3390/e22010093">https://doi.org/10.3390/e22010093</a> is based on the
+evaluation of a change of adaptive model parameters.
+This function requires <a class="reference external" href="https://pypi.org/project/scipy/">SciPy</a>.</p>
+<p>Content of this page:</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#algorithm-explanation" id="id1">Algorithm Explanation</a></p></li>
+<li><p><a class="reference internal" href="#usage-instructions" id="id2">Usage Instructions</a></p></li>
+<li><p><a class="reference internal" href="#minimal-working-example" id="id3">Minimal Working Example</a></p></li>
+<li><p><a class="reference internal" href="#code-explanation" id="id4">Code Explanation</a></p></li>
+</ul>
+</div>
+<section id="algorithm-explanation">
+<h2><a class="toc-backref" href="#id1">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<p>The ESE can describe every sample with a value,
+that is proportional impropability value of adaptive increments.
+The probability of value of adaptive increment that is higher
+than some threshold value is estimated from Generalized Pareto distribution.
+Value of ESE.</p>
+</section>
+<section id="usage-instructions">
+<h2><a class="toc-backref" href="#id2">Usage Instructions</a><a class="headerlink" href="#usage-instructions" title="Permalink to this headline">¶</a></h2>
+<p>The ESE algorithm can be used as follows</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ese</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">ELBND</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where <cite>w</cite> is matrix of the adaptive parameters (changing in time, every row
+should represent one time index) and
+<cite>window</cite> is a size of the window used for distribution estimation.
+The length of the provided data <cite>w</cite> has to greter than ‘window’.
+The first <cite>window</cite> number of samples cannot be evaluated with ESE.</p>
+</section>
+<section id="minimal-working-example">
+<h2><a class="toc-backref" href="#id3">Minimal Working Example</a><a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<p>In this example is demonstrated how can the LE highligh the position of
+a perturbation inserted in a data. As the adaptive model is used
+<a class="reference internal" href="../filters/nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-squares (NLMS)</span></a> adaptive filter. The perturbation is manually inserted
+in sample with index <span class="math notranslate nohighlight">\(k=1000\)</span> (the length of data is 2000).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
+
+<span class="c1"># data creation</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="c1"># fake perturbation insertion</span>
+<span class="n">d</span><span class="p">[</span><span class="mi">2500</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">2.</span>
+
+<span class="c1"># creation of learning model (adaptive filter)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">FilterNLMS</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+<span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># estimation of ESE with weights from learning model</span>
+<span class="n">ese</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">ESE</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="c1"># ese plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ese</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="code-explanation">
+<h2><a class="toc-backref" href="#id4">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="padasip.detection.ese.ESE">
+<span class="sig-prename descclassname"><span class="pre">padasip.detection.ese.</span></span><span class="sig-name descname"><span class="pre">ESE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pot_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'10%'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/detection/ese.html#ESE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#padasip.detection.ese.ESE" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function estimates Extreme Seeking Entropy measure
+from given data.</p>
+<p><strong>Args:</strong></p>
+<ul class="simple">
+<li><p><cite>w</cite> : history of adaptive parameters of an adaptive model (2d array),
+every row represents parameters in given time index.</p></li>
+</ul>
+<p><strong>Kwargs:</strong></p>
+<ul class="simple">
+<li><p><cite>window</cite> : number of samples that are proceeded via P-O-T method</p></li>
+<li><p><cite>pot_method</cite> : identifier of P-O-T method (str): ‘sqrt’, ‘10%’, ‘30%’, ‘log10’, ‘log10log10’</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><p>values of Extreme Seeking Entropy (1d array). This vector has same lenght as <cite>w</cite>.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="padasip.detection.ese.pot">
+<span class="sig-prename descclassname"><span class="pre">padasip.detection.ese.</span></span><span class="sig-name descname"><span class="pre">pot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/detection/ese.html#pot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#padasip.detection.ese.pot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peak-Over-Threshold method.
+:param data: input data (n samples)
+:param method: method identifier
+:return: k highest values</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#instalation">Instalation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#tutorials">Tutorials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html#the-user-quide">The User Quide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#changelog">Changelog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../index.html#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../detection.html">Detection Tools</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="elbnd.html">Error and Learning Based Novelty Detection (ELBND)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Extreme Seeking Entropy (ESE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="le.html">Learning Entropy (LE)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../detection.html">Detection Tools</a><ul>
+      <li>Previous: <a href="elbnd.html" title="previous chapter">Error and Learning Based Novelty Detection (ELBND)</a></li>
+      <li>Next: <a href="le.html" title="next chapter">Learning Entropy (LE)</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/sources/detection/ese.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

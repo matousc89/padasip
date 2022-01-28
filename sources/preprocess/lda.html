@@ -1,32 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Linear Discriminant Analysis (LDA) &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="../../index.html" />
-    <link rel="up" title="Data Preprocessing" href="../preprocess.html" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Linear Discriminant Analysis (LDA) &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Principal Component Analysis (PCA)" href="pca.html" />
     <link rel="prev" title="Input Matrix Construction" href="input_from_history.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
@@ -41,13 +30,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="../support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -55,50 +38,51 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="module-padasip.preprocess.lda">
+  <section id="module-padasip.preprocess.lda">
 <span id="linear-discriminant-analysis-lda"></span><span id="preprocess-lda"></span><h1>Linear Discriminant Analysis (LDA)<a class="headerlink" href="#module-padasip.preprocess.lda" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.6.</span></p>
+<p><span class="versionmodified added">New in version 0.6.</span></p>
 </div>
-<p>Linear discriminant analysis (LDA) <a class="reference internal" href="#fisher1936use" id="id1">[1]</a>
+<p>Linear discriminant analysis (LDA)
 is a method used to determine the features
 that separates some classes of items. The output of LDA may be used as
 a linear classifier, or for dimensionality reduction for purposes of
 classification.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#usage-explanation" id="id2">Usage Explanation</a></li>
-<li><a class="reference internal" href="#minimal-working-examples" id="id3">Minimal Working Examples</a></li>
-<li><a class="reference internal" href="#references" id="id4">References</a></li>
-<li><a class="reference internal" href="#code-explanation" id="id5">Code Explanation</a></li>
+<li><p><a class="reference internal" href="#usage-explanation" id="id1">Usage Explanation</a></p></li>
+<li><p><a class="reference internal" href="#minimal-working-examples" id="id2">Minimal Working Examples</a></p></li>
+<li><p><a class="reference internal" href="#code-explanation" id="id3">Code Explanation</a></p></li>
 </ul>
 </div>
 <p>See also: <a class="reference internal" href="pca.html#preprocess-pca"><span class="std std-ref">Principal Component Analysis (PCA)</span></a></p>
-<div class="section" id="usage-explanation">
-<h2><a class="toc-backref" href="#id2">Usage Explanation</a><a class="headerlink" href="#usage-explanation" title="Permalink to this headline">¶</a></h2>
-<p>For reduction of data-set <code class="code docutils literal"><span class="pre">x</span></code> with labels stored in array (<code class="code docutils literal"><span class="pre">labels</span></code>)
-to new dataset <code class="code docutils literal"><span class="pre">new_x</span></code> containg just <code class="code docutils literal"><span class="pre">n</span></code> number of
+<section id="usage-explanation">
+<h2><a class="toc-backref" href="#id1">Usage Explanation</a><a class="headerlink" href="#usage-explanation" title="Permalink to this headline">¶</a></h2>
+<p>For reduction of data-set <code class="code docutils literal notranslate"><span class="pre">x</span></code> with labels stored in array (<code class="code docutils literal notranslate"><span class="pre">labels</span></code>)
+to new dataset <code class="code docutils literal notranslate"><span class="pre">new_x</span></code> containg just <code class="code docutils literal notranslate"><span class="pre">n</span></code> number of
 columns</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">new_x</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> 
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_x</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The sorted array of scattermatrix eigenvalues for dataset <code class="code docutils literal"><span class="pre">x</span></code> described
-with variable <code class="code docutils literal"><span class="pre">labels</span></code> can be obtained as follows</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA_discriminants</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> 
+<p>The sorted array of scattermatrix eigenvalues for dataset <code class="code docutils literal notranslate"><span class="pre">x</span></code> described
+with variable <code class="code docutils literal notranslate"><span class="pre">labels</span></code> can be obtained as follows</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA_discriminants</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="minimal-working-examples">
-<h2><a class="toc-backref" href="#id3">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
-<p>In this example we create data-set <code class="code docutils literal"><span class="pre">x</span></code> of 150 random samples. Every sample
-is described by 4 values and label. The labels are stored in 
-array <code class="code docutils literal"><span class="pre">labels</span></code>.</p>
+</section>
+<section id="minimal-working-examples">
+<h2><a class="toc-backref" href="#id2">Minimal Working Examples</a><a class="headerlink" href="#minimal-working-examples" title="Permalink to this headline">¶</a></h2>
+<p>In this example we create data-set <code class="code docutils literal notranslate"><span class="pre">x</span></code> of 150 random samples. Every sample
+is described by 4 values and label. The labels are stored in
+array <code class="code docutils literal notranslate"><span class="pre">labels</span></code>.</p>
 <p>Firstly, it is good to see the eigenvalues of scatter matrix to determine
 how many rows is reasonable to reduce</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># constant seed to keep the results consistent</span>
 
@@ -109,17 +93,17 @@ how many rows is reasonable to reduce</p>
 <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span> <span class="c1"># random data</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">N</span><span class="p">)</span> <span class="c1"># random labels</span>
 
-<span class="k">print</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA_discriminants</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">pa</span><span class="o">.</span><span class="n">preprocess</span><span class="o">.</span><span class="n">LDA_discriminants</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>what prints</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span>  <span class="mf">2.90863957e-02</span>   <span class="mf">2.28352079e-02</span>   <span class="mf">1.23545720e-18</span>  <span class="o">-</span><span class="mf">1.61163011e-18</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span>  <span class="mf">2.90863957e-02</span>   <span class="mf">2.28352079e-02</span>   <span class="mf">1.23545720e-18</span>  <span class="o">-</span><span class="mf">1.61163011e-18</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>From this output it is obvious that reasonable number of columns to keep is 2.
 The following code reduce the number of features to 2.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1"># constant seed to keep the results consistent</span>
 
@@ -135,81 +119,72 @@ The following code reduce the number of features to 2.</p>
 </div>
 <p>to check if the size of new data-set is really correct we can print the shapes
 as follows</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;Shape of original dataset: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> 
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;Shape of original dataset: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">Shape of original dataset: (150, 4)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;Shape of new dataset: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">Shape of new dataset: (150, 2)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="references">
-<h2><a class="toc-backref" href="#id4">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p id="bibtex-bibliography-sources/preprocess/lda-0"><table class="docutils citation" frame="void" id="fisher1936use" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Ronald&nbsp;A Fisher. The use of multiple measurements in taxonomic problems. <em>Annals of eugenics</em>, 7(2):179–188, 1936.</td></tr>
-</tbody>
-</table>
-</p>
-</div>
-<div class="section" id="code-explanation">
-<h2><a class="toc-backref" href="#id5">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="padasip.preprocess.lda.LDA">
-<code class="descclassname">padasip.preprocess.lda.</code><code class="descname">LDA</code><span class="sig-paren">(</span><em>x</em>, <em>labels</em>, <em>n=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="code-explanation">
+<h2><a class="toc-backref" href="#id3">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="padasip.preprocess.lda.LDA">
+<span class="sig-prename descclassname"><span class="pre">padasip.preprocess.lda.</span></span><span class="sig-name descname"><span class="pre">LDA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear Discriminant Analysis function.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
-<li><cite>x</cite> : input matrix (2d array), every row represents new sample</li>
-<li><cite>labels</cite> : list of labels (iterable), every item should be label for       sample with corresponding index</li>
+<li><p><cite>x</cite> : input matrix (2d array), every row represents new sample</p></li>
+<li><p><cite>labels</cite> : list of labels (iterable), every item should be label for       sample with corresponding index</p></li>
 </ul>
 <p><strong>Kwargs:</strong></p>
 <ul class="simple">
-<li><cite>n</cite> : number of features returned (integer) - how many columns 
-should the output keep</li>
+<li><p><cite>n</cite> : number of features returned (integer) - how many columns
+should the output keep</p></li>
 </ul>
 <p><strong>Returns:</strong></p>
 <ul class="simple">
-<li>new_x : matrix with reduced size (number of columns are equal <cite>n</cite>)</li>
+<li><p>new_x : matrix with reduced size (number of columns are equal <cite>n</cite>)</p></li>
 </ul>
 </dd></dl>
 
-<dl class="function">
-<dt id="padasip.preprocess.lda.LDA_base">
-<code class="descclassname">padasip.preprocess.lda.</code><code class="descname">LDA_base</code><span class="sig-paren">(</span><em>x</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA_base" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="padasip.preprocess.lda.LDA_base">
+<span class="sig-prename descclassname"><span class="pre">padasip.preprocess.lda.</span></span><span class="sig-name descname"><span class="pre">LDA_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base function used for Linear Discriminant Analysis.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
-<li><cite>x</cite> : input matrix (2d array), every row represents new sample</li>
-<li><cite>labels</cite> : list of labels (iterable), every item should be label for       sample with corresponding index</li>
+<li><p><cite>x</cite> : input matrix (2d array), every row represents new sample</p></li>
+<li><p><cite>labels</cite> : list of labels (iterable), every item should be label for       sample with corresponding index</p></li>
 </ul>
 <p><strong>Returns:</strong></p>
 <ul class="simple">
-<li><cite>eigenvalues</cite>, <cite>eigenvectors</cite> : eigenvalues and eigenvectors       from LDA analysis</li>
+<li><p><cite>eigenvalues</cite>, <cite>eigenvectors</cite> : eigenvalues and eigenvectors       from LDA analysis</p></li>
 </ul>
 </dd></dl>
 
-<dl class="function">
-<dt id="padasip.preprocess.lda.LDA_discriminants">
-<code class="descclassname">padasip.preprocess.lda.</code><code class="descname">LDA_discriminants</code><span class="sig-paren">(</span><em>x</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA_discriminants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA_discriminants" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="padasip.preprocess.lda.LDA_discriminants">
+<span class="sig-prename descclassname"><span class="pre">padasip.preprocess.lda.</span></span><span class="sig-name descname"><span class="pre">LDA_discriminants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/preprocess/lda.html#LDA_discriminants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#padasip.preprocess.lda.LDA_discriminants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear Discriminant Analysis helper for determination how many columns of
 data should be reduced.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
-<li><cite>x</cite> : input matrix (2d array), every row represents new sample</li>
-<li><cite>labels</cite> : list of labels (iterable), every item should be label for         sample with corresponding index</li>
+<li><p><cite>x</cite> : input matrix (2d array), every row represents new sample</p></li>
+<li><p><cite>labels</cite> : list of labels (iterable), every item should be label for         sample with corresponding index</p></li>
 </ul>
 <p><strong>Returns:</strong></p>
 <ul class="simple">
-<li><cite>discriminants</cite> : array of eigenvalues sorted in descending order</li>
+<li><p><cite>discriminants</cite> : array of eigenvalues sorted in descending order</p></li>
 </ul>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -221,7 +196,7 @@ data should be reduced.</p>
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../index.html">Table of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
@@ -244,7 +219,6 @@ data should be reduced.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../misc.html">Miscellaneous</a></li>
 </ul>
@@ -260,15 +234,15 @@ data should be reduced.</p>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -277,11 +251,11 @@ data should be reduced.</p>
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../_sources/sources/preprocess/lda.txt"
+      <a href="../../_sources/sources/preprocess/lda.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>padasip.detection &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="description" content="Padasip - Python Adaptive Signal Processing">
+    <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-73796119-2', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+  </head><body>
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for padasip.detection</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. versionadded:: 1.0.0</span>
+<span class="sd">.. versionchanged:: 1.2.0</span>
+
+<span class="sd">This module contatines tools for tasks of detection, known as:</span>
+
+<span class="sd">* Novelty detection</span>
+
+<span class="sd">* Fault Detection</span>
+
+<span class="sd">* Outlier Detection</span>
+
+<span class="sd">* System change point detection</span>
+
+<span class="sd">Content of this page:</span>
+
+<span class="sd">.. contents::</span>
+<span class="sd">   :local:</span>
+<span class="sd">   :depth: 1</span>
+
+
+<span class="sd">Implemented tools</span>
+<span class="sd">========================</span>
+
+<span class="sd">.. toctree::</span>
+<span class="sd">    :glob:</span>
+<span class="sd">    :maxdepth: 1</span>
+
+<span class="sd">    detection/*</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">padasip.detection.le</span> <span class="kn">import</span> <span class="n">learning_entropy</span>
+<span class="kn">from</span> <span class="nn">padasip.detection.elbnd</span> <span class="kn">import</span> <span class="n">ELBND</span>
+
+<div class="viewcode-block" id="ese_not_imported"><a class="viewcode-back" href="../../sources/detection.html#padasip.detection.ese_not_imported">[docs]</a><span class="k">def</span> <span class="nf">ese_not_imported</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise error if ESE is called without scipy installed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;You have to install scipy package in order to use ESE.&#39;</span><span class="p">)</span></div>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">padasip.detection.ese</span> <span class="kn">import</span> <span class="n">ESE</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ESE</span> <span class="o">=</span> <span class="n">ese_not_imported</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+<a href="https://github.com/matousc89/padasip"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 5px;"></iframe>
+
+<iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
+
+<h3><a href="../../index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Padasip</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/preprocess.html">Data Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/filters.html">Adaptive Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/detection.html">Detection Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sources/misc.html">Miscellaneous</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Matous C.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

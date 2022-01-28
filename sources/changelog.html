@@ -1,31 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Changelog &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="../index.html" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Changelog &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -38,13 +28,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -52,50 +36,59 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="changelog">
+  <section id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
-<dl class="docutils">
-<dt><strong>Version 1.1.1</strong> <em>Released: 2017-08-06</em></dt>
-<dd>Bugfix of adaptive filter helper function according to
-<a class="reference external" href="https://github.com/pckbls">Patrick Bartels</a> comments.</dd>
-<dt><strong>Version 1.1.0</strong> <em>Released: 2017-05-19</em></dt>
-<dd>Added new adaptive filters <a class="reference internal" href="filters/lmf.html#filter-lmf"><span class="std std-ref">Least-mean-fourth (LMF)</span></a>, <a class="reference internal" href="filters/nlmf.html#filter-nlmf"><span class="std std-ref">Normalized Least-mean-fourth (NLMF)</span></a>,
-<a class="reference internal" href="filters/sslms.html#filter-sslms"><span class="std std-ref">Sign-sign Least-mean-squares (SSLMS)</span></a> and <a class="reference internal" href="filters/nsslms.html#filter-nsslms"><span class="std std-ref">Normalized Sign-sign Least-mean-squares (NSSLMS)</span></a>.</dd>
-<dt><strong>Version 1.0.0</strong> <em>Released: 2017-03-16</em></dt>
-<dd>Added module <a class="reference internal" href="detection.html#detection"><span class="std std-ref">Detection Tools</span></a> containing <a class="reference internal" href="detection/le.html#detection-le"><span class="std std-ref">Learning Entropy (LE)</span></a> and
+<dl class="simple">
+<dt><strong>Version 1.2.0</strong> <em>2022-01-28</em></dt><dd><p>All adaptive filters were significantly refactored.
+Added new adaptive filters <a class="reference internal" href="filters/gmcc.html#filter-gmcc"><span class="std std-ref">Generalized maximum correntropy criterion (GMCC)</span></a>, <a class="reference internal" href="filters/llncosh.html#filter-llncosh"><span class="std std-ref">Least Lncosh (Llncosh)</span></a>.
+Added new detection tool <a class="reference internal" href="detection/ese.html#detection-ese"><span class="std std-ref">Extreme Seeking Entropy (ESE)</span></a>.
+ANN module is removed from docs, and will be removed totally in future -
+there are much better Python libraries for ANN utilization.</p>
+</dd>
+<dt><strong>Version 1.1.1</strong> <em>Released: 2017-08-06</em></dt><dd><p>Bugfix of adaptive filter helper function according to comments of
+<a class="reference external" href="https://github.com/pckbls">Patrick Bartels</a>.</p>
+</dd>
+<dt><strong>Version 1.1.0</strong> <em>Released: 2017-05-19</em></dt><dd><p>Added new adaptive filters <a class="reference internal" href="filters/lmf.html#filter-lmf"><span class="std std-ref">Least-mean-fourth (LMF)</span></a>, <a class="reference internal" href="filters/nlmf.html#filter-nlmf"><span class="std std-ref">Normalized Least-mean-fourth (NLMF)</span></a>,
+<a class="reference internal" href="filters/sslms.html#filter-sslms"><span class="std std-ref">Sign-sign Least-mean-squares (SSLMS)</span></a> and <a class="reference internal" href="filters/nsslms.html#filter-nsslms"><span class="std std-ref">Normalized Sign-sign Least-mean-squares (NSSLMS)</span></a>.</p>
+</dd>
+<dt><strong>Version 1.0.0</strong> <em>Released: 2017-03-16</em></dt><dd><p>Added module <a class="reference internal" href="detection.html#detection"><span class="std std-ref">Detection Tools</span></a> containing <a class="reference internal" href="detection/le.html#detection-le"><span class="std std-ref">Learning Entropy (LE)</span></a> and
 <a class="reference internal" href="detection/elbnd.html#detection-elbnd"><span class="std std-ref">Error and Learning Based Novelty Detection (ELBND)</span></a>.
 All implemented adaptive filters were updated. As a result,
 some obsolete helper functions for the adaptive filters were removed.
 Please use newer helper functions introduced in v0.7.
-Tutorials were updated and moved to <a class="reference external" href="https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook">Python Adaptive Signal Processing Handbook</a>.</dd>
-<dt><strong>Version 0.7</strong> <em>Released: 2017-01-07</em></dt>
-<dd>Added new helper functions into  <a class="reference internal" href="filters.html#filters"><span class="std std-ref">Adaptive Filters</span></a>. Furthermore, the
+Tutorials were updated and moved to <a class="reference external" href="https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook">Python Adaptive Signal Processing Handbook</a>.</p>
+</dd>
+<dt><strong>Version 0.7</strong> <em>Released: 2017-01-07</em></dt><dd><p>Added new helper functions into  <a class="reference internal" href="filters.html#filters"><span class="std std-ref">Adaptive Filters</span></a>. Furthermore, the
 documentation for adaptive filters module was updated.
 Added functions for error evaluation - MSE, MAE, RMSE and logSE
-(<a class="reference internal" href="misc/error_evaluation.html#mics-error-evaluation"><span class="std std-ref">Error Evaluation</span></a>).</dd>
-<dt><strong>Version 0.6</strong> <em>Released: 2016-12-15</em></dt>
-<dd>Added <a class="reference internal" href="preprocess/pca.html#preprocess-pca"><span class="std std-ref">Principal Component Analysis (PCA)</span></a> and <a class="reference internal" href="preprocess/lda.html#preprocess-lda"><span class="std std-ref">Linear Discriminant Analysis (LDA)</span></a>. The whole documentation
-for preprocess module was updated.</dd>
-<dt><strong>Version 0.5</strong> <em>Released: 2016-11-16</em></dt>
-<dd>Bugfix according to issue opened by <a class="reference external" href="https://github.com/lolpenguin">https://github.com/lolpenguin</a></dd>
-<dt><strong>Version 0.4</strong> <em>Released: 2016-09-29</em></dt>
-<dd>Added <a class="reference internal" href="filters/ap.html#filter-ap"><span class="std std-ref">Affine Projection (AP)</span></a>. And also the first unit tests were implemented.</dd>
-<dt><strong>Version 0.3</strong> <em>Released: 2016-09-22</em></dt>
-<dd>Added <a class="reference internal" href="ann/mlp.html#ann-mlp"><span class="std std-ref">Multi-layer Perceptron (MLP)</span></a></dd>
-<dt><strong>Version 0.2</strong> <em>Released: 2016-09-02</em></dt>
-<dd>Added <a class="reference internal" href="filters/gngd.html#filter-gngd"><span class="std std-ref">Generalized Normalized Gradient Descent (GNGD)</span></a></dd>
-<dt><strong>Version 0.1</strong> <em>Released: 2016-03-18</em></dt>
-<dd>Created
+(<a class="reference internal" href="misc/error_evaluation.html#mics-error-evaluation"><span class="std std-ref">Error Evaluation</span></a>).</p>
+</dd>
+<dt><strong>Version 0.6</strong> <em>Released: 2016-12-15</em></dt><dd><p>Added <a class="reference internal" href="preprocess/pca.html#preprocess-pca"><span class="std std-ref">Principal Component Analysis (PCA)</span></a> and <a class="reference internal" href="preprocess/lda.html#preprocess-lda"><span class="std std-ref">Linear Discriminant Analysis (LDA)</span></a>. The whole documentation
+for preprocess module was updated.</p>
+</dd>
+<dt><strong>Version 0.5</strong> <em>Released: 2016-11-16</em></dt><dd><p>Bugfix according to issue opened by <a class="reference external" href="https://github.com/lolpenguin">https://github.com/lolpenguin</a></p>
+</dd>
+<dt><strong>Version 0.4</strong> <em>Released: 2016-09-29</em></dt><dd><p>Added <a class="reference internal" href="filters/ap.html#filter-ap"><span class="std std-ref">Affine Projection (AP)</span></a>. And also the first unit tests were implemented.</p>
+</dd>
+<dt><strong>Version 0.3</strong> <em>Released: 2016-09-22</em></dt><dd><p>Added MLP into ANN module.</p>
+</dd>
+<dt><strong>Version 0.2</strong> <em>Released: 2016-09-02</em></dt><dd><p>Added <a class="reference internal" href="filters/gngd.html#filter-gngd"><span class="std std-ref">Generalized Normalized Gradient Descent (GNGD)</span></a></p>
+</dd>
+<dt><strong>Version 0.1</strong> <em>Released: 2016-03-18</em></dt><dd><p>Created
 <a class="reference internal" href="filters/lms.html#filter-lms"><span class="std std-ref">Least-mean-squares (LMS)</span></a>, <a class="reference internal" href="filters/nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-squares (NLMS)</span></a>,
 <a class="reference internal" href="filters/rls.html#filter-rls"><span class="std std-ref">Recursive Least Squares (RLS)</span></a>, <a class="reference internal" href="preprocess/input_from_history.html#preprocess-input-from-history"><span class="std std-ref">Input Matrix Construction</span></a>,
-<a class="reference internal" href="preprocess/standardize.html#preprocess-standardize"><span class="std std-ref">Data Standardization</span></a>, <a class="reference internal" href="preprocess/standardize_back.html#preprocess-standardize-back"><span class="std std-ref">Data De-standardization</span></a></dd>
+<a class="reference internal" href="preprocess/standardize.html#preprocess-standardize"><span class="std std-ref">Data Standardization</span></a>, <a class="reference internal" href="preprocess/standardize_back.html#preprocess-standardize-back"><span class="std std-ref">Data De-standardization</span></a></p>
+</dd>
 </dl>
-</div>
+</section>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -107,14 +100,13 @@ for preprocess module was updated.</dd>
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="../index.html">Table Of Contents</a></h3>
+<h3><a href="../index.html">Table of Contents</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Padasip</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="misc.html">Miscellaneous</a></li>
 </ul>
@@ -126,15 +118,15 @@ for preprocess module was updated.</dd>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -143,11 +135,11 @@ for preprocess module was updated.</dd>
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../_sources/sources/changelog.txt"
+      <a href="../_sources/sources/changelog.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

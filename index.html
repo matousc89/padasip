@@ -1,31 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Padasip &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="#" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Padasip &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Data Preprocessing" href="sources/preprocess.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
@@ -39,13 +29,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="sources/support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -53,20 +37,22 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="padasip">
+  <section id="padasip">
 <h1>Padasip<a class="headerlink" href="#padasip" title="Permalink to this headline">¶</a></h1>
 <p><em>Python Adaptive Signal Processing</em></p>
-<span class="target" id="module-padasip"></span><p>Current version: 1.1.1 (<a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>)</p>
-<p>This library is designed to simplify adaptive signal 
+<span class="target" id="module-padasip"></span><p>Current version: 1.2.0 (<a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>)</p>
+<p>This library is designed to simplify adaptive signal
 processing tasks within python
 (filtering, prediction, reconstruction, classification).
 For code optimisation,
 this library uses <a class="reference external" href="http://www.numpy.org/">Numpy</a> for array operations.</p>
 <p>Also in this library is presented some new methods
 for adaptive signal processing.
-The library is designed to be used with datasets and also with 
+The library is designed to be used with datasets and also with
 real-time measuring (sample-after-sample feeding).</p>
 <div class="toctree-wrapper compound">
 <ul class="current">
@@ -82,22 +68,22 @@ real-time measuring (sample-after-sample feeding).</p>
 </li>
 </ul>
 </div>
-<div class="section" id="license">
+<section id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
 <p>This project is under <a class="reference external" href="https://en.wikipedia.org/wiki/MIT_License">MIT License</a>.</p>
-</div>
-<div class="section" id="instalation">
+</section>
+<section id="instalation">
 <h2>Instalation<a class="headerlink" href="#instalation" title="Permalink to this headline">¶</a></h2>
-<p>With <a class="reference external" href="https://pypi.python.org/pypi/pip">pip</a> from terminal: <code class="docutils literal"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">padasip</span></code></p>
+<p>With <a class="reference external" href="https://pypi.python.org/pypi/pip">pip</a> from terminal: <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">padasip</span></code></p>
 <p>Or download you can download the source codes from Github
 (<a class="reference external" href="https://github.com/matousc89/padasip">link</a>)</p>
-</div>
-<div class="section" id="tutorials">
+</section>
+<section id="tutorials">
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
 <p>All Padasip related tutorials are created as Jupyter notebooks. You can find
 them in <a class="reference external" href="https://github.com/matousc89/Python-Adaptive-Signal-Processing-Handbook">Python Adaptive Signal Processing Handbook</a>.</p>
-</div>
-<div class="section" id="the-user-quide">
+</section>
+<section id="the-user-quide">
 <h2>The User Quide<a class="headerlink" href="#the-user-quide" title="Permalink to this headline">¶</a></h2>
 <p>If you need to know something what is not covered by tutorials,
 check the complete documentation here</p>
@@ -113,7 +99,9 @@ check the complete documentation here</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="sources/filters.html">Adaptive Filters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/ap.html">Affine Projection (AP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/gmcc.html">Generalized maximum correntropy criterion (GMCC)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/gngd.html">Generalized Normalized Gradient Descent (GNGD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/filters/llncosh.html">Least Lncosh (Llncosh)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/lmf.html">Least-mean-fourth (LMF)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/lms.html">Least-mean-squares (LMS)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/nlmf.html">Normalized Least-mean-fourth (NLMF)</a></li>
@@ -123,12 +111,9 @@ check the complete documentation here</p>
 <li class="toctree-l2"><a class="reference internal" href="sources/filters/sslms.html">Sign-sign Least-mean-squares (SSLMS)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sources/ann.html">Artificial Neural Networks (ANN)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sources/ann/mlp.html">Multi-layer Perceptron (MLP)</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="sources/detection.html">Detection Tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sources/detection/elbnd.html">Error and Learning Based Novelty Detection (ELBND)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sources/detection/ese.html">Extreme Seeking Entropy (ESE)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sources/detection/le.html">Learning Entropy (LE)</a></li>
 </ul>
 </li>
@@ -138,27 +123,28 @@ check the complete documentation here</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="contact">
+</section>
+<section id="contact">
 <h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
 <p>By email: <a class="reference external" href="mailto:matousc&#37;&#52;&#48;gmail&#46;com">matousc<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
-</div>
-<div class="section" id="changelog">
+</section>
+<section id="changelog">
 <h2>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h2>
-<p>For informations about versions and updates see <a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>.</p>
-</div>
-<div class="section" id="indices-and-tables">
+<p>For information about versions and updates see <a class="reference internal" href="sources/changelog.html#changelog"><span class="std std-ref">Changelog</span></a>.</p>
+</section>
+<section id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -170,7 +156,7 @@ check the complete documentation here</p>
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="#">Table Of Contents</a></h3>
+<h3><a href="#">Table of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Padasip</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
@@ -186,7 +172,6 @@ check the complete documentation here</p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sources/preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sources/ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources/misc.html">Miscellaneous</a></li>
 </ul>
@@ -199,15 +184,15 @@ check the complete documentation here</p>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -216,11 +201,11 @@ check the complete documentation here</p>
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/index.txt"
+      <a href="_sources/index.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

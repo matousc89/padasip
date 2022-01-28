@@ -1,32 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>padasip.filters.sslms &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="../../../index.html" />
-    <link rel="up" title="padasip.filters" href="../filters.html" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>padasip.filters.sslms &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -39,13 +27,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="../../../sources/support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -53,20 +35,20 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for padasip.filters.sslms</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">.. versionchanged:: 1.1.0</span>
+<span class="sd">.. versionadded:: 1.1.0</span>
+<span class="sd">.. versionchanged:: 1.2.0</span>
 
-<span class="sd">The sign-sign least-mean-squares (SSLMS) adaptive filter is implemented</span>
-<span class="sd">according paper :cite:`rahman2009noise`.</span>
-
-<span class="sd">The SSLMS filter can be created as follows</span>
+<span class="sd">The sign-sign least-mean-squares (SSLMS) adaptive filter can be created as follows</span>
 
 <span class="sd">    &gt;&gt;&gt; import padasip as pa</span>
 <span class="sd">    &gt;&gt;&gt; pa.filters.FilterSSLMS(n)</span>
-<span class="sd">    </span>
+
 <span class="sd">where :code:`n` is the size (number of taps) of the filter.</span>
 
 <span class="sd">Content of this page:</span>
@@ -119,7 +101,7 @@
 
 <span class="sd">    import numpy as np</span>
 <span class="sd">    import matplotlib.pylab as plt</span>
-<span class="sd">    import padasip as pa </span>
+<span class="sd">    import padasip as pa</span>
 
 <span class="sd">    # creation of data</span>
 <span class="sd">    N = 500</span>
@@ -141,117 +123,30 @@
 <span class="sd">    plt.tight_layout()</span>
 <span class="sd">    plt.show()</span>
 
-<span class="sd">References</span>
-<span class="sd">============</span>
-
-<span class="sd">.. bibliography:: sslms.bib</span>
-<span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
 <span class="sd">====================</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">padasip.filters.base_filter</span> <span class="k">import</span> <span class="n">AdaptiveFilter</span>
+<span class="kn">from</span> <span class="nn">padasip.filters.base_filter</span> <span class="kn">import</span> <span class="n">AdaptiveFilter</span>
+
 
 <div class="viewcode-block" id="FilterSSLMS"><a class="viewcode-back" href="../../../sources/filters/sslms.html#padasip.filters.sslms.FilterSSLMS">[docs]</a><span class="k">class</span> <span class="nc">FilterSSLMS</span><span class="p">(</span><span class="n">AdaptiveFilter</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class represents an adaptive SSLMS filter.</span>
-
-<span class="sd">    **Args:**</span>
-
-<span class="sd">    * `n` : length of filter (integer) - how many input is input array</span>
-<span class="sd">      (row of input matrix)</span>
-
-<span class="sd">    **Kwargs:**</span>
-
-<span class="sd">    * `mu` : learning rate (float). Also known as step size. If it is too slow,</span>
-<span class="sd">      the filter may have bad performance. If it is too high,</span>
-<span class="sd">      the filter will be unstable. The default value can be unstable</span>
-<span class="sd">      for ill-conditioned input data.</span>
-
-<span class="sd">    * `w` : initial weights of filter. Possible values are:</span>
-<span class="sd">        </span>
-<span class="sd">        * array with initial weights (1 dimensional array) of filter size</span>
-<span class="sd">    </span>
-<span class="sd">        * &quot;random&quot; : create random weights</span>
-<span class="sd">        </span>
-<span class="sd">        * &quot;zeros&quot; : create zero value weights</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;SSLMS filter&quot;</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The size of filter must be an integer&#39;</span><span class="p">)</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_float_param</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">init_weights</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="s2">&quot;SSLMS&quot;</span>
 
-<div class="viewcode-block" id="FilterSSLMS.adapt"><a class="viewcode-back" href="../../../sources/filters/sslms.html#padasip.filters.sslms.FilterSSLMS.adapt">[docs]</a>    <span class="k">def</span> <span class="nf">adapt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="FilterSSLMS.learning_rule"><a class="viewcode-back" href="../../../sources/filters/sslms.html#padasip.filters.sslms.FilterSSLMS.learning_rule">[docs]</a>    <span class="k">def</span> <span class="nf">learning_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adapt weights according one desired value and its input.</span>
-
-<span class="sd">        **Args:**</span>
-
-<span class="sd">        * `d` : desired value (float)</span>
-
-<span class="sd">        * `x` : input array (1-dimensional array)</span>
+<span class="sd">        Override the parent class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">-</span> <span class="n">y</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>        </div>
-
-<div class="viewcode-block" id="FilterSSLMS.run"><a class="viewcode-back" href="../../../sources/filters/sslms.html#padasip.filters.sslms.FilterSSLMS.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function filters multiple samples in a row.</span>
-
-<span class="sd">        **Args:**</span>
-
-<span class="sd">        * `d` : desired value (1 dimensional array)</span>
-
-<span class="sd">        * `x` : input matrix (2-dimensional array). Rows are samples,</span>
-<span class="sd">          columns are input arrays.</span>
-
-<span class="sd">        **Returns:**</span>
-
-<span class="sd">        * `y` : output value (1 dimensional array).</span>
-<span class="sd">          The size corresponds with the desired value.</span>
-
-<span class="sd">        * `e` : filter error for every sample (1 dimensional array).</span>
-<span class="sd">          The size corresponds with the desired value.</span>
-
-<span class="sd">        * `w` : history of all weights (2 dimensional array).</span>
-<span class="sd">          Every row is set of the weights for given sample.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># measure the data and check if the dimmension agree</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The length of vector d and matrix x must agree.&#39;</span><span class="p">)</span>  
-        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="c1"># prepare data</span>
-        <span class="k">try</span><span class="p">:</span>    
-            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Impossible to convert x or d to a numpy array&#39;</span><span class="p">)</span>
-        <span class="c1"># create empty arrays</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
-        <span class="c1"># adaptation loop</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
-            <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-            <span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-            <span class="n">dw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">+=</span> <span class="n">dw</span>
-        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_history</span></div></div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -263,14 +158,13 @@
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Padasip</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/misc.html">Miscellaneous</a></li>
 </ul>
@@ -286,15 +180,15 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -303,8 +197,8 @@
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

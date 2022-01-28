@@ -1,32 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>padasip.detection.elbnd &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>padasip.detection.elbnd &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -39,13 +27,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="../../../sources/support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -53,15 +35,17 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <h1>Source code for padasip.detection.elbnd</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. versionadded:: 1.0.0</span>
+<span class="sd">.. versionchanged:: 1.2.0</span>
 
-<span class="sd">The Error and Learning Based Novelty Detection (ELBND)is based on the</span>
-<span class="sd">evaluation of an adaptive model error and the change of its parameters</span>
-<span class="sd">:cite:`cejnek2015adaptive`, :cite:`cejnek2014another`.</span>
+<span class="sd">The Error and Learning Based Novelty Detection (ELBND) is based on the</span>
+<span class="sd">evaluation of an adaptive model error and the change of its parameters.</span>
 
 <span class="sd">Content of this page:</span>
 
@@ -98,14 +82,14 @@
 
 <span class="sd">where `w` is matrix of the adaptive parameters (changing in time, every row</span>
 <span class="sd">should represent one time index), `e` is error of adaptive model and</span>
-<span class="sd">`function` is input function, in this case maximum. </span>
+<span class="sd">`function` is input function, in this case maximum.</span>
 
 
 <span class="sd">Minimal Working Example</span>
 <span class="sd">============================</span>
 
 <span class="sd">In this example is demonstrated how can the LE highligh the position of</span>
-<span class="sd">a perturbation inserted in a data. As the adaptive model is used </span>
+<span class="sd">a perturbation inserted in a data. As the adaptive model is used</span>
 <span class="sd">:ref:`filter-nlms` adaptive filter. The perturbation is manually inserted</span>
 <span class="sd">in sample with index :math:`k=1000` (the length of data is 2000).</span>
 
@@ -113,7 +97,7 @@
 
 <span class="sd">    import numpy as np</span>
 <span class="sd">    import matplotlib.pylab as plt</span>
-<span class="sd">    import padasip as pa </span>
+<span class="sd">    import padasip as pa</span>
 
 <span class="sd">    # data creation</span>
 <span class="sd">    n = 5</span>
@@ -131,16 +115,10 @@
 <span class="sd">    # estimation of LE with weights from learning model</span>
 <span class="sd">    elbnd = pa.detection.ELBND(w, e, function=&quot;max&quot;)</span>
 
-<span class="sd">    # LE plot</span>
+<span class="sd">    # ELBND plot</span>
 <span class="sd">    plt.plot(elbnd)</span>
 <span class="sd">    plt.show()</span>
 
-
-<span class="sd">References</span>
-<span class="sd">============</span>
-
-<span class="sd">.. bibliography:: elbnd.bib</span>
-<span class="sd">    :style: plain</span>
 
 <span class="sd">Code Explanation</span>
 <span class="sd">====================</span>
@@ -164,9 +142,9 @@
 
 <span class="sd">    * `functions` : output function (str). The way how to produce single</span>
 <span class="sd">      value for every sample (from all parameters)</span>
-<span class="sd">      </span>
+
 <span class="sd">        * `max` - maximal value</span>
-<span class="sd">      </span>
+
 <span class="sd">        * `sum` - sum of values</span>
 
 <span class="sd">    **Returns:**</span>
@@ -175,32 +153,24 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check if the function is known</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">function</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">function</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unknown output function&#39;</span><span class="p">)</span>
-    <span class="c1"># get length of data and number of parameters</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">n</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># get abs dw from w</span>
     <span class="n">dw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
     <span class="n">dw</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
     <span class="c1"># absolute values of product of increments and error</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
     <span class="n">elbnd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">dw</span><span class="o">.</span><span class="n">T</span><span class="o">*</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
     <span class="c1"># apply output function</span>
     <span class="k">if</span> <span class="n">function</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
         <span class="n">elbnd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">elbnd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">function</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span>
-        <span class="n">elbnd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">elbnd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> 
+        <span class="n">elbnd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">elbnd</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="c1"># return output</span>
     <span class="k">return</span> <span class="n">elbnd</span></div>
-
-
-
-
 </pre></div>
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -212,14 +182,13 @@
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Padasip</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../sources/ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/detection.html">Detection Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources/misc.html">Miscellaneous</a></li>
 </ul>
@@ -228,20 +197,22 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../detection.html">padasip.detection</a><ul>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -250,8 +221,8 @@
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

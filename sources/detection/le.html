@@ -1,34 +1,24 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Learning Entropy (LE) &#8212; Padasip 1.1.1 documentation</title>
-    
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '1.1.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Padasip 1.1.1 documentation" href="../../index.html" />
-    <link rel="up" title="Detection Tools" href="../detection.html" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Learning Entropy (LE) &#8212; Padasip 1.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Miscellaneous" href="../misc.html" />
-    <link rel="prev" title="Error and Learning Based Novelty Detection (ELBND)" href="elbnd.html" />
+    <link rel="prev" title="Extreme Seeking Entropy (ESE)" href="ese.html" />
     <meta name="description" content="Padasip - Python Adaptive Signal Processing">
     <meta name="keywords" content="Adaptive,Signal,Processing,Filters,Neural Networks,">
     <script>
@@ -41,13 +31,7 @@
       ga('send', 'pageview');
     </script>
 
-  </head>
-  <body role="document">
-<div class="support_bar">
-    <center>
-        Do you want to support our effort? <a href="../support.html">Send us a postcard!</a>
-    </center>
-</div>
+  </head><body>
 
 
   
@@ -55,69 +39,69 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="module-padasip.detection.le">
+  <section id="module-padasip.detection.le">
 <span id="learning-entropy-le"></span><span id="detection-le"></span><h1>Learning Entropy (LE)<a class="headerlink" href="#module-padasip.detection.le" title="Permalink to this headline">¶</a></h1>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0.</span></p>
+<p><span class="versionmodified added">New in version 1.0.0.</span></p>
 </div>
 <p>The Learning Entropy (LE) is non-Shannon entropy based on conformity
 of individual data samples to the contemporary learned governing law
-of a leraning system <a class="reference internal" href="#bukovsky2013learning" id="id1">[1]</a>. More information about
-application can be found also in other studies <a class="reference internal" href="#bukovsky2016study" id="id2">[2]</a>
-<a class="reference internal" href="#bukovsky2015case" id="id3">[3]</a> <a class="reference internal" href="#bukovsky2014learning" id="id4">[4]</a>.</p>
+of a learning system.</p>
 <p>Content of this page:</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#algorithm-explanation" id="id5">Algorithm Explanation</a></li>
-<li><a class="reference internal" href="#usage-instructions-and-optimal-performance" id="id6">Usage Instructions and Optimal Performance</a></li>
-<li><a class="reference internal" href="#minimal-working-example" id="id7">Minimal Working Example</a></li>
-<li><a class="reference internal" href="#references" id="id8">References</a></li>
-<li><a class="reference internal" href="#code-explanation" id="id9">Code Explanation</a></li>
+<li><p><a class="reference internal" href="#algorithm-explanation" id="id1">Algorithm Explanation</a></p></li>
+<li><p><a class="reference internal" href="#usage-instructions-and-optimal-performance" id="id2">Usage Instructions and Optimal Performance</a></p></li>
+<li><p><a class="reference internal" href="#minimal-working-example" id="id3">Minimal Working Example</a></p></li>
+<li><p><a class="reference internal" href="#code-explanation" id="id4">Code Explanation</a></p></li>
 </ul>
 </div>
-<div class="section" id="algorithm-explanation">
-<h2><a class="toc-backref" href="#id5">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
+<section id="algorithm-explanation">
+<h2><a class="toc-backref" href="#id1">Algorithm Explanation</a><a class="headerlink" href="#algorithm-explanation" title="Permalink to this headline">¶</a></h2>
 <p>Two options how to estimate the LE are implemented - direct approach and
 multiscale approach.</p>
 <p class="rubric">Direct approach</p>
 <p>With direct approach the LE is evaluated for every sample as follows</p>
-<p><span class="math">\(\textrm{LE}_d(k) = \frac{ (\Delta \textbf{w}(k) - \overline{| \Delta \textbf{w}_M(k) |}) }
+<p><span class="math notranslate nohighlight">\(\textrm{LE}_d(k) = \frac{ (\Delta \textbf{w}(k) -
+\overline{| \Delta \textbf{w}_M(k) |}) }
 { (\sigma({| \Delta \textbf{w}_M(k) |})+\epsilon) }\)</span></p>
 <p>where</p>
 <ul class="simple">
-<li><span class="math">\(|\Delta \textbf{w}(k)|\)</span> are the absolute values of current weights
-increment.</li>
-<li><span class="math">\(\overline{| \Delta \textbf{w}_M(k) |}\)</span> are averages of absolute
-values of window used for LE evaluation.</li>
-<li><span class="math">\(\sigma (| \Delta \textbf{w}_M(k) |)\)</span> are standard deviatons of
-absolute values of window used for LE evaluation.</li>
-<li><span class="math">\(\epsilon\)</span> is regularization term to preserve stability for small
-values of standard deviation.</li>
+<li><p><span class="math notranslate nohighlight">\(|\Delta \textbf{w}(k)|\)</span> are the absolute values of current weights
+increment.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\overline{| \Delta \textbf{w}_M(k) |}\)</span> are averages of absolute
+values of window used for LE evaluation.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma (| \Delta \textbf{w}_M(k) |)\)</span> are standard deviatons of
+absolute values of window used for LE evaluation.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\epsilon\)</span> is regularization term to preserve stability for small
+values of standard deviation.</p></li>
 </ul>
 <p class="rubric">Multiscale approach</p>
 <p>Value for every sample is defined as follows</p>
-<p><span class="math">\(\textrm{LE}(k) = \frac{1}{n \cdot n_\alpha}
+<p><span class="math notranslate nohighlight">\(\textrm{LE}(k) = \frac{1}{n \cdot n_\alpha}
 \sum f(\Delta w_{i}(k), \alpha ),\)</span></p>
-<p>where <span class="math">\(\Delta w_i(k)\)</span> stands for one weight from vector
-<span class="math">\(\Delta \textbf{w}(k)\)</span>, the <span class="math">\(n\)</span> is number of weights,
-the <span class="math">\(n_\alpha\)</span> is number of used detection sensitivities</p>
-<p><span class="math">\(\alpha=[\alpha_{1}, \alpha_{2}, \ldots, \alpha_{n_{\alpha}}].\)</span></p>
-<p>The function <span class="math">\(f(\Delta w_{i}(k), \alpha)\)</span> is defined as follows</p>
-<p><span class="math">\(f(\Delta w_{i}(k),\alpha)=
+<p>where <span class="math notranslate nohighlight">\(\Delta w_i(k)\)</span> stands for one weight from vector
+<span class="math notranslate nohighlight">\(\Delta \textbf{w}(k)\)</span>, the <span class="math notranslate nohighlight">\(n\)</span> is number of weights,
+the <span class="math notranslate nohighlight">\(n_\alpha\)</span> is number of used detection sensitivities</p>
+<p><span class="math notranslate nohighlight">\(\alpha=[\alpha_{1}, \alpha_{2}, \ldots, \alpha_{n_{\alpha}}].\)</span></p>
+<p>The function <span class="math notranslate nohighlight">\(f(\Delta w_{i}(k), \alpha)\)</span> is defined as follows</p>
+<p><span class="math notranslate nohighlight">\(f(\Delta w_{i}(k),\alpha)=
 \{{\rm if}\,\left(\left\vert \Delta w_{i}(k)\right\vert &gt;
 \alpha\cdot \overline{\left\vert \Delta w_{Mi}(k)\right\vert }\right)\,
 \rm{then} \, 1, \rm{else  }\,0 \}.\)</span></p>
-</div>
-<div class="section" id="usage-instructions-and-optimal-performance">
-<h2><a class="toc-backref" href="#id6">Usage Instructions and Optimal Performance</a><a class="headerlink" href="#usage-instructions-and-optimal-performance" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="usage-instructions-and-optimal-performance">
+<h2><a class="toc-backref" href="#id2">Usage Instructions and Optimal Performance</a><a class="headerlink" href="#usage-instructions-and-optimal-performance" title="Permalink to this headline">¶</a></h2>
 <p>The LE algorithm can be used as follows</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">le</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">learning_entropy</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">le</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">learning_entropy</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>in case of direct approach. For multiscale approach an example follows</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">le</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">learning_entropy</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">[</span><span class="mf">8.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">le</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">detection</span><span class="o">.</span><span class="n">learning_entropy</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="p">[</span><span class="mf">8.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>where <cite>w</cite> is matrix of the adaptive parameters (changing in time, every row
@@ -129,17 +113,20 @@ algorithm is matrix of an adaptive parameters history, where every row
 represents the parameters used in a particular time and every column represents
 one parameter in whole adaptation history.</p>
 <p class="rubric">Selection of sensitivities</p>
-<p>The optimal number of detection sensitivities and their values depends on task and data. The sensitivities should be chosen in range where the function <span class="math">\(LE(k)\)</span> returns a value lower than 1 for at least one sample in data, and for at maximally one sample returns value of 0.</p>
-</div>
-<div class="section" id="minimal-working-example">
-<h2><a class="toc-backref" href="#id7">Minimal Working Example</a><a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
+<p>The optimal number of detection sensitivities and their values
+depends on task and data. The sensitivities should be chosen in range
+where the function <span class="math notranslate nohighlight">\(LE(k)\)</span> returns a value lower than 1 for at
+least one sample in data, and for at maximally one sample returns value of 0.</p>
+</section>
+<section id="minimal-working-example">
+<h2><a class="toc-backref" href="#id3">Minimal Working Example</a><a class="headerlink" href="#minimal-working-example" title="Permalink to this headline">¶</a></h2>
 <p>In this example is demonstrated how can the multiscale approach LE highligh
-the position of a perturbation inserted in a data. As the adaptive model is used 
+the position of a perturbation inserted in a data. As the adaptive model is used
 <a class="reference internal" href="../filters/nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-squares (NLMS)</span></a> adaptive filter. The perturbation is manually inserted
-in sample with index <span class="math">\(k=1000\)</span> (the length of data is 2000).</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">padasip</span> <span class="kn">as</span> <span class="nn">pa</span> 
+in sample with index <span class="math notranslate nohighlight">\(k=1000\)</span> (the length of data is 2000).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">padasip</span> <span class="k">as</span> <span class="nn">pa</span>
 
 <span class="c1"># data creation</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
@@ -162,65 +149,38 @@ in sample with index <span class="math">\(k=1000\)</span> (the length of data is
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="references">
-<h2><a class="toc-backref" href="#id8">References</a><a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p id="bibtex-bibliography-sources/detection/le-0"><table class="docutils citation" frame="void" id="bukovsky2013learning" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Ivo Bukovsky. Learning entropy: multiscale measure for incremental learning. <em>Entropy</em>, 15(10):4159–4187, 2013.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="bukovsky2016study" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>Ivo Bukovsky, Matous Cejnek, Jan Vrba, and Noriyasu Homma. Study of learning entropy for onset detection of epileptic seizures in eeg time series. In <em>Neural Networks (IJCNN), 2016 International Joint Conference on</em>, 3302–3305. IEEE, 2016.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="bukovsky2015case" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Ivo Bukovsky and Cyril Oswald. Case study of learning entropy for adaptive novelty detection in solid-fuel combustion control. In <em>Intelligent Systems in Cybernetics and Automation Theory</em>, pages 247–257. Springer, 2015.</td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="bukovsky2014learning" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Ivo Bukovsky, Cyril Oswald, Matous Cejnek, and Peter&nbsp;M Benes. Learning entropy for novelty detection a cognitive approach for adaptive filters. In <em>Sensor Signal Processing for Defence (SSPD), 2014</em>, 1–5. IEEE, 2014.</td></tr>
-</tbody>
-</table>
-</p>
-</div>
-<div class="section" id="code-explanation">
-<h2><a class="toc-backref" href="#id9">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="padasip.detection.le.learning_entropy">
-<code class="descclassname">padasip.detection.le.</code><code class="descname">learning_entropy</code><span class="sig-paren">(</span><em>w</em>, <em>m=10</em>, <em>order=1</em>, <em>alpha=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/detection/le.html#learning_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#padasip.detection.le.learning_entropy" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="code-explanation">
+<h2><a class="toc-backref" href="#id4">Code Explanation</a><a class="headerlink" href="#code-explanation" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="padasip.detection.le.learning_entropy">
+<span class="sig-prename descclassname"><span class="pre">padasip.detection.le.</span></span><span class="sig-name descname"><span class="pre">learning_entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/padasip/detection/le.html#learning_entropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#padasip.detection.le.learning_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function estimates Learning Entropy.</p>
 <p><strong>Args:</strong></p>
 <ul class="simple">
-<li><cite>w</cite> : history of adaptive parameters of an adaptive model (2d array),
-every row represents parameters in given time index.</li>
+<li><p><cite>w</cite> : history of adaptive parameters of an adaptive model (2d array),
+every row represents parameters in given time index.</p></li>
 </ul>
 <p><strong>Kwargs:</strong></p>
 <ul class="simple">
-<li><cite>m</cite> : window size (1d array) - how many last samples are used for
-evaluation of every sample.</li>
-<li><cite>order</cite> : order of the LE (int) - order of weights differention</li>
-<li><cite>alpha</cite> : list of senstitivites (1d array). If not provided, the LE 
-direct approach is used.</li>
+<li><p><cite>m</cite> : window size (1d array) - how many last samples are used for
+evaluation of every sample.</p></li>
+<li><p><cite>order</cite> : order of the LE (int) - order of weights differention</p></li>
+<li><p><cite>alpha</cite> : list of senstitivites (1d array). If not provided, the LE
+direct approach is used.</p></li>
 </ul>
 <p><strong>Returns:</strong></p>
 <ul class="simple">
-<li>Learning Entropy of data (1 d array) - one value for every sample</li>
+<li><p>Learning Entropy of data (1 d array) - one value for every sample</p></li>
 </ul>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -232,7 +192,7 @@ direct approach is used.</li>
 
 <iframe src="https://ghbtns.com/github-btn.html?user=matousc89&repo=padasip&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="margin-bottom: 15px;"></iframe>
 
-<h3><a href="../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../index.html">Table of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Padasip</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../index.html#license">License</a></li>
@@ -248,9 +208,9 @@ direct approach is used.</li>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../preprocess.html">Data Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters.html">Adaptive Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../ann.html">Artificial Neural Networks (ANN)</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../detection.html">Detection Tools</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="elbnd.html">Error and Learning Based Novelty Detection (ELBND)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ese.html">Extreme Seeking Entropy (ESE)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Learning Entropy (LE)</a></li>
 </ul>
 </li>
@@ -261,22 +221,22 @@ direct approach is used.</li>
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../detection.html">Detection Tools</a><ul>
-      <li>Previous: <a href="elbnd.html" title="previous chapter">Error and Learning Based Novelty Detection (ELBND)</a></li>
+      <li>Previous: <a href="ese.html" title="previous chapter">Extreme Seeking Entropy (ESE)</a></li>
       <li>Next: <a href="../misc.html" title="next chapter">Miscellaneous</a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -285,11 +245,11 @@ direct approach is used.</li>
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../../_sources/sources/detection/le.txt"
+      <a href="../../_sources/sources/detection/le.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
