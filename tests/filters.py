@@ -9,6 +9,12 @@ import padasip as pa
 
 class TestFilters(unittest.TestCase):
 
+    def test_base_filter_adapt(self):
+        filt = pa.filters.FilterLMS(3, mu=1., w="zeros")
+        x = np.array([2, 4, 3])
+        filt.adapt(1, x)
+        self.assertAlmostEqual(filt.w.sum(), 9.0)
+
     def test_filter_gngd(self):
         """
         Test of GNGD filter output.
