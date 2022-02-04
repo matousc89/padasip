@@ -163,7 +163,7 @@ class AdaptiveFilter():
         """
         y = self.predict(x)
         e = d - y
-        self.w += self.learning_rule(self, e, x)
+        self.w += self.learning_rule(e, x)
 
     def run(self, d, x):
         """

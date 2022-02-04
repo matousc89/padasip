@@ -1,3 +1,6 @@
+*.png
+*.svg
+
 .idea/
 
 to_ignore.py
