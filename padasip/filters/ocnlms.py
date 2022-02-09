@@ -101,7 +101,6 @@ class FilterOCNLMS(AdaptiveFilter):
         self.update_memory_x(x)
         m_d, m_x = self.read_memory()
         y = np.dot(self.w, x-m_x) + m_d
-        # e = d - y
         self.update_memory_d(e + y)
         return self.mu / (self.eps + np.dot(x - m_x, x - m_x)) * e * (x - m_x)
 
