@@ -3,9 +3,13 @@
 Changelog
 ===========
 
-**Version 1.2.0** *2022-01-28*
+**Version 1.2.1** *Released: 2022-02-07*
+ Bugfix of the main adaptive filter class.
+
+**Version 1.2.0** *Released: 2022-01-28*
  All adaptive filters were significantly refactored.
- Added new adaptive filters :ref:`filter-gmcc`, :ref:`filter-llncosh`.
+ Added new adaptive filters :ref:`filter-gmcc`, :ref:`filter-llncosh`
+ and :ref:`filter-ocnlms`.
  Added new detection tool :ref:`detection-ese`.
  ANN module is removed from docs, and will be removed totally in future -
  there are much better Python libraries for ANN utilization.
