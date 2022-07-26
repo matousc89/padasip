@@ -263,6 +263,7 @@ def get_filter(name):
 
 FILTER_CLASSES = [
     FilterAP,
+    FilterGMCC,
     FilterGNGD,
     FilterLlncosh,
     FilterLMF,
@@ -270,6 +271,7 @@ FILTER_CLASSES = [
     FilterNLMF,
     FilterNLMS,
     FilterNSSLMS,
+    FilterOCNLMS,
     FilterRLS,
     FilterSSLMS,
 ]
