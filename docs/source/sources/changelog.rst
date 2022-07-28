@@ -3,6 +3,9 @@
 Changelog
 ===========
 
+**Version 1.2.2**
+ Added new adaptive filters :ref:`filter-vslms_mathews`
+
 **Version 1.2.1** *Released: 2022-02-07*
  Bugfix of the main adaptive filter class.
 
