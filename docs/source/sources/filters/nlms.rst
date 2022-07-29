@@ -1,6 +1,6 @@
 .. _filter-nlms:
 
-Normalized Least-mean-squares (NLMS)
+Normalized Least-mean-square (NLMS)
 ======================================
 
 .. automodule:: padasip.filters.nlms

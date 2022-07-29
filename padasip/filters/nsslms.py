@@ -2,7 +2,7 @@
 .. versionadded:: 1.1.0
 .. versionchanged:: 1.2.0
 
-The normalized sign-sign least-mean-squares (NSSLMS) adaptive filter
+The normalized sign-sign least-mean-square (NSSLMS) adaptive filter
 is an extension of the popular SSLMS adaptive filter (:ref:`filter-sslms`).
 
 The NSSLMS filter can be created as follows

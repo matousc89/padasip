@@ -1,6 +1,6 @@
 .. _filter-ocnlms:
 
-Online centered normalized Least-mean-squares (OCNLMS)
+Online centered normalized Least-mean-square (OCNLMS)
 ======================================================
 
 .. automodule:: padasip.filters.ocnlms
