@@ -176,6 +176,8 @@ from padasip.filters.nsslms import FilterNSSLMS
 from padasip.filters.ocnlms import FilterOCNLMS
 from padasip.filters.rls import FilterRLS
 from padasip.filters.sslms import FilterSSLMS
+from padasip.filters.vslms_ang import FilterVSLMS_Ang
+from padasip.filters.vslms_benveniste import FilterVSLMS_Benveniste
 from padasip.filters.vslms_mathews import FilterVSLMS_Mathews
 
 
@@ -275,6 +277,8 @@ FILTER_CLASSES = [
     FilterOCNLMS,
     FilterRLS,
     FilterSSLMS,
+    FilterVSLMS_Ang,
+    FilterVSLMS_Benveniste,
     FilterVSLMS_Mathews,
 ]
 

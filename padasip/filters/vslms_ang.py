@@ -1,15 +1,15 @@
 """
 .. versionadded:: 1.2.2
 
-The variable step-size least-mean-square (VSLMS) adaptive filter with Benveniste adaptation
+The variable step-size least-mean-square (VSLMS) adaptive filter with Ang's adaptation
 is implemeted according to
-`DOI:10.1109/EMBC.2013.6610622 <https://doi.org/10.1109/EMBC.2013.6610622>`_.
+`DOI:10.1109/78.912925 <https://doi.org/10.1109/78.912925>`_.
 
 
 The VSLMS filter with Benveniste adaptation can be created as follows
 
     >>> import padasip as pa
-    >>> pa.filters.FilterVSLMS_Benveniste(n)
+    >>> pa.filters.FilterVSLMS_Ang(n)
 
 where `n` is the size (number of taps) of the filter.
 
@@ -40,7 +40,7 @@ If you have measured data you may filter it as follows
     d = 2 * x[:, 0] + 0.1 * x[:, 1] - 4 * x[:, 2] + 0.5 * x[:, 3] + v  # target
 
     # identification
-    f = pa.filters.FilterVSLMS_Benveniste(n=4, mu=0.1, ro=0.001, w="random")
+    f = pa.filters.FilterVSLMS_Ang(n=4, mu=0.1, ro=0.0002, w="random")
     y, e, w = f.run(d, x)
 
     # show results
@@ -68,22 +68,26 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilter
 
 
-class FilterVSLMS_Benveniste(AdaptiveFilter):
+class FilterVSLMS_Ang(AdaptiveFilter):
     """
-    This class represents an adaptive VSLMS filter with Benveniste adaptation.
+    This class represents an adaptive VSLMS filter with Ang's adaptation.
     """
-    kind = "VSLMS_Benveniste"
+    kind = "VSLMS_Ang"
 
-    def __init__(self, n, mu=1., ro=0.1, **kwargs):
+    def __init__(self, n, mu=1., ro=0.0002, a=0.95, **kwargs):
         """
         **Kwargs:**
 
         * `ro` : step size adaptation parameter (float) at the beginning.
           It is an adaptive parameter.
 
+        * `a` : small constant close to 1 (but smaller). It works as a simplification
+          of the Benveniste's algoritm.
+
         """
         super().__init__(n, mu, **kwargs)
         self.ro = ro
+        self.a = a
         self.last_e = 0
         self.last_x = np.zeros(n)
         self.last_fi = np.zeros(n)
@@ -93,9 +97,7 @@ class FilterVSLMS_Benveniste(AdaptiveFilter):
         """
         Override the parent class.
         """
-        fi_part = np.eye(self.n) - (self.last_mu * np.outer(self.last_x, self.last_x))
-        fi = np.dot(fi_part, self.last_fi) + (self.last_e * self.last_x)
-
+        fi = (self.a * self.last_fi) + (self.last_e * self.last_x)
         mu = self.last_mu + (self.ro * e * np.dot(self.last_x, fi))
         self.last_e, self.last_mu, self.last_x, self.last_fi = e, mu, x, fi
         return mu * e * x

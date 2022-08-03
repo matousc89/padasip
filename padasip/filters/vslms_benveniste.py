@@ -1,15 +1,15 @@
 """
 .. versionadded:: 1.2.2
 
-The variable step-size least-mean-square (VSLMS) adaptive filter with Mathews adaptation
+The variable step-size least-mean-square (VSLMS) adaptive filter with Benveniste's adaptation
 is implemeted according to
-`DOI:10.1109/78.912925 <https://doi.org/10.1109/78.912925>`_.
+`DOI:10.1109/EMBC.2013.6610622 <https://doi.org/10.1109/EMBC.2013.6610622>`_.
 
 
-The VSLMS filter with Mathews adaptation can be created as follows
+The VSLMS filter with Benveniste adaptation can be created as follows
 
     >>> import padasip as pa
-    >>> pa.filters.FilterVSLMS_Mathews(n)
+    >>> pa.filters.FilterVSLMS_Benveniste(n)
 
 where `n` is the size (number of taps) of the filter.
 
@@ -40,7 +40,7 @@ If you have measured data you may filter it as follows
     d = 2 * x[:, 0] + 0.1 * x[:, 1] - 4 * x[:, 2] + 0.5 * x[:, 3] + v  # target
 
     # identification
-    f = pa.filters.FilterVSLMS_Mathews(n=4, mu=0.1, ro=0.001, w="random")
+    f = pa.filters.FilterVSLMS_Benveniste(n=4, mu=0.1, ro=0.0002, w="random")
     y, e, w = f.run(d, x)
 
     # show results
@@ -68,11 +68,11 @@ import numpy as np
 from padasip.filters.base_filter import AdaptiveFilter
 
 
-class FilterVSLMS_Mathews(AdaptiveFilter):
+class FilterVSLMS_Benveniste(AdaptiveFilter):
     """
-    This class represents an adaptive VSLMS filter with Mathews adaptation.
+    This class represents an adaptive VSLMS filter with Benveniste's adaptation.
     """
-    kind = "VSLMS_Mathews"
+    kind = "VSLMS_Benveniste"
 
     def __init__(self, n, mu=1., ro=0.1, **kwargs):
         """
@@ -86,12 +86,15 @@ class FilterVSLMS_Mathews(AdaptiveFilter):
         self.ro = ro
         self.last_e = 0
         self.last_x = np.zeros(n)
+        self.last_fi = np.zeros(n)
         self.last_mu = mu
 
     def learning_rule(self, e, x):
         """
         Override the parent class.
         """
-        mu = self.last_mu + (self.ro * e * self.last_e * np.dot(self.last_x, x))
-        self.last_e, self.last_mu, self.last_x = e, mu, x
+        fi_part = np.eye(self.n) - (self.last_mu * np.outer(self.last_x, self.last_x))
+        fi = np.dot(fi_part, self.last_fi) + (self.last_e * self.last_x)
+        mu = self.last_mu + (self.ro * e * np.dot(self.last_x, fi))
+        self.last_e, self.last_mu, self.last_x, self.last_fi = e, mu, x, fi
         return mu * e * x
