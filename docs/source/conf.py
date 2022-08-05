@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Padasip'
-copyright = u'2016, Matous C'
+copyright = u'2016-2022, Matous C'
 author = u'Matous C'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -63,7 +63,7 @@ author = u'Matous C'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.2.1'
+version = u'1.2.2'
 # The full version, including alpha/beta/rc tags.
 release = version
 
