@@ -3,7 +3,7 @@
 Changelog
 ===========
 
-**Version 1.2.2**
+**Version 1.2.2** *Released: 2022-08-05*
  Added new adaptive filters: :ref:`filter-vslms_mathews`,
  :ref:`filter-vslms_benveniste`, :ref:`filter-vslms_ang`.
 
