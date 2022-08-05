@@ -4,13 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Changelog &#8212; Padasip 1.2.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
@@ -40,14 +39,17 @@
 
           <div class="body" role="main">
             
-  <section id="changelog">
+  <div class="section" id="changelog">
 <span id="id1"></span><h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
 <dl class="simple">
+<dt><strong>Version 1.2.2</strong> <em>Released: 2022-08-05</em></dt><dd><p>Added new adaptive filters: <a class="reference internal" href="filters/vslms_mathews.html#filter-vslms-mathews"><span class="std std-ref">Variable step-size least-mean-square (VSLMS) with Mathews’s adaptation</span></a>,
+<a class="reference internal" href="filters/vslms_benveniste.html#filter-vslms-benveniste"><span class="std std-ref">Variable step-size least-mean-square (VSLMS) with Benveniste’s adaptation</span></a>, <a class="reference internal" href="filters/vslms_ang.html#filter-vslms-ang"><span class="std std-ref">Variable step-size least-mean-square (VSLMS) with Ang’s adaptation</span></a>.</p>
+</dd>
 <dt><strong>Version 1.2.1</strong> <em>Released: 2022-02-07</em></dt><dd><p>Bugfix of the main adaptive filter class.</p>
 </dd>
 <dt><strong>Version 1.2.0</strong> <em>Released: 2022-01-28</em></dt><dd><p>All adaptive filters were significantly refactored.
 Added new adaptive filters <a class="reference internal" href="filters/gmcc.html#filter-gmcc"><span class="std std-ref">Generalized maximum correntropy criterion (GMCC)</span></a>, <a class="reference internal" href="filters/llncosh.html#filter-llncosh"><span class="std std-ref">Least Lncosh (Llncosh)</span></a>
-and <a class="reference internal" href="filters/ocnlms.html#filter-ocnlms"><span class="std std-ref">Online centered normalized Least-mean-squares (OCNLMS)</span></a>.
+and <a class="reference internal" href="filters/ocnlms.html#filter-ocnlms"><span class="std std-ref">Online centered normalized Least-mean-square (OCNLMS)</span></a>.
 Added new detection tool <a class="reference internal" href="detection/ese.html#detection-ese"><span class="std std-ref">Extreme Seeking Entropy (ESE)</span></a>.
 ANN module is removed from docs, and will be removed totally in future -
 there are much better Python libraries for ANN utilization.</p>
@@ -56,7 +58,7 @@ there are much better Python libraries for ANN utilization.</p>
 <a class="reference external" href="https://github.com/pckbls">Patrick Bartels</a>.</p>
 </dd>
 <dt><strong>Version 1.1.0</strong> <em>Released: 2017-05-19</em></dt><dd><p>Added new adaptive filters <a class="reference internal" href="filters/lmf.html#filter-lmf"><span class="std std-ref">Least-mean-fourth (LMF)</span></a>, <a class="reference internal" href="filters/nlmf.html#filter-nlmf"><span class="std std-ref">Normalized Least-mean-fourth (NLMF)</span></a>,
-<a class="reference internal" href="filters/sslms.html#filter-sslms"><span class="std std-ref">Sign-sign Least-mean-squares (SSLMS)</span></a> and <a class="reference internal" href="filters/nsslms.html#filter-nsslms"><span class="std std-ref">Normalized Sign-sign Least-mean-squares (NSSLMS)</span></a>.</p>
+<a class="reference internal" href="filters/sslms.html#filter-sslms"><span class="std std-ref">Sign-sign Least-mean-square (SSLMS)</span></a> and <a class="reference internal" href="filters/nsslms.html#filter-nsslms"><span class="std std-ref">Normalized Sign-sign Least-mean-square (NSSLMS)</span></a>.</p>
 </dd>
 <dt><strong>Version 1.0.0</strong> <em>Released: 2017-03-16</em></dt><dd><p>Added module <a class="reference internal" href="detection.html#detection"><span class="std std-ref">Detection Tools</span></a> containing <a class="reference internal" href="detection/le.html#detection-le"><span class="std std-ref">Learning Entropy (LE)</span></a> and
 <a class="reference internal" href="detection/elbnd.html#detection-elbnd"><span class="std std-ref">Error and Learning Based Novelty Detection (ELBND)</span></a>.
@@ -82,12 +84,12 @@ for preprocess module was updated.</p>
 <dt><strong>Version 0.2</strong> <em>Released: 2016-09-02</em></dt><dd><p>Added <a class="reference internal" href="filters/gngd.html#filter-gngd"><span class="std std-ref">Generalized Normalized Gradient Descent (GNGD)</span></a></p>
 </dd>
 <dt><strong>Version 0.1</strong> <em>Released: 2016-03-18</em></dt><dd><p>Created
-<a class="reference internal" href="filters/lms.html#filter-lms"><span class="std std-ref">Least-mean-squares (LMS)</span></a>, <a class="reference internal" href="filters/nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-squares (NLMS)</span></a>,
+<a class="reference internal" href="filters/lms.html#filter-lms"><span class="std std-ref">Least-mean-square (LMS)</span></a>, <a class="reference internal" href="filters/nlms.html#filter-nlms"><span class="std std-ref">Normalized Least-mean-square (NLMS)</span></a>,
 <a class="reference internal" href="filters/rls.html#filter-rls"><span class="std std-ref">Recursive Least Squares (RLS)</span></a>, <a class="reference internal" href="preprocess/input_from_history.html#preprocess-input-from-history"><span class="std std-ref">Input Matrix Construction</span></a>,
 <a class="reference internal" href="preprocess/standardize.html#preprocess-standardize"><span class="std std-ref">Data Standardization</span></a>, <a class="reference internal" href="preprocess/standardize_back.html#preprocess-standardize-back"><span class="std std-ref">Data De-standardization</span></a></p>
 </dd>
 </dl>
-</section>
+</div>
 
 
           </div>
@@ -124,7 +126,7 @@ for preprocess module was updated.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -138,7 +140,7 @@ for preprocess module was updated.</p>
       &copy;2016, Matous C.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.4.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

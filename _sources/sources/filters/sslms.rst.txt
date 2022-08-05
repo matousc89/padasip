@@ -1,6 +1,6 @@
 .. _filter-sslms:
 
-Sign-sign Least-mean-squares (SSLMS) 
+Sign-sign Least-mean-square (SSLMS)
 =====================================
 
 .. automodule:: padasip.filters.sslms

@@ -1,6 +1,6 @@
 .. _filter-lms:
 
-Least-mean-squares (LMS) 
+Least-mean-square (LMS)
 =====================================
 
 .. automodule:: padasip.filters.lms
