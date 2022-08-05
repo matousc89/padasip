@@ -1,5 +1,7 @@
+example.py
 *.png
 *.svg
+*.pdf
 
 .idea/
 
@@ -64,7 +66,7 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-docsdir/build
+docs/build
 
 # PyBuilder
 target/

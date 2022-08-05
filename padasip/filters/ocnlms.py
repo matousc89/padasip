@@ -1,7 +1,7 @@
 """
 .. versionadded:: 1.2.0
 
-The online-centered normalized least-mean-squares (OCNLMS) adaptive filter
+The online-centered normalized least-mean-square (OCNLMS) adaptive filter
 (proposed in https://doi.org/10.14311/nnw.2021.31.019)
 is an extension of the popular NLMS adaptive filter (:ref:`filter-nlms`).
 
@@ -25,7 +25,7 @@ Algorithm Explanation
 
 The OCNLMS is extension of NLMS filter. See :ref:`filter-nlms`
 for explanation of the algorithm behind.  As an extension of the
-normalized least mean squares (NLMS), the OCNLMS algorithm
+normalized least mean square (NLMS), the OCNLMS algorithm
 features an approach of online input centering according to
 the introduced filter memory. This key feature can compensate
 the effect of concept drift in data streams, because

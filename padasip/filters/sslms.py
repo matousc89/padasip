@@ -2,7 +2,7 @@
 .. versionadded:: 1.1.0
 .. versionchanged:: 1.2.0
 
-The sign-sign least-mean-squares (SSLMS) adaptive filter can be created as follows
+The sign-sign least-mean-square (SSLMS) adaptive filter can be created as follows
 
     >>> import padasip as pa
     >>> pa.filters.FilterSSLMS(n)

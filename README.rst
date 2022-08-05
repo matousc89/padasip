@@ -59,6 +59,13 @@ So far it is possible to use following filters:
 
 - Llncosh (least lncosh) adaptive filter
 
+- Variable step-size least-mean-square (VSLMS) with Ang’s adaptation.
+
+- Variable step-size least-mean-square (VSLMS) with Benveniste’s adaptation
+
+- Variable step-size least-mean-square (VSLMS) with Mathews’s adaptation
+
+
 ******************
 Detection Tools
 ******************

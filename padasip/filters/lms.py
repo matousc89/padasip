@@ -2,7 +2,7 @@
 .. versionadded:: 0.1
 .. versionchanged:: 1.2.0
 
-The least-mean-squares (LMS) adaptive filter is the most popular adaptive filter.
+The least-mean-square (LMS) adaptive filter is the most popular adaptive filter.
 
 The LMS filter can be created as follows
 

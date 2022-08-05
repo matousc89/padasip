@@ -2,7 +2,7 @@
 .. versionadded:: 0.1
 .. versionchanged:: 1.2.0
 
-The normalized least-mean-squares (NLMS) adaptive filter
+The normalized least-mean-square (NLMS) adaptive filter
 is an extension of the popular LMS adaptive filter (:ref:`filter-lms`).
 
 The NLMS filter can be created as follows

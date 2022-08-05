@@ -28,6 +28,45 @@ class TestFilters(unittest.TestCase):
         y, e, w = f.run(d, x)
         self.assertAlmostEqual(y.sum(), 16.622071160225627)
 
+    def test_filter_vslms_mathews(self):
+        """
+        Test of VLSMS with Mathews adaptation filter output.
+        """
+        np.random.seed(100)
+        N = 100
+        x = np.random.normal(0, 1, (N, 4))
+        v = np.random.normal(0, 0.1, N)
+        d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
+        f = pa.filters.FilterVSLMS_Mathews(n=4, mu=0.1, ro=0.001, w="random")
+        y, e, w = f.run(d, x)
+        self.assertAlmostEqual(y.sum(), 18.46303593650432)
+
+    def test_filter_vslms_benveniste(self):
+        """
+        Test of VLSMS with Benveniste adaptation filter output.
+        """
+        np.random.seed(100)
+        N = 100
+        x = np.random.normal(0, 1, (N, 4))
+        v = np.random.normal(0, 0.1, N)
+        d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
+        f = pa.filters.FilterVSLMS_Benveniste(n=4, mu=0.1, ro=0.0002, w="random")
+        y, e, w = f.run(d, x)
+        self.assertAlmostEqual(y.sum(), 18.048916937718058)
+
+    def test_filter_vslms_ang(self):
+        """
+        Test of VLSMS with Ang adaptation filter output.
+        """
+        np.random.seed(100)
+        N = 100
+        x = np.random.normal(0, 1, (N, 4))
+        v = np.random.normal(0, 0.1, N)
+        d = 2*x[:,0] + 0.1*x[:,1] - 4*x[:,2] + 0.5*x[:,3] + v
+        f = pa.filters.FilterVSLMS_Ang(n=4, mu=0.1, ro=0.0002, w="random")
+        y, e, w = f.run(d, x)
+        self.assertAlmostEqual(y.sum(), 18.341053442007972)
+
     def test_filter_ap(self):
         """
         Test of AP filter output.

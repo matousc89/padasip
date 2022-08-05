@@ -69,11 +69,11 @@ class FilterGNGD(AdaptiveFilter):
         """
         **Kwargs:**
 
-        * `eps` : compensation term (float) at the beginning. It is adaptive
+        * `eps` : compensation term (float) at the beginning. It is an adaptive
           parameter.
 
         * `ro` : step size adaptation parameter (float) at the beginning.
-          It is adaptive parameter.
+          It is an adaptive parameter.
 
         """
         super().__init__(n, mu, **kwargs)
