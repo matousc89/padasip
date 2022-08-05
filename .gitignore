@@ -1,6 +1,7 @@
 example.py
 *.png
 *.svg
+*.pdf
 
 .idea/
 

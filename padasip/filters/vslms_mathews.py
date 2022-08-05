@@ -3,7 +3,7 @@
 
 The variable step-size least-mean-square (VSLMS) adaptive filter with Mathews's adaptation
 is implemeted according to
-`DOI:10.1109/78.912925 <https://doi.org/10.1109/78.912925>`_.
+`DOI:10.1109/78.218137 <https://doi.org/10.1109/78.218137>`_.
 
 
 The VSLMS filter with Mathews adaptation can be created as follows
