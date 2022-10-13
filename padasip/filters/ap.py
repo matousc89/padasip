@@ -53,7 +53,7 @@ The error of the filter is estimated as
 And the adaptation of adaptive parameters is calculated according to equation
 
 :math:`\\textbf{w}_{AP}(k+1) =
-\\textbf{w}_{AP}(k+1) + \mu \\textbf{X}_{AP}(k) (\\textbf{X}_{AP}^{T}(k)
+\\textbf{w}_{AP}(k) + \mu \\textbf{X}_{AP}(k) (\\textbf{X}_{AP}^{T}(k)
 \\textbf{X}_{AP}(k) + \epsilon \\textbf{I})^{-1} \\textbf{e}_{AP}(k)`.
 
 During the filtering we are interested just in output of filter :math:`y(k)`
