@@ -77,3 +77,20 @@ The library features two novelty/outlier detection tools
 - Learning Entropy (LE)
 
 - Extreme Seeking Entropy (ESE)
+
+*************
+Cite Padasip
+*************
+
+.. code-block:: none
+
+    @article{cejnek2022padasip,
+        title={Padasip: An open-source Python toolbox for adaptive filtering},
+        author={Cejnek, Matous and Vrba, Jan},
+        journal={Journal of Computational Science},
+        volume={65},
+        pages={101887},
+        year={2022},
+        publisher={Elsevier}
+    }
+
